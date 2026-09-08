@@ -39,13 +39,13 @@ export function useQuizResults() {
 }
 
 /** Merkt sich automatisch, dass der angemeldete Nutzer etwas angesehen hat. */
-export function useTrackDiscovery(kind: DiscoveryKind, slug: string) {
+export function useTrackDiscovery(kind: DiscoveryKind, slug: string, enabled = true) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const userId = user?.id;
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId || !enabled) return;
     let cancelled = false;
     void supabase
       .from("discoveries")
@@ -58,7 +58,7 @@ export function useTrackDiscovery(kind: DiscoveryKind, slug: string) {
     return () => {
       cancelled = true;
     };
-  }, [userId, kind, slug, queryClient]);
+  }, [userId, kind, slug, enabled, queryClient]);
 }
 
 export async function saveQuizResult(userId: string, score: number, total: number) {

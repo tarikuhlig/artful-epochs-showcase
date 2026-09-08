@@ -2,6 +2,8 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { findEpoch } from "@/lib/art-data";
 import { useTrackDiscovery } from "@/lib/progress";
+import { isFreeEpoch } from "@/lib/premium-access";
+import { PremiumLock } from "@/components/PremiumLock";
 
 export const Route = createFileRoute("/epochen/$epoche")({
   loader: ({ params }) => {
@@ -25,7 +27,8 @@ export const Route = createFileRoute("/epochen/$epoche")({
 
 function EpochPage() {
   const epoch = Route.useLoaderData();
-  useTrackDiscovery("epoch", epoch.slug);
+  const free = isFreeEpoch(epoch.slug);
+  useTrackDiscovery("epoch", epoch.slug, free);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
@@ -49,7 +52,7 @@ function EpochPage() {
         </p>
       </header>
 
-      <div className="mt-12 grid gap-6 md:grid-cols-2">
+      {free ? <div className="mt-12 grid gap-6 md:grid-cols-2">
         {epoch.painters.map((painter) => {
           const cover = painter.works[0];
           return (
@@ -82,7 +85,7 @@ function EpochPage() {
             </Link>
           );
         })}
-      </div>
+      </div> : <div className="mt-12"><PremiumLock title={`${epoch.name} vollständig entdecken`} description={`Die Einführung bleibt sichtbar. Mit Premium öffnest du alle ${epoch.painters.length} Künstler, ihre Werke und die vertiefenden Geschichten dieser Epoche.`} /></div>}
     </div>
   );
 }

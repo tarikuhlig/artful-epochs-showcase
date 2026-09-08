@@ -3,6 +3,8 @@ import { ArrowLeft, CalendarDays, Clock, ExternalLink, Lightbulb, MapPin } from 
 import { findMuseum } from "@/lib/museums";
 import { getVisitInfo } from "@/lib/museum-info";
 import { useTrackDiscovery } from "@/lib/progress";
+import { isFreeMuseum } from "@/lib/premium-access";
+import { PremiumLock } from "@/components/PremiumLock";
 
 
 export const Route = createFileRoute("/museen/$slug")({
@@ -34,7 +36,8 @@ export const Route = createFileRoute("/museen/$slug")({
 function MuseumPage() {
   const { museum } = Route.useLoaderData();
   const info = getVisitInfo(museum.slug);
-  useTrackDiscovery("museum", museum.slug);
+  const free = isFreeMuseum(museum.slug);
+  useTrackDiscovery("museum", museum.slug, free);
 
 
   return (
@@ -62,7 +65,7 @@ function MuseumPage() {
         Besucht · {museum.works.length} {museum.works.length === 1 ? "Werk" : "Werke"} im Katalog
       </p>
 
-      {info && (
+      {free && info && (
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
           <div className="rounded-2xl border border-border bg-card p-5">
             <h2 className="font-display text-lg font-medium">Besuch planen</h2>
@@ -109,7 +112,7 @@ function MuseumPage() {
         </div>
       )}
 
-      {info && (
+      {free && info && (
         <section className="mt-8 rounded-xl border border-border bg-card p-5 sm:p-6">
           <h2 className="font-display flex items-center gap-2 text-lg font-medium"><CalendarDays className="h-4 w-4" /> Aktuelle Ausstellungen</h2>
           {info.exhibitions?.length ? (
@@ -130,9 +133,11 @@ function MuseumPage() {
       )}
 
 
+      {!free && <div className="mt-10"><PremiumLock title={`${museum.name} vollständig bereisen`} description="Premium öffnet Besuchsplanung, Öffnungszeiten, Eintritt, aktuelle Ausstellungen und die Meisterwerke dieses Hauses." /></div>}
+
       <h2 className="font-display mt-14 text-2xl font-medium">Werke in diesem Haus</h2>
       <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {museum.works.map((w) => (
+        {museum.works.slice(0, free ? undefined : 3).map((w) => (
           <Link
             key={w.id}
             to="/werke/$id"
