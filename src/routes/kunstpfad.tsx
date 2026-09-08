@@ -23,7 +23,7 @@ export const Route = createFileRoute("/kunstpfad")({
 
 const CARD_COUNT = 15;
 
-function PracticeCard({ quiz, step, imageUrl }: { quiz: ArtPathQuiz; step: number; imageUrl?: string }) {
+function PracticeCard({ quiz, step, imageUrl }: { quiz: ArtPathQuiz; step: number; imageUrl?: string | undefined }) {
   const [picked, setPicked] = useState("");
   return <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[0.85fr_1.15fr]">
     <div className="relative min-h-44 bg-muted md:min-h-full">{imageUrl && <img src={imageUrl} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-90" />}</div>
