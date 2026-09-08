@@ -39,7 +39,23 @@ export const Route = createFileRoute("/")({
 });
 
 function Dashboard() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  const [stage, setStage] = useState<"boot" | "title" | "intro" | "app">("boot");
+
+  useEffect(() => {
+    if (sessionStorage.getItem("provenance-intro") === "done") {
+      setStage("app");
+      return;
+    }
+    if (loading) return;
+    setStage(user ? "intro" : "title");
+  }, [loading, user]);
+
+  const finishIntro = useCallback(() => {
+    sessionStorage.setItem("provenance-intro", "done");
+    setStage("app");
+  }, []);
+
   const { data: stats } = useUserStats();
   const { data: discoveries } = useDiscoveries();
   const { data: quiz } = useQuizResults();
