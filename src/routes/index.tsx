@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
-import { ArrowRight, Brush, Coins, Landmark, Layers, Map, Sparkles } from "lucide-react";
+import { ArrowRight, Brush, Coins, Landmark, Layers, Map, Palette, Sparkles } from "lucide-react";
 import { IntroTunnel } from "@/components/IntroTunnel";
 import { TitleGate } from "@/components/TitleGate";
 import { Button } from "@/components/ui/button";
@@ -127,7 +127,8 @@ function HomePage() {
         <div className="mx-auto max-w-6xl px-6 py-14">
           <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Wähle deinen Einstieg</p>
           <h2 className="font-display mt-2 text-3xl font-medium">Was möchtest du heute entdecken?</h2>
-          <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            <ExploreCard to="/kuenstler-des-tages" image={painterWorks[0]?.image} icon={<Palette />} title="Künstler des Tages" text={dailyPainter.name} />
             <ExploreCard to="/kunstpfad" image={allWorks[(workIndex + 101) % allWorks.length]?.image} icon={<Map />} title="Reise" text={`${artPathWithWorks.length} Epochen Schritt für Schritt`} />
             <ExploreCard to="/epochen" image={allWorks[(workIndex + 157) % allWorks.length]?.image} icon={<Layers />} title="Epochen" text={`${epochs.length} Kapitel der Kunstgeschichte`} />
             <ExploreCard to="/museen" image={allWorks[(workIndex + 223) % allWorks.length]?.image} icon={<Landmark />} title="Museen" text={`${museums.length} Häuser weltweit`} />
@@ -144,6 +145,6 @@ function HomePage() {
   );
 }
 
-function ExploreCard({ to, image, icon, title, text }: { to: "/kunstpfad" | "/epochen" | "/museen" | "/auktionshaus"; image: string | undefined; icon: React.ReactNode; title: string; text: string }) {
+function ExploreCard({ to, image, icon, title, text }: { to: "/kunstpfad" | "/kuenstler-des-tages" | "/epochen" | "/museen" | "/auktionshaus"; image: string | undefined; icon: React.ReactNode; title: string; text: string }) {
   return <Link to={to} className="group overflow-hidden rounded-xl border border-border bg-background hover:border-pastel-tip/60"><div className="aspect-[4/3] overflow-hidden bg-muted"><img src={image} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" /></div><div className="p-5"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-pastel-tip/25 text-background [&_svg]:h-4 [&_svg]:w-4">{icon}</span><span className="font-display mt-5 flex items-center justify-between text-xl font-medium">{title}<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span><span className="mt-2 block text-sm text-muted-foreground">{text}</span></div></Link>;
 }
