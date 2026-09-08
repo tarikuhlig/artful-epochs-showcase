@@ -21,9 +21,7 @@ export const Route = createFileRoute("/werke/$id")({
           },
           { property: "og:description", content: loaderData.description },
           { property: "og:type", content: "article" },
-          { property: "og:image", content: loaderData.image },
-          { name: "twitter:card", content: "summary_large_image" },
-          { name: "twitter:image", content: loaderData.image },
+          { name: "twitter:card", content: "summary" },
         ]
       : [{ title: "Werk nicht gefunden | Provenance" }, { name: "robots", content: "noindex" }],
   }),
