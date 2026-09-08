@@ -10,7 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as QuizRouteImport } from './routes/quiz'
+import { Route as AuthenticatedSammlungRouteImport } from './routes/_authenticated/sammlung'
 import { Route as EpochenEpocheRouteImport } from './routes/epochen.$epoche'
 import { Route as MalerSlugRouteImport } from './routes/maler.$slug'
 import { Route as WerkeIdRouteImport } from './routes/werke.$id'
@@ -20,10 +23,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QuizRoute = QuizRouteImport.update({
   id: '/quiz',
   path: '/quiz',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedSammlungRoute = AuthenticatedSammlungRouteImport.update({
+  id: '/sammlung',
+  path: '/sammlung',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const EpochenEpocheRoute = EpochenEpocheRouteImport.update({
   id: '/epochen/$epoche',
@@ -43,14 +60,18 @@ const WerkeIdRoute = WerkeIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/quiz': typeof QuizRoute
+  '/sammlung': typeof AuthenticatedSammlungRoute
   '/epochen/$epoche': typeof EpochenEpocheRoute
   '/maler/$slug': typeof MalerSlugRoute
   '/werke/$id': typeof WerkeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/quiz': typeof QuizRoute
+  '/sammlung': typeof AuthenticatedSammlungRoute
   '/epochen/$epoche': typeof EpochenEpocheRoute
   '/maler/$slug': typeof MalerSlugRoute
   '/werke/$id': typeof WerkeIdRoute
@@ -58,20 +79,40 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/quiz': typeof QuizRoute
+  '/_authenticated/sammlung': typeof AuthenticatedSammlungRoute
   '/epochen/$epoche': typeof EpochenEpocheRoute
   '/maler/$slug': typeof MalerSlugRoute
   '/werke/$id': typeof WerkeIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/quiz' | '/epochen/$epoche' | '/maler/$slug' | '/werke/$id'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/quiz'
+    | '/sammlung'
+    | '/epochen/$epoche'
+    | '/maler/$slug'
+    | '/werke/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/quiz' | '/epochen/$epoche' | '/maler/$slug' | '/werke/$id'
+  to:
+    | '/'
+    | '/auth'
+    | '/quiz'
+    | '/sammlung'
+    | '/epochen/$epoche'
+    | '/maler/$slug'
+    | '/werke/$id'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
+    | '/auth'
     | '/quiz'
+    | '/_authenticated/sammlung'
     | '/epochen/$epoche'
     | '/maler/$slug'
     | '/werke/$id'
@@ -79,6 +120,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   QuizRoute: typeof QuizRoute
   EpochenEpocheRoute: typeof EpochenEpocheRoute
   MalerSlugRoute: typeof MalerSlugRoute
@@ -94,12 +137,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/quiz': {
       id: '/quiz'
       path: '/quiz'
       fullPath: '/quiz'
       preLoaderRoute: typeof QuizRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/sammlung': {
+      id: '/_authenticated/sammlung'
+      path: '/sammlung'
+      fullPath: '/sammlung'
+      preLoaderRoute: typeof AuthenticatedSammlungRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/epochen/$epoche': {
       id: '/epochen/$epoche'
@@ -125,8 +189,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedSammlungRoute: typeof AuthenticatedSammlungRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedSammlungRoute: AuthenticatedSammlungRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
   QuizRoute: QuizRoute,
   EpochenEpocheRoute: EpochenEpocheRoute,
   MalerSlugRoute: MalerSlugRoute,

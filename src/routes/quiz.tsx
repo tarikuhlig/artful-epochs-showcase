@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, RotateCcw, X } from "lucide-react";
 import { allWorks } from "@/lib/art-data";
+import { useAuth } from "@/hooks/useAuth";
+import { saveQuizResult } from "@/lib/progress";
 
 export const Route = createFileRoute("/quiz")({
   head: () => ({
@@ -64,6 +66,16 @@ function QuizPage() {
   const [picked, setPicked] = useState<string | null>(null);
   const [score, setScore] = useState(0);
   const done = index >= questions.length;
+  const { user } = useAuth();
+  const savedRef = useRef(false);
+
+  useEffect(() => {
+    if (!done || !user || savedRef.current) return;
+    savedRef.current = true;
+    void saveQuizResult(user.id, score, questions.length).catch(() => {
+      savedRef.current = false;
+    });
+  }, [done, user, score, questions.length]);
 
   const question = questions[index]!;
 
@@ -84,6 +96,7 @@ function QuizPage() {
   }
 
   function restart() {
+    savedRef.current = false;
     setQuestions(buildQuestions());
     setIndex(0);
     setPicked(null);
@@ -132,10 +145,10 @@ function QuizPage() {
               Nochmal spielen
             </button>
             <Link
-              to="/"
+              to={user ? "/sammlung" : "/auth"}
               className="inline-flex items-center gap-2 rounded-md border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-accent"
             >
-              Weiterlernen
+              {user ? "Meine Sammlung" : "Ergebnis speichern"}
             </Link>
           </div>
         </div>

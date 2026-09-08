@@ -93,20 +93,20 @@ function Index() {
             height={640}
             className="w-[min(78vw,760px)] drop-shadow-[0_20px_60px_rgba(0,0,0,0.55)]"
           />
-          <p className="font-display mt-6 text-[11px] font-semibold tracking-[0.42em] text-background/70 uppercase sm:text-xs">
+          <p className="font-display mt-6 text-[11px] font-medium tracking-[0.42em] text-background/70 uppercase sm:text-xs">
             {epochs.length} Epochen · {allPainters.length} Maler · {allWorks.length} Werke
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <a
               href="#epochen"
-              className="font-display inline-flex items-center gap-2 rounded-md bg-background px-7 py-3.5 text-xs font-bold tracking-[0.18em] text-foreground uppercase transition-transform hover:-translate-y-0.5"
+              className="font-display inline-flex items-center gap-2 rounded-md bg-background px-7 py-3.5 text-xs font-medium tracking-[0.18em] text-foreground uppercase transition-transform hover:-translate-y-0.5"
             >
               Epochen entdecken
               <ArrowRight className="h-4 w-4" />
             </a>
             <Link
               to="/quiz"
-              className="font-display inline-flex items-center gap-2 rounded-md border border-background/40 px-7 py-3.5 text-xs font-bold tracking-[0.18em] text-background uppercase transition-colors hover:bg-background/10"
+              className="font-display inline-flex items-center gap-2 rounded-md border border-background/40 px-7 py-3.5 text-xs font-medium tracking-[0.18em] text-background uppercase transition-colors hover:bg-background/10"
             >
               Zum Quiz
             </Link>
@@ -116,7 +116,7 @@ function Index() {
 
       {/* Epochen */}
       <section id="epochen" className="mx-auto max-w-6xl px-6 py-24">
-        <h2 className="font-display mb-10 text-4xl font-extrabold tracking-[-0.03em] uppercase md:text-6xl">
+        <h2 className="font-display mb-10 text-4xl font-medium tracking-[-0.03em] uppercase md:text-6xl">
           Die Epochen
         </h2>
         <div className="grid gap-6 md:grid-cols-2">
@@ -140,10 +140,10 @@ function Index() {
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 p-6">
-                    <p className="font-display text-[10px] font-semibold tracking-[0.3em] text-white/80 uppercase">
+                    <p className="font-display text-[10px] font-medium tracking-[0.3em] text-white/80 uppercase">
                       {epoch.period}
                     </p>
-                    <h3 className="font-display mt-1 text-3xl font-extrabold tracking-[-0.02em] text-white uppercase">
+                    <h3 className="font-display mt-1 text-3xl font-medium tracking-[-0.02em] text-white uppercase">
                       {epoch.name}
                     </h3>
                   </div>
