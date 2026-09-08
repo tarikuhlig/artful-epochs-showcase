@@ -66,7 +66,7 @@ function DailyArtistPage() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="rounded-full px-6">
-                <Link to="/epochen/$slug" params={{ slug: painter.epoch.slug }}>
+                <Link to="/epochen/$epoche" params={{ epoche: painter.epoch.slug }}>
                   Epoche {painter.epoch.name}
                 </Link>
               </Button>
