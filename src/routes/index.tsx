@@ -181,7 +181,8 @@ function Dashboard() {
               </p>
               <h3 className="font-display mt-2 text-lg font-medium">{work.title}</h3>
               <p className="mt-1 text-sm text-muted-foreground">
-                {work.painter} {work.year ? `· ${work.year}` : ""}
+                {typeof work.painter === "string" ? work.painter : work.painter.name}{" "}
+                {work.year ? `· ${work.year}` : ""}
               </p>
             </div>
           </Link>
