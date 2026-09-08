@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check, Coins, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { useDiscoveries, useQuizResults } from "@/lib/progress";
+import { useDiscoveries } from "@/lib/progress";
 import { epochs, allPainters, allWorks } from "@/lib/art-data";
 import { useOwnedItems } from "@/lib/economy";
 
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_authenticated/sammlung")({
       {
         name: "description",
         content:
-          "Dein persönlicher Katalog: welche Maler, Epochen und Werke du schon entdeckt hast, dazu deine Quiz-Ergebnisse.",
+          "Dein persönlicher Katalog mit entdeckten und im Auktionshaus erworbenen Werken.",
       },
       { property: "og:title", content: "Meine Sammlung | Provenance" },
       {
@@ -42,7 +42,6 @@ function CollectionPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: discoveries = [] } = useDiscoveries();
-  const { data: results = [] } = useQuizResults();
   const { data: owned = [] } = useOwnedItems();
 
   const profile = useQuery({
@@ -64,11 +63,6 @@ function CollectionPage() {
       new Set(discoveries.filter((d) => d.kind === kind).map((d) => d.slug));
     return { painter: make("painter"), work: make("work"), epoch: make("epoch") };
   }, [discoveries]);
-
-  const best = results.reduce(
-    (acc, r) => (r.total > 0 && r.score / r.total > acc ? r.score / r.total : acc),
-    0,
-  );
 
   async function handleSignOut() {
     await queryClient.cancelQueries();
@@ -100,7 +94,7 @@ function CollectionPage() {
         <Stat label="Epochen" value={`${sets.epoch.size}/${epochs.length}`} />
         <Stat label="Maler" value={`${sets.painter.size}/${allPainters.length}`} />
         <Stat label="Werke" value={`${sets.work.size}/${allWorks.length}`} />
-        <Stat label="Bestes Quiz" value={best ? `${Math.round(best * 100)}%` : "—"} />
+        <Stat label="Ankäufe" value={`${owned.length}`} />
       </div>
 
       <section className="mt-16 border-y border-border py-12">
@@ -173,27 +167,6 @@ function CollectionPage() {
         })}
       </div>
 
-      <h2 className="font-display mt-14 mb-4 text-2xl font-medium">Quiz-Ergebnisse</h2>
-      {results.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          Noch keine Ergebnisse —{" "}
-          <Link to="/quiz" className="underline underline-offset-4">
-            Quiz starten
-          </Link>
-          .
-        </p>
-      ) : (
-        <ul className="divide-y divide-border rounded-md border border-border">
-          {results.map((r) => (
-            <li key={r.id} className="flex items-center justify-between px-4 py-3 text-sm">
-              <span>{new Date(r.created_at).toLocaleDateString("de-DE")}</span>
-              <span className="font-medium">
-                {r.score} / {r.total}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 }

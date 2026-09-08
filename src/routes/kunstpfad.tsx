@@ -1,12 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check, ChevronRight, Coins, Lock, MapPin } from "lucide-react";
+import { Check, ChevronRight, Coins, Lock, MapPin, X } from "lucide-react";
 import { artPathWithWorks, totalArtPathCoins } from "@/lib/art-path";
 import { useArtPathProgress } from "@/lib/economy";
 import { completePathStation } from "@/lib/economy.functions";
 import { useAuth } from "@/hooks/useAuth";
 import { useInvalidateFarm } from "@/lib/farm";
 import coin from "@/assets/provenance-coin.png";
+import { artPathQuizzes } from "@/lib/art-path-quiz";
 
 export const Route = createFileRoute("/kunstpfad")({
   head: () => ({ meta: [
@@ -26,14 +27,22 @@ function ArtPathPage() {
   const invalidateFarm = useInvalidateFarm();
   const [busy, setBusy] = useState<number | null>(null);
   const [error, setError] = useState("");
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [feedback, setFeedback] = useState<Record<number, "correct" | "wrong">>({});
   const completed = new Set(progress.map((entry) => entry.station_index));
   const next = progress.length;
 
-  async function finish(index: number) {
+  async function finish(index: number, answer: string) {
     if (!user) { void navigate({ to: "/auth" }); return; }
+    const quiz = artPathQuizzes[index];
+    if (!quiz || answer !== quiz.answer) {
+      setFeedback((current) => ({ ...current, [index]: "wrong" }));
+      return;
+    }
     setBusy(index); setError("");
     try {
-      await completePathStation({ data: { station: index } });
+      await completePathStation({ data: { station: index, answer } });
+      setFeedback((current) => ({ ...current, [index]: "correct" }));
       await refetch(); invalidateFarm();
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Die Station konnte nicht abgeschlossen werden.");
@@ -41,7 +50,7 @@ function ArtPathPage() {
   }
 
   return <div className="min-h-screen bg-background">
-    <section className="border-b border-border bg-path-sky">
+    <section className="border-b border-border bg-background">
       <div className="mx-auto max-w-6xl px-5 py-14 sm:px-6 md:py-20">
         <p className="text-xs tracking-[0.25em] text-muted-foreground uppercase">Die große Reise</p>
         <h1 className="font-display mt-3 max-w-3xl text-4xl font-medium md:text-6xl">Vom Spiegel zur reinen Farbe</h1>
@@ -57,6 +66,7 @@ function ArtPathPage() {
       <ol className="relative space-y-8 before:absolute before:top-6 before:bottom-6 before:left-6 before:w-px before:bg-border sm:before:left-10">
         {artPathWithWorks.map((station) => {
           const done = completed.has(station.index); const unlocked = done || station.index === next; const work = station.work;
+          const quiz = artPathQuizzes[station.index]; const selected = answers[station.index] ?? ""; const result = feedback[station.index];
           return <li key={station.index} className="relative pl-16 sm:pl-24">
             <span className={`absolute left-0 flex h-12 w-12 items-center justify-center rounded-full border sm:left-4 ${done ? "border-primary bg-primary text-primary-foreground" : unlocked ? "border-coin bg-background text-coin" : "border-border bg-muted text-muted-foreground"}`}>
               {done ? <Check className="h-5 w-5" /> : unlocked ? station.index + 1 : <Lock className="h-4 w-4" />}
@@ -72,8 +82,8 @@ function ArtPathPage() {
                   {unlocked && <p className="mt-3 text-sm"><span className="font-medium">Der Wendepunkt:</span> {station.turningPoint}</p>}
                   <div className="mt-5 flex flex-wrap gap-2">
                     <Link to="/werke/$id" params={{ id: work.id }} className="inline-flex items-center gap-2 rounded-full border border-input px-4 py-2 text-sm hover:bg-accent">Werk lernen <ChevronRight className="h-4 w-4" /></Link>
-                    {!done && unlocked && <button type="button" disabled={busy === station.index} onClick={() => finish(station.index)} className="rounded-full bg-primary px-4 py-2 text-sm text-primary-foreground disabled:opacity-50">{user ? (busy === station.index ? "Wird gespeichert …" : "Station abschließen") : "Anmelden & starten"}</button>}
                   </div>
+                   {!done && unlocked && quiz && <div className="mt-6 border-t border-border pt-5"><p className="text-[10px] tracking-[0.24em] text-muted-foreground uppercase">Prüfung zum Freischalten</p><h3 className="mt-2 text-base font-medium">{quiz.question}</h3><div className="mt-3 grid gap-2">{quiz.options.map((option) => <button key={option} type="button" onClick={() => { setAnswers((current) => ({ ...current, [station.index]: option })); setFeedback((current) => { const copy = { ...current }; delete copy[station.index]; return copy; }); }} className={`rounded-lg border px-4 py-3 text-left text-sm transition-colors ${selected === option ? "border-coin bg-coin-soft" : "border-border bg-background hover:bg-accent"}`}>{option}</button>)}</div>{result === "wrong" && <p className="mt-3 flex items-center gap-2 text-sm text-destructive"><X className="h-4 w-4" />Noch nicht richtig – lies den Wendepunkt noch einmal.</p>}<button type="button" disabled={!selected || busy === station.index} onClick={() => finish(station.index, selected)} className="mt-4 rounded-full bg-primary px-5 py-2.5 text-sm text-primary-foreground disabled:opacity-40">{user ? (busy === station.index ? "Wird geprüft …" : "Antwort prüfen") : "Anmelden & antworten"}</button></div>}
                 </div>
               </div>}
             </article>

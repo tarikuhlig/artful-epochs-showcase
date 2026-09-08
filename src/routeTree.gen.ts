@@ -12,10 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as GlobusRouteImport } from './routes/globus'
 import { Route as KatalogRouteImport } from './routes/katalog'
 import { Route as KunstpfadRouteImport } from './routes/kunstpfad'
-import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as AuthenticatedAtelierRouteImport } from './routes/_authenticated/atelier'
 import { Route as AuthenticatedAuktionshausRouteImport } from './routes/_authenticated/auktionshaus'
 import { Route as AuthenticatedSammlungRouteImport } from './routes/_authenticated/sammlung'
@@ -43,11 +41,6 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GlobusRoute = GlobusRouteImport.update({
-  id: '/globus',
-  path: '/globus',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const KatalogRoute = KatalogRouteImport.update({
   id: '/katalog',
   path: '/katalog',
@@ -56,11 +49,6 @@ const KatalogRoute = KatalogRouteImport.update({
 const KunstpfadRoute = KunstpfadRouteImport.update({
   id: '/kunstpfad',
   path: '/kunstpfad',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const QuizRoute = QuizRouteImport.update({
-  id: '/quiz',
-  path: '/quiz',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAtelierRoute = AuthenticatedAtelierRouteImport.update({
@@ -128,10 +116,8 @@ const WerkeIdRoute = WerkeIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/globus': typeof GlobusRoute
   '/katalog': typeof KatalogRoute
   '/kunstpfad': typeof KunstpfadRoute
-  '/quiz': typeof QuizRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/auktionshaus': typeof AuthenticatedAuktionshausRoute
   '/sammlung': typeof AuthenticatedSammlungRoute
@@ -148,10 +134,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/globus': typeof GlobusRoute
   '/katalog': typeof KatalogRoute
   '/kunstpfad': typeof KunstpfadRoute
-  '/quiz': typeof QuizRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/auktionshaus': typeof AuthenticatedAuktionshausRoute
   '/sammlung': typeof AuthenticatedSammlungRoute
@@ -170,10 +154,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
-  '/globus': typeof GlobusRoute
   '/katalog': typeof KatalogRoute
   '/kunstpfad': typeof KunstpfadRoute
-  '/quiz': typeof QuizRoute
   '/_authenticated/atelier': typeof AuthenticatedAtelierRoute
   '/_authenticated/auktionshaus': typeof AuthenticatedAuktionshausRoute
   '/_authenticated/sammlung': typeof AuthenticatedSammlungRoute
@@ -192,10 +174,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
-    | '/globus'
     | '/katalog'
     | '/kunstpfad'
-    | '/quiz'
     | '/atelier'
     | '/auktionshaus'
     | '/sammlung'
@@ -212,10 +192,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
-    | '/globus'
     | '/katalog'
     | '/kunstpfad'
-    | '/quiz'
     | '/atelier'
     | '/auktionshaus'
     | '/sammlung'
@@ -233,10 +211,8 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
-    | '/globus'
     | '/katalog'
     | '/kunstpfad'
-    | '/quiz'
     | '/_authenticated/atelier'
     | '/_authenticated/auktionshaus'
     | '/_authenticated/sammlung'
@@ -255,10 +231,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
-  GlobusRoute: typeof GlobusRoute
   KatalogRoute: typeof KatalogRoute
   KunstpfadRoute: typeof KunstpfadRoute
-  QuizRoute: typeof QuizRoute
   EpochenEpocheRoute: typeof EpochenEpocheRoute
   MalerSlugRoute: typeof MalerSlugRoute
   MuseenSlugRoute: typeof MuseenSlugRoute
@@ -293,13 +267,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/globus': {
-      id: '/globus'
-      path: '/globus'
-      fullPath: '/globus'
-      preLoaderRoute: typeof GlobusRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/katalog': {
       id: '/katalog'
       path: '/katalog'
@@ -312,13 +279,6 @@ declare module '@tanstack/react-router' {
       path: '/kunstpfad'
       fullPath: '/kunstpfad'
       preLoaderRoute: typeof KunstpfadRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/quiz': {
-      id: '/quiz'
-      path: '/quiz'
-      fullPath: '/quiz'
-      preLoaderRoute: typeof QuizRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/atelier': {
@@ -427,10 +387,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
-  GlobusRoute: GlobusRoute,
   KatalogRoute: KatalogRoute,
   KunstpfadRoute: KunstpfadRoute,
-  QuizRoute: QuizRoute,
   EpochenEpocheRoute: EpochenEpocheRoute,
   MalerSlugRoute: MalerSlugRoute,
   MuseenSlugRoute: MuseenSlugRoute,

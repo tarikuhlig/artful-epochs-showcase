@@ -24,7 +24,7 @@ export const Route = createFileRoute("/stadt/$slug")({
     const title = city ? `${city.city}: Museen & Kunstreisen | Provenance` : "Stadt nicht gefunden | Provenance";
     const description = city
       ? `${city.city} für Kunstreisende: ${city.museums.length} Museen, aktuelle Besuchsinfos, Ausstellungen und eine kuratierte Tagesroute.`
-      : "Kunststädte auf dem Provenance-Globus entdecken.";
+      : "Kunststädte, Museen und ihre wichtigsten Sammlungen entdecken.";
     return {
       meta: [
         { title },
@@ -46,8 +46,8 @@ function CityPage() {
     <div>
       <section className="border-b border-border">
         <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 md:py-16">
-          <Link to="/globus" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="h-4 w-4" /> Zurück zum Globus
+          <Link to="/museen" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+            <ArrowLeft className="h-4 w-4" /> Zurück zu den Museen
           </Link>
           <p className="mt-8 text-[11px] tracking-[0.28em] text-muted-foreground uppercase">{city.country}</p>
           <h1 className="font-display mt-2 text-4xl font-medium sm:text-5xl md:text-6xl">Kunststadt {city.city}</h1>

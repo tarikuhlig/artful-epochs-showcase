@@ -106,7 +106,7 @@
 
 :root {
   --radius: 0.75rem;
-  --background: oklch(0.99 0.003 95);
+  --background: oklch(1 0 0);
   --foreground: oklch(0.18 0.015 70);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.18 0.015 70);
@@ -125,11 +125,11 @@
   --border: oklch(0.915 0.006 90);
   --input: oklch(0.915 0.006 90);
   --ring: oklch(0.6 0.03 70);
-  --coin: oklch(0.58 0.105 79);
-  --coin-soft: oklch(0.96 0.035 88);
-  --path-sky: oklch(0.965 0.035 225);
-  --path-coral: oklch(0.94 0.055 25);
-  --path-leaf: oklch(0.95 0.045 145);
+  --coin: oklch(0.66 0.095 255);
+  --coin-soft: oklch(0.97 0.025 250);
+  --path-sky: oklch(0.985 0.014 235);
+  --path-coral: oklch(0.98 0.018 25);
+  --path-leaf: oklch(0.985 0.016 145);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -189,18 +189,6 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
-}
-
-/* Globus (alte Karte) */
-:root {
-  --globe-ocean-light: oklch(0.94 0.03 85);
-  --globe-ocean: oklch(0.88 0.045 80);
-  --globe-ocean-deep: oklch(0.78 0.055 72);
-  --globe-land: oklch(0.83 0.06 96);
-  --globe-ink: oklch(0.35 0.04 60);
-  --globe-ring: oklch(0.55 0.07 70);
-  --globe-marker: oklch(0.45 0.24 265);
-  --globe-marker-ring: oklch(0.99 0.003 95);
 }
 
 /* Atelier-Objekte auf der Startseite */

@@ -1,13 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
-import { ArrowRight, BookOpen, Coins, Flame, Globe2, Landmark, Layers, Sparkles, Trophy } from "lucide-react";
+import { ArrowRight, BookOpen, Coins, Flame, Landmark, Layers, Sparkles, Trophy } from "lucide-react";
 import { IntroTunnel } from "@/components/IntroTunnel";
 import { TitleGate } from "@/components/TitleGate";
 import { epochs, allPainters, allWorks } from "@/lib/art-data";
 import { journeys } from "@/lib/journeys";
 import { museums } from "@/lib/museums";
 import { useAuth } from "@/hooks/useAuth";
-import { useDiscoveries, useQuizResults } from "@/lib/progress";
+import { useDiscoveries } from "@/lib/progress";
 import {
   POINTS_PER_DISCOVERY,
   levelFor,
@@ -59,7 +59,6 @@ function Dashboard() {
 
   const { data: stats } = useUserStats();
   const { data: discoveries } = useDiscoveries();
-  const { data: quiz } = useQuizResults();
   const { data: journeyProgress } = useJourneyProgress();
 
   const list = discoveries ?? [];
@@ -68,10 +67,6 @@ function Dashboard() {
   const lvl = levelFor(totalPoints);
   const work = workOfTheDay();
   const dailyHighlights = Array.from({ length: 3 }, (_, offset) => allWorks[(allWorks.indexOf(work) + offset * 19) % allWorks.length]).filter(Boolean);
-  const bestQuiz = (quiz ?? []).reduce(
-    (best, q) => (q.total && q.score / q.total > best ? q.score / q.total : best),
-    0,
-  );
   const name =
     (user?.user_metadata?.["display_name"] as string | undefined) ??
     user?.email?.split("@")[0] ??
@@ -82,7 +77,7 @@ function Dashboard() {
       {stage === "title" && <TitleGate onDone={() => setStage("intro")} />}
       {stage === "intro" && <IntroTunnel onDone={finishIntro} />}
 
-      <section className="border-b border-border bg-path-sky">
+      <section className="border-b border-border bg-background">
         <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
           <p className="font-display text-[11px] tracking-[0.35em] text-muted-foreground uppercase">
             Dashboard
@@ -141,8 +136,8 @@ function Dashboard() {
             />
             <Stat
               icon={<Layers className="h-4 w-4" />}
-              label="Bestes Quiz"
-              value={user && bestQuiz ? `${Math.round(bestQuiz * 100)} %` : "—"}
+              label="Kunstpfad"
+              value={`${artPathWithWorks.length} Stationen`}
             />
           </div>
         </div>
@@ -176,12 +171,7 @@ function Dashboard() {
               >
                 Meine Sammlung
               </Link>
-              <Link
-                to="/quiz"
-                className="rounded-full border border-input px-5 py-2.5 transition-colors hover:bg-accent"
-              >
-                Quiz spielen
-              </Link>
+              <Link to="/kunstpfad" className="rounded-full border border-input px-5 py-2.5 transition-colors hover:bg-accent">Nächste Station</Link>
             </div>
           </div>
 
@@ -202,7 +192,7 @@ function Dashboard() {
           />
           <StartCard
             to="/kunstpfad"
-            icon={<Globe2 className="h-5 w-5" />}
+            icon={<Sparkles className="h-5 w-5" />}
             title="Großer Kunstpfad"
             text={`${artPathWithWorks.length} Stationen, Schritt für Schritt — mit Provenance Coins.`}
           />
@@ -213,10 +203,10 @@ function Dashboard() {
             text={`${museums.length} Häuser, ihre Geschichten und wichtigsten Werke.`}
           />
           <StartCard
-            to="/quiz"
-            icon={<Sparkles className="h-5 w-5" />}
-            title="Quiz"
-            text="Teste, was hängen geblieben ist — und sammle Punkte."
+            to="/auktionshaus"
+            icon={<Coins className="h-5 w-5" />}
+            title="Auktionshaus"
+            text="Täglich wechselnde Werke für deine private Sammlung."
           />
         </div>
       </section>
@@ -292,7 +282,7 @@ function StartCard({
   title,
   text,
 }: {
-  to: "/epochen" | "/kunstpfad" | "/museen" | "/quiz";
+  to: "/epochen" | "/kunstpfad" | "/museen" | "/auktionshaus";
   icon: React.ReactNode;
   title: string;
   text: string;

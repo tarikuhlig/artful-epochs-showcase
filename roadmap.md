@@ -19,3 +19,5 @@
 - [x] Globus vom Museumsmodus zur überdimensionalen Abenteuer-Reiseroute mit Weltpfad umbauen
 - [x] Dashboard farbiger und bildstärker mit mehreren Highlights und täglichen Lerntipps gestalten
 - [x] Navigation aufräumen und Museen als eigenen Lernbereich stärker einbinden
+- [x] Globus und separates Quiz entfernen; Stationsquiz als Freischaltung in den Kunstpfad integrieren
+- [x] Auktionshaus in die Hauptnavigation aufnehmen und Coins pastellfarben neu gestalten
