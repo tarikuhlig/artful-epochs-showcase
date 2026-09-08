@@ -60,6 +60,7 @@ import img_blaues_pferd from "@/assets/art/blaues-pferd.jpg";
 import img_blaue_pferde from "@/assets/art/die-grossen-blauen-pferde.jpg";
 
 import { extraEpochs, extraPainters, extraStyles, extraWorks } from "./art-catalog-extra";
+import { extraPainters2, extraStyles2, extraWorks2 } from "./art-catalog-extra2";
 
 export type WorkData = {
   id: string;
@@ -1557,15 +1558,18 @@ export type Work = Omit<WorkData, "painter"> & { painter: Painter; epoch: Epoch 
 export type Epoch = EpochData & { painters: Painter[] };
 
 export const epochData: EpochData[] = [...baseEpochData, ...extraEpochs];
-export const styles: Style[] = [...baseStyles, ...extraStyles];
-export const painterData: PainterData[] = [
-  ...basePainterData,
-  ...extraPainters.filter((p) => !basePainterData.some((b) => b.slug === p.slug)),
-];
-export const workData: WorkData[] = [
-  ...baseWorkData,
-  ...extraWorks.filter((w) => !baseWorkData.some((b) => b.id === w.id)),
-];
+const allStyleCandidates: Style[] = [...baseStyles, ...extraStyles, ...extraStyles2];
+export const styles: Style[] = allStyleCandidates.filter(
+  (s, i) => allStyleCandidates.findIndex((o) => o.slug === s.slug) === i,
+);
+const painterCandidates: PainterData[] = [...basePainterData, ...extraPainters, ...extraPainters2];
+export const painterData: PainterData[] = painterCandidates.filter(
+  (p, i) => painterCandidates.findIndex((o) => o.slug === p.slug) === i,
+);
+const workCandidates: WorkData[] = [...baseWorkData, ...extraWorks, ...extraWorks2];
+export const workData: WorkData[] = workCandidates.filter(
+  (w, i) => workCandidates.findIndex((o) => o.id === w.id) === i,
+);
 
 const painters: Painter[] = painterData.map((p) => ({
   ...p,
