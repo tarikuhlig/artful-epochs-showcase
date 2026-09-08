@@ -1,10 +1,13 @@
-import { useMemo, useState } from "react";
+import { Suspense, lazy, useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Compass, Search } from "lucide-react";
-import { OldGlobe, type GlobeMarker } from "@/components/OldGlobe";
+import { ArrowRight, Clock, Compass, ExternalLink, Lightbulb, MapPin, Search } from "lucide-react";
+import type { GlobeMarker } from "@/components/Globe3D";
 import { cities } from "@/lib/museums";
+import { getVisitInfo } from "@/lib/museum-info";
+import { buildCityTour, formatDuration, journeyForCity } from "@/lib/city-tours";
 import { allWorks, epochData, styles } from "@/lib/art-data";
-import { journeys } from "@/lib/journeys";
+
+const Globe3D = lazy(() => import("@/components/Globe3D").then((m) => ({ default: m.Globe3D })));
 
 export const Route = createFileRoute("/globus")({
   head: () => ({
@@ -13,12 +16,12 @@ export const Route = createFileRoute("/globus")({
       {
         name: "description",
         content:
-          "Dreh den alten Globus, wähle eine Stadt und bereise ihre Museen: Werke, Häuser und Kunstreisen von Florenz bis New York.",
+          "Dreh die 3D-Weltkugel, wähle eine Stadt und plane deinen Kunsttag: echte Museen mit Öffnungszeiten, Besuchstipps und Kunstreisen von Florenz bis New York.",
       },
       { property: "og:title", content: "Globus — die Kunst der Welt bereisen | Provenance" },
       {
         property: "og:description",
-        content: "Interaktiver Globus mit Museen, Meisterwerken und geführten Kunstreisen.",
+        content: "3D-Globus mit Museen, Öffnungszeiten, Besuchstipps und geführten Kunstreisen.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -27,21 +30,14 @@ export const Route = createFileRoute("/globus")({
   component: GlobusPage,
 });
 
-/** Stadt -> passende Kunstreise */
-const JOURNEY_BY_CITY: Record<string, string> = {
-  Florenz: "florenz-der-medici",
-  Amsterdam: "amsterdam-goldenes-zeitalter",
-  Paris: "paris-1874",
-  München: "wege-in-die-abstraktion",
-  "New York": "new-yorker-schule",
-  Köln: "nachkriegsmalerei",
-};
-
 function GlobusPage() {
   const [selected, setSelected] = useState<string | null>("Paris");
   const [query, setQuery] = useState("");
   const [epoch, setEpoch] = useState<string | null>(null);
   const [style, setStyle] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   const markers: GlobeMarker[] = useMemo(
     () =>
@@ -57,8 +53,8 @@ function GlobusPage() {
   );
 
   const city = cities.find((c) => c.city === selected) ?? null;
-  const journeySlug = city ? JOURNEY_BY_CITY[city.city] : undefined;
-  const journey = journeys.find((j) => j.slug === journeySlug);
+  const tour = city ? buildCityTour(city) : null;
+  const journey = city ? journeyForCity(city.city) : undefined;
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -79,32 +75,62 @@ function GlobusPage() {
 
   return (
     <div>
-      {/* Globus */}
-      <section className="mx-auto max-w-6xl px-6 pt-14 pb-8 md:pt-20">
-        <p className="text-xs tracking-[0.25em] text-muted-foreground uppercase">Kunstreisen</p>
-        <h1 className="font-display mt-3 text-4xl font-medium tracking-tight md:text-5xl">
+      <section className="mx-auto max-w-6xl px-4 pt-10 pb-8 sm:px-6 md:pt-20">
+        <p className="text-[11px] tracking-[0.25em] text-muted-foreground uppercase">Kunstreisen</p>
+        <h1 className="font-display mt-3 text-3xl font-medium tracking-tight sm:text-4xl md:text-5xl">
           Die Welt der Kunst bereisen
         </h1>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
-          Dreh den Globus, wähle eine Stadt und geh in ihre Museen. {cities.length} Städte,{" "}
+        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          Dreh die Kugel mit dem Finger, stoß sie an und zoome hinein. {cities.length} Städte,{" "}
           {cities.reduce((n, c) => n + c.museums.length, 0)} Häuser, {allWorks.length} Werke.
         </p>
 
-        <div className="mt-10 grid items-start gap-10 lg:grid-cols-5">
-          <div className="lg:col-span-3">
-            <OldGlobe markers={markers} selectedId={selected} onSelect={setSelected} />
+        <div className="mt-8 grid items-start gap-8 md:mt-10 lg:grid-cols-5 lg:gap-10">
+          <div className="min-w-0 lg:col-span-3">
+            <div className="mx-auto w-full max-w-[520px] min-w-0 lg:max-w-none">
+              {mounted ? (
+                <Suspense fallback={<GlobePlaceholder />}>
+                  <Globe3D markers={markers} selectedId={selected} onSelect={setSelected} />
+                </Suspense>
+              ) : (
+                <GlobePlaceholder />
+              )}
+            </div>
+
+            <div className="mt-4 flex snap-x gap-2 overflow-x-auto pb-2 lg:flex-wrap lg:overflow-visible">
+              {cities.slice(0, 10).map((c) => (
+                <button
+                  key={c.city}
+                  onClick={() => setSelected(c.city)}
+                  className={
+                    "shrink-0 snap-start rounded-full border px-4 py-2 text-sm transition-colors " +
+                    (selected === c.city
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-input text-muted-foreground hover:bg-accent hover:text-foreground")
+                  }
+                >
+                  {c.city}
+                </button>
+              ))}
+              <Link
+                to="/museen"
+                className="shrink-0 rounded-full border border-input px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              >
+                Alle Museen
+              </Link>
+            </div>
           </div>
 
           <aside className="lg:col-span-2">
-            {city ? (
-              <div className="rounded-2xl border border-border bg-card p-6">
+            {city && tour ? (
+              <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
                 <p className="text-[11px] tracking-[0.3em] text-muted-foreground uppercase">
                   {city.country}
                 </p>
-                <h2 className="font-display mt-1 text-3xl font-medium">{city.city}</h2>
+                <h2 className="font-display mt-1 text-2xl font-medium sm:text-3xl">{city.city}</h2>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {city.museums.length} {city.museums.length === 1 ? "Haus" : "Häuser"} ·{" "}
-                  {city.workCount} Werke
+                  {city.workCount} Werke · {formatDuration(tour.totalMinutes)} Besuchszeit
                 </p>
 
                 {journey && (
@@ -123,33 +149,104 @@ function GlobusPage() {
                   </Link>
                 )}
 
+                {/* Karte: Kunstreise durch die gewählte Stadt */}
+                <div className="mt-5 rounded-xl border border-border bg-background p-4 sm:p-5">
+                  <h3 className="font-display text-lg font-medium">{tour.title}</h3>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                    {tour.summary}
+                  </p>
+
+                  <ol className="mt-4 space-y-4">
+                    {tour.stops.map((s) => {
+                      const info = getVisitInfo(s.museum.slug);
+                      return (
+                        <li key={s.museum.slug} className="border-l border-border pl-4">
+                          <p className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase">
+                            {s.slot} · {formatDuration(s.minutes)}
+                          </p>
+                          <Link
+                            to="/museen/$slug"
+                            params={{ slug: s.museum.slug }}
+                            className="font-display mt-0.5 block text-base hover:underline"
+                          >
+                            {s.museum.name}
+                          </Link>
+                          {s.hours && (
+                            <p className="mt-1 flex items-start gap-1.5 text-xs text-muted-foreground">
+                              <Clock className="mt-0.5 h-3 w-3 shrink-0" />
+                              <span>
+                                {s.hours}
+                                {info?.closed && info.closed !== "keine"
+                                  ? ` · geschlossen: ${info.closed}`
+                                  : ""}
+                              </span>
+                            </p>
+                          )}
+                          {s.highlight && (
+                            <p className="mt-1 text-xs text-muted-foreground">
+                              Nicht verpassen:{" "}
+                              <Link
+                                to="/werke/$id"
+                                params={{ id: s.highlight.id }}
+                                className="text-foreground hover:underline"
+                              >
+                                {s.highlight.title}
+                              </Link>{" "}
+                              ({s.highlight.painter})
+                            </p>
+                          )}
+                          {s.tip && (
+                            <p className="mt-1 flex items-start gap-1.5 text-xs text-muted-foreground">
+                              <Lightbulb className="mt-0.5 h-3 w-3 shrink-0" />
+                              <span>{s.tip}</span>
+                            </p>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ol>
+
+                  {city.museums.length > tour.stops.length && (
+                    <p className="mt-4 text-xs text-muted-foreground">
+                      + {city.museums.length - tour.stops.length} weitere Häuser in {city.city}
+                    </p>
+                  )}
+                  <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
+                    Öffnungszeiten redaktionell gepflegt — an Feiertagen weichen sie ab, bitte vor
+                    dem Besuch auf der Museumsseite prüfen.
+                  </p>
+                </div>
+
                 <div className="mt-5 space-y-2">
-                  {city.museums.map((m) => (
-                    <Link
-                      key={m.slug}
-                      to="/museen/$slug"
-                      params={{ slug: m.slug }}
-                      className="group flex items-center gap-4 rounded-xl border border-transparent p-3 transition-colors hover:border-border hover:bg-accent"
-                    >
-                      <span className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted">
-                        {m.works[0] && (
-                          <img
-                            src={m.works[0].image}
-                            alt=""
-                            loading="lazy"
-                            className="h-full w-full object-cover"
-                          />
-                        )}
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="font-display block truncate text-base">{m.name}</span>
-                        <span className="block text-xs text-muted-foreground">
-                          {m.works.length} {m.works.length === 1 ? "Werk" : "Werke"}
+                  {city.museums.map((m) => {
+                    const info = getVisitInfo(m.slug);
+                    return (
+                      <Link
+                        key={m.slug}
+                        to="/museen/$slug"
+                        params={{ slug: m.slug }}
+                        className="group flex items-center gap-4 rounded-xl border border-transparent p-3 transition-colors hover:border-border hover:bg-accent"
+                      >
+                        <span className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted">
+                          {m.works[0] && (
+                            <img
+                              src={m.works[0].image}
+                              alt=""
+                              loading="lazy"
+                              className="h-full w-full object-cover"
+                            />
+                          )}
                         </span>
-                      </span>
-                      <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1" />
-                    </Link>
-                  ))}
+                        <span className="min-w-0 flex-1">
+                          <span className="font-display block truncate text-base">{m.name}</span>
+                          <span className="block truncate text-xs text-muted-foreground">
+                            {info?.hours ?? `${m.works.length} Werke`}
+                          </span>
+                        </span>
+                        <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1" />
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
             ) : (
@@ -157,37 +254,14 @@ function GlobusPage() {
                 Wähle einen Punkt auf dem Globus.
               </div>
             )}
-
-            <div className="mt-4 flex flex-wrap gap-2">
-              {cities.slice(0, 8).map((c) => (
-                <button
-                  key={c.city}
-                  onClick={() => setSelected(c.city)}
-                  className={
-                    "rounded-full border px-4 py-1.5 text-sm transition-colors " +
-                    (selected === c.city
-                      ? "border-foreground bg-foreground text-background"
-                      : "border-input text-muted-foreground hover:bg-accent hover:text-foreground")
-                  }
-                >
-                  {c.city}
-                </button>
-              ))}
-              <Link
-                to="/museen"
-                className="rounded-full border border-input px-4 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                Alle Museen
-              </Link>
-            </div>
           </aside>
         </div>
       </section>
 
       {/* Suche */}
       <section className="border-t border-border">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-display text-2xl font-medium tracking-tight md:text-3xl">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          <h2 className="font-display text-xl font-medium tracking-tight sm:text-2xl md:text-3xl">
             Gezielt suchen
           </h2>
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
@@ -200,7 +274,7 @@ function GlobusPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="z. B. Vermeer, Jugendstil, Prado …"
-              className="w-full rounded-full border border-input bg-background py-3 pr-4 pl-11 text-sm outline-none focus:border-foreground/40"
+              className="w-full rounded-full border border-input bg-background py-3 pr-4 pl-11 text-base outline-none focus:border-foreground/40 sm:text-sm"
             />
           </div>
 
@@ -236,8 +310,8 @@ function GlobusPage() {
           </div>
 
           {style && (
-            <div className="mt-8 rounded-xl border border-border bg-muted/40 p-6">
-              <h3 className="font-display text-xl font-medium">
+            <div className="mt-8 rounded-xl border border-border bg-muted/40 p-5 sm:p-6">
+              <h3 className="font-display text-lg font-medium sm:text-xl">
                 {styles.find((s) => s.slug === style)?.name}
               </h3>
               <p className="mt-1 text-xs tracking-widest text-muted-foreground uppercase">
@@ -252,7 +326,7 @@ function GlobusPage() {
           {(query || epoch || style) && (
             <>
               <p className="mt-10 text-sm text-muted-foreground">{results.length} Treffer</p>
-              <div className="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-4 grid gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
                 {results.map((w) => (
                   <Link
                     key={w.id}
@@ -273,7 +347,10 @@ function GlobusPage() {
                         {w.painter.name} · {w.year}
                       </p>
                       <h3 className="font-display mt-1 text-lg font-medium">{w.title}</h3>
-                      <p className="mt-2 text-xs text-muted-foreground">{w.museum}</p>
+                      <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <MapPin className="h-3 w-3" />
+                        {w.museum}
+                      </p>
                     </div>
                   </Link>
                 ))}
@@ -282,6 +359,16 @@ function GlobusPage() {
           )}
         </div>
       </section>
+    </div>
+  );
+}
+
+function GlobePlaceholder() {
+  return (
+    <div className="flex aspect-square w-full items-center justify-center rounded-full border border-border bg-muted/30">
+      <span className="flex items-center gap-2 text-xs tracking-[0.2em] text-muted-foreground uppercase">
+        <ExternalLink className="h-3 w-3" /> Globus wird geladen
+      </span>
     </div>
   );
 }
@@ -299,7 +386,7 @@ function Chip({
     <button
       onClick={onClick}
       className={
-        "rounded-full border px-4 py-1.5 text-sm transition-colors " +
+        "rounded-full border px-4 py-2 text-sm transition-colors " +
         (active
           ? "border-foreground bg-foreground text-background"
           : "border-input text-muted-foreground hover:bg-accent hover:text-foreground")

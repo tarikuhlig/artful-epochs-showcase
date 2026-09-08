@@ -7,7 +7,8 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { Menu, X } from "lucide-react";
 
 import appCss from "../styles.css?url";
 import provenanceLogo from "../assets/provenance-logo.png";
@@ -126,61 +127,52 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+const NAV: { to: "/" | "/globus" | "/museen" | "/reisen" | "/quiz"; label: string; exact?: boolean }[] = [
+  { to: "/", label: "Epochen", exact: true },
+  { to: "/globus", label: "Globus" },
+  { to: "/museen", label: "Museen" },
+  { to: "/reisen", label: "Kunstreisen" },
+  { to: "/quiz", label: "Quiz" },
+];
+
 function SiteHeader() {
   const { user } = useAuth();
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    return router.subscribe("onResolved", () => setOpen(false));
+  }, [router]);
+
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:h-16 sm:px-6">
         <Link to="/" className="flex items-center">
           <img
             src={provenanceLogo}
             alt="Provenance"
             width={1920}
             height={640}
-            className="h-9 w-auto"
+            className="h-8 w-auto sm:h-9"
           />
         </Link>
-        <nav className="flex items-center gap-1 text-sm font-medium">
-          <Link
-            to="/"
-            activeOptions={{ exact: true }}
-            className="hidden rounded-full px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:inline-flex"
-            activeProps={{ className: "bg-accent text-foreground" }}
-          >
-            Epochen
-          </Link>
-          <Link
-            to="/globus"
-            className="hidden rounded-full px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:inline-flex"
-            activeProps={{ className: "bg-accent text-foreground" }}
-          >
-            Globus
-          </Link>
-          <Link
-            to="/museen"
-            className="hidden rounded-full px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:inline-flex"
-            activeProps={{ className: "bg-accent text-foreground" }}
-          >
-            Museen
-          </Link>
-          <Link
-            to="/reisen"
-            className="hidden rounded-full px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:inline-flex"
-            activeProps={{ className: "bg-accent text-foreground" }}
-          >
-            Kunstreisen
-          </Link>
-          <Link
-            to="/quiz"
-            className="rounded-full px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-            activeProps={{ className: "bg-accent text-foreground" }}
-          >
-            Quiz
-          </Link>
+
+        <nav className="hidden items-center gap-1 text-sm font-medium md:flex">
+          {NAV.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              activeOptions={{ exact: item.exact ?? false }}
+              className="rounded-full px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              activeProps={{ className: "bg-accent text-foreground" }}
+            >
+              {item.label}
+            </Link>
+          ))}
           {user ? (
             <Link
               to="/atelier"
-              className="rounded-full border border-input px-4 py-2 text-foreground transition-colors hover:bg-accent"
+              className="ml-1 rounded-full border border-input px-4 py-2 text-foreground transition-colors hover:bg-accent"
               activeProps={{ className: "bg-accent" }}
             >
               Mein Atelier
@@ -188,16 +180,51 @@ function SiteHeader() {
           ) : (
             <Link
               to="/auth"
-              className="rounded-full bg-primary px-4 py-2 text-primary-foreground transition-opacity hover:opacity-90"
+              className="ml-1 rounded-full bg-primary px-4 py-2 text-primary-foreground transition-opacity hover:opacity-90"
             >
               Anmelden
             </Link>
           )}
         </nav>
+
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-label={open ? "Menü schließen" : "Menü öffnen"}
+          aria-expanded={open}
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-input text-foreground transition-colors hover:bg-accent md:hidden"
+        >
+          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
       </div>
+
+      {open && (
+        <nav className="border-t border-border bg-background px-4 pt-2 pb-4 text-base md:hidden">
+          {NAV.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              activeOptions={{ exact: item.exact ?? false }}
+              onClick={() => setOpen(false)}
+              className="block rounded-xl px-4 py-3 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              activeProps={{ className: "bg-accent text-foreground" }}
+            >
+              {item.label}
+            </Link>
+          ))}
+          <Link
+            to={user ? "/atelier" : "/auth"}
+            onClick={() => setOpen(false)}
+            className="mt-2 block rounded-full bg-primary px-4 py-3 text-center text-primary-foreground"
+          >
+            {user ? "Mein Atelier" : "Anmelden"}
+          </Link>
+        </nav>
+      )}
     </header>
   );
 }
+
 
 function SiteFooter() {
   return (
