@@ -42,3 +42,4 @@
 - [x] Tägliche Kunst-Challenge mit bis zu 60 Provenance Coins ohne KI- oder Credit-Verbrauch ergänzen
 - [x] Paywall mit 15-%-Gratisvorschau sowie Monats- und Jahresabo einführen
 - [x] Coin-Guthaben ausschließlich im Galerie-Dashboard zeigen, nicht in der oberen Leiste
+- [x] Reise-Epochen um vertiefte Biografien sowie Farben, Pigmente, Materialien und Techniken ergänzen
