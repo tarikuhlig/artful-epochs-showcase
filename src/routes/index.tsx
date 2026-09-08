@@ -55,7 +55,7 @@ function Tunnel() {
             src={work.image}
             alt=""
             loading="lazy"
-            className="tunnel-tile absolute top-1/2 left-1/2 w-[clamp(190px,24vw,400px)] rounded-md object-cover brightness-110 shadow-2xl"
+            className="tunnel-tile absolute top-1/2 left-1/2 w-[clamp(190px,24vw,400px)] rounded-lg border border-black/5 object-cover shadow-[0_24px_60px_-20px_rgba(0,0,0,0.35)]"
             style={
               {
                 "--tx": pos.tx,
