@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useCallback, useEffect, useState } from "react";
 import { ArrowRight, Compass, Flame, Globe2, Layers, Sparkles, Trophy } from "lucide-react";
 import { IntroTunnel } from "@/components/IntroTunnel";
+import { TitleGate } from "@/components/TitleGate";
 import { epochs, allPainters, allWorks } from "@/lib/art-data";
 import { journeys } from "@/lib/journeys";
 import { cities, museums } from "@/lib/museums";
@@ -37,7 +39,23 @@ export const Route = createFileRoute("/")({
 });
 
 function Dashboard() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  const [stage, setStage] = useState<"boot" | "title" | "intro" | "app">("boot");
+
+  useEffect(() => {
+    if (sessionStorage.getItem("provenance-intro") === "done") {
+      setStage("app");
+      return;
+    }
+    if (loading) return;
+    setStage(user ? "intro" : "title");
+  }, [loading, user]);
+
+  const finishIntro = useCallback(() => {
+    sessionStorage.setItem("provenance-intro", "done");
+    setStage("app");
+  }, []);
+
   const { data: stats } = useUserStats();
   const { data: discoveries } = useDiscoveries();
   const { data: quiz } = useQuizResults();
@@ -59,7 +77,8 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen">
-      <IntroTunnel />
+      {stage === "title" && <TitleGate onDone={() => setStage("intro")} />}
+      {stage === "intro" && <IntroTunnel onDone={finishIntro} />}
 
       <section className="border-b border-border bg-card">
         <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
