@@ -127,8 +127,13 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-const NAV: { to: "/" | "/globus" | "/museen" | "/reisen" | "/quiz"; label: string; exact?: boolean }[] = [
-  { to: "/", label: "Epochen", exact: true },
+const NAV: {
+  to: "/" | "/epochen" | "/globus" | "/museen" | "/reisen" | "/quiz";
+  label: string;
+  exact?: boolean;
+}[] = [
+  { to: "/", label: "Dashboard", exact: true },
+  { to: "/epochen", label: "Epochen" },
   { to: "/globus", label: "Globus" },
   { to: "/museen", label: "Museen" },
   { to: "/reisen", label: "Kunstreisen" },
