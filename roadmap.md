@@ -11,4 +11,4 @@
 - [x] Globus-Stecknadeln öffnen eigene Stadtseiten mit Museen, Kunstreisen und Stadtkarte
 - [x] Jede bestehende Kunstreise erhält eine vertiefte Geschichte mit Kontext, Künstlern, Konflikten und Entdeckungen
 - [x] Museumsinfos um Prüfdatum, offizielle Quellen und aktuelle Ausstellungen ergänzen
-- [ ] Renaissance-Licht, Schatten und mobile 3D-Leistung des Globus verbessern
+- [x] Renaissance-Licht, Schatten und mobile 3D-Leistung des Globus verbessern

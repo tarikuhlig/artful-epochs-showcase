@@ -33,9 +33,9 @@ function latLonToVec3(lat: number, lon: number, r = RADIUS) {
 }
 
 /** Antiker Pergament-Globus – im Browser gezeichnet, kein externer Download nötig. */
-function makeEarthTexture() {
-  const w = 2048;
-  const h = 1024;
+function makeEarthTexture(compact: boolean) {
+  const w = compact ? 1024 : 2048;
+  const h = compact ? 512 : 1024;
   const canvas = document.createElement("canvas");
   canvas.width = w;
   canvas.height = h;
@@ -159,6 +159,7 @@ type Ctl = {
   target: { x: number; y: number } | null;
   dragging: boolean;
   spin: boolean;
+  moved: number;
 };
 
 function Globe({
@@ -166,15 +167,17 @@ function Globe({
   selectedId,
   onSelect,
   ctl,
+  compact,
 }: {
   markers: GlobeMarker[];
   selectedId?: string | null | undefined;
   onSelect: (id: string) => void;
   ctl: React.RefObject<Ctl>;
+  compact: boolean;
 }) {
   const group = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState<string | null>(null);
-  const texture = useMemo(() => makeEarthTexture(), []);
+  const texture = useMemo(() => makeEarthTexture(compact), [compact]);
   const { camera } = useThree();
 
   useEffect(() => () => texture.dispose(), [texture]);
@@ -233,7 +236,7 @@ function Globe({
     <group>
       <group ref={group} rotation-z={-0.12}>
         <mesh castShadow receiveShadow>
-          <sphereGeometry args={[RADIUS, 96, 96]} />
+          <sphereGeometry args={[RADIUS, compact ? 56 : 88, compact ? 40 : 64]} />
           <meshStandardMaterial map={texture} roughness={0.82} metalness={0} />
         </mesh>
 
@@ -249,6 +252,7 @@ function Globe({
         const head = (0.026 + Math.min(m.weight, 8) * 0.0015) * (active ? 1.28 : 1);
         const pick = (e: { stopPropagation: () => void }) => {
           e.stopPropagation();
+          if (ctl.current.moved > 8) return;
           onSelect(m.id);
         };
         return (
@@ -375,6 +379,7 @@ export function Globe3D({
   onSelect: (id: string) => void;
 }) {
   const wrap = useRef<HTMLDivElement>(null);
+  const [compact, setCompact] = useState(false);
   const ctl = useRef<Ctl>({
     rotX: 0.35,
     rotY: 0.3,
@@ -385,10 +390,19 @@ export function Globe3D({
     target: null,
     dragging: false,
     spin: true,
+    moved: 0,
   });
   const drag = useRef<{ x: number; y: number; t: number; moved: number } | null>(null);
   const pinch = useRef<number | null>(null);
   const pointers = useRef(new Map<number, { x: number; y: number }>());
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 640px), (prefers-reduced-motion: reduce)");
+    const update = () => setCompact(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
 
   // Wheel / Pinch zoom – nicht-passiver Listener, damit die Seite nicht scrollt
   useEffect(() => {
@@ -419,6 +433,7 @@ export function Globe3D({
     ctl.current.target = null;
     ctl.current.velX = 0;
     ctl.current.velY = 0;
+    ctl.current.moved = 0;
   };
 
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -443,6 +458,7 @@ export function Globe3D({
     const dt = Math.max((now - d.t) / 1000, 0.001);
     drag.current = { x: e.clientX, y: e.clientY, t: now, moved: d.moved + Math.abs(dx) + Math.abs(dy) };
     const c = ctl.current;
+    c.moved += Math.abs(dx) + Math.abs(dy);
     c.rotY += dx * 0.006;
     c.rotX = Math.max(-1.15, Math.min(1.15, c.rotX + dy * 0.006));
     // Schwung merken – beim Loslassen dreht die Kugel weiter
@@ -483,23 +499,24 @@ export function Globe3D({
         onPointerLeave={endDrag}
       >
         <Canvas
-          shadows
+          shadows={!compact}
           camera={{ position: [0, 0, 4.25], fov: 42 }}
-          dpr={[1, 2]}
-          gl={{ antialias: true, alpha: true }}
+          dpr={compact ? 1 : [1, 1.75]}
+          gl={{ antialias: !compact, alpha: true, powerPreference: "high-performance" }}
           style={{ touchAction: "none", width: "100%", height: "100%" }}
         >
-           <ambientLight intensity={0.62} color="#ffe9c9" />
-           <directionalLight position={[3.5, 3.5, 4]} intensity={1.75} color="#ffe1b5" castShadow shadow-mapSize-width={1024} shadow-mapSize-height={1024} />
-           <directionalLight position={[-4, -1, -2]} intensity={0.4} color="#9b784e" />
+            <ambientLight intensity={0.52} color="#ffe8c7" />
+            <directionalLight position={[-3.8, 4.6, 5]} intensity={2.15} color="#ffe2b2" castShadow={!compact} shadow-mapSize-width={compact ? 512 : 1024} shadow-mapSize-height={compact ? 512 : 1024} shadow-camera-left={-2.2} shadow-camera-right={2.2} shadow-camera-top={2.2} shadow-camera-bottom={-2.2} />
+            <directionalLight position={[3, 0.5, 2]} intensity={0.52} color="#cf9f64" />
+            <pointLight position={[-1.8, -0.7, 2.4]} intensity={0.28} color="#f2b66d" />
            <Environment>
              <Lightformer intensity={1.6} position={[3, 4, 4]} scale={[4, 5, 1]} />
              <Lightformer intensity={0.55} color="#b98958" position={[-4, 1, 1]} rotation-y={Math.PI / 2} scale={[4, 3, 1]} />
            </Environment>
-          <Globe markers={markers} selectedId={selectedId} onSelect={onSelect} ctl={ctl} />
+          <Globe markers={markers} selectedId={selectedId} onSelect={onSelect} ctl={ctl} compact={compact} />
            <mesh position={[0, -1.57, 0]} rotation-x={-Math.PI / 2} receiveShadow>
              <circleGeometry args={[1.15, 64]} />
-             <shadowMaterial transparent opacity={0.24} />
+              <shadowMaterial transparent opacity={compact ? 0.18 : 0.3} />
            </mesh>
         </Canvas>
       </div>

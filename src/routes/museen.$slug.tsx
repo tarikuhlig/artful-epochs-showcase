@@ -40,11 +40,12 @@ function MuseumPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 md:py-20">
       <Link
-        to="/globus"
+        to="/stadt/$slug"
+        params={{ slug: citySlug(museum.city) }}
         className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
-        Zurück zum Globus
+        Zurück zu {museum.city}
       </Link>
 
       <div className="mt-8 flex flex-wrap items-center gap-2 text-xs tracking-[0.25em] text-muted-foreground uppercase">
@@ -163,4 +164,15 @@ function MuseumPage() {
 function formatVerifiedDate(date: string) {
   const [year, month, day] = date.split("-");
   return `${day}.${month}.${year}`;
+}
+
+function citySlug(city: string) {
+  const normalized: Record<string, string> = {
+    München: "muenchen",
+    Köln: "koeln",
+    Zürich: "zuerich",
+    "Den Haag": "den-haag",
+    "New York": "new-york",
+  };
+  return normalized[city] ?? city.toLowerCase().replaceAll(" ", "-");
 }
