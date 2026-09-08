@@ -77,7 +77,8 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen">
-      <IntroTunnel />
+      {stage === "title" && <TitleGate onDone={() => setStage("intro")} />}
+      {stage === "intro" && <IntroTunnel onDone={finishIntro} />}
 
       <section className="border-b border-border bg-card">
         <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
