@@ -106,8 +106,8 @@ function ArtPathPage() {
                       <div className="mt-5">
                         <ArtJourneyMap activeIndex={station.index} unlockedThrough={next} />
                       </div>
-                     <div className="mt-5 flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Palette className="h-4 w-4" /> Künstler dieser Station</div>
-                      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                     <div className="mt-5 flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Palette className="h-4 w-4" /> Vier prägende Künstler dieser Epoche</div>
+                       <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                         {station.artistProfiles.map((artist) => {
                           const portrait = artist.works[0];
                           return <Link key={artist.slug} to="/maler/$slug" params={{ slug: artist.slug }} className="group flex gap-3 rounded-md border border-border p-3 transition-colors hover:bg-accent">
