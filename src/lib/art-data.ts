@@ -1394,7 +1394,7 @@ const baseWorkData: WorkData[] = [
     painter: "wassily-kandinsky",
     museum: "Solomon R. Guggenheim Museum, New York",
     technique: "Öl auf Leinwand, 140 × 201 cm",
-    styles: ["abstrakte-kunst"],
+    styles: ["abstrakte-kunst", "bauhaus"],
     description:
       "Aus der Bauhaus-Zeit: strenge Geometrie – Kreise, Dreiecke, Geraden – in präzisem Gleichgewicht.",
     significance:
@@ -1410,7 +1410,7 @@ const baseWorkData: WorkData[] = [
     painter: "wassily-kandinsky",
     museum: "Centre Pompidou, Paris",
     technique: "Öl auf Leinwand, 128 × 202 cm",
-    styles: ["abstrakte-kunst"],
+    styles: ["abstrakte-kunst", "bauhaus"],
     description:
       "Die drei Grundfarben treffen aufeinander: links helle, flächige Klarheit, rechts dunkle, kreisende Formen – ein Bild über Gegensätze.",
     significance:
