@@ -326,12 +326,12 @@ function GlobeStand() {
       </mesh>
 
       {/* Gedrechselte Stützen */}
-      {[
+      {([
         [-0.86, 0.22],
         [0.86, 0.22],
         [-0.82, -0.42],
         [0.82, -0.42],
-      ].map(([x, z], i) => (
+      ] satisfies Array<[number, number]>).map(([x, z], i) => (
         <group key={i} position={[x, -0.77, z]}>
           <mesh castShadow>
             <cylinderGeometry args={[0.072, 0.09, 1.25, 20]} />
