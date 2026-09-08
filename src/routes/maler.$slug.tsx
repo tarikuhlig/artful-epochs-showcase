@@ -2,6 +2,8 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { findPainter } from "@/lib/art-data";
 import { useTrackDiscovery } from "@/lib/progress";
+import { isFreePainter } from "@/lib/premium-access";
+import { PremiumLock } from "@/components/PremiumLock";
 
 export const Route = createFileRoute("/maler/$slug")({
   loader: ({ params }) => {
@@ -25,7 +27,8 @@ export const Route = createFileRoute("/maler/$slug")({
 
 function PainterPage() {
   const painter = Route.useLoaderData();
-  useTrackDiscovery("painter", painter.slug);
+  const free = isFreePainter(painter.slug);
+  useTrackDiscovery("painter", painter.slug, free);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
@@ -69,7 +72,7 @@ function PainterPage() {
         ))}
       </dl>
 
-      <h2 className="font-display mt-16 mb-2 text-2xl font-medium md:text-3xl">
+      {free ? <><h2 className="font-display mt-16 mb-2 text-2xl font-medium md:text-3xl">
         Werke von {painter.name}
       </h2>
       <ul className="mb-8 divide-y divide-border rounded-md border border-border">
@@ -112,7 +115,7 @@ function PainterPage() {
             </p>
           </Link>
         ))}
-      </div>
+      </div></> : <div className="mt-14"><PremiumLock title={`Alle Werke von ${painter.name} ansehen`} description={`Du hast das Künstlerporträt kennengelernt. Premium öffnet die vollständige Galerie mit ${painter.works.length} Werken, Einordnungen und Bildanalysen.`} /></div>}
     </div>
   );
 }

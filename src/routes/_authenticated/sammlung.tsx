@@ -9,6 +9,7 @@ import { epochs, allPainters, allWorks } from "@/lib/art-data";
 import { useOwnedItems } from "@/lib/economy";
 import { Button } from "@/components/ui/button";
 import { artRank, artRankClasses } from "@/lib/art-rarity";
+import { PremiumLock } from "@/components/PremiumLock";
 
 export const Route = createFileRoute("/_authenticated/sammlung")({
   head: () => ({
@@ -193,7 +194,9 @@ function CollectionPage() {
         <Stat label="Ankäufe" value={`${owned.length}`} />
       </div>
 
-      <section className="mt-16">
+      <div className="mt-14"><PremiumLock title="Deine private Galerie freischalten" description="Mit Premium kannst du ersteigerte Werke ausstellen, frei anordnen und direkt vergleichen. Profil und bisheriger Fortschritt bleiben erhalten." /></div>
+
+      <div className="pointer-events-none select-none opacity-40" aria-hidden="true"><section className="mt-16">
         <div><p className="text-xs tracking-[0.22em] text-muted-foreground uppercase">Deine Ausstellung</p><h2 className="font-display mt-2 text-3xl font-medium">Lieblingswerke an der Wand</h2><p className="mt-2 text-sm text-muted-foreground">Stelle bis zu drei Ankäufe prominent aus.</p></div>
         {featuredWorks.length ? <div className="mt-7 grid gap-5 sm:grid-cols-3">{featuredWorks.map(({ item, work }) => { const rank = artRank(item.purchase_price); return <Link key={item.id} to="/werke/$id" params={{ id: work.id }} className="group"><div className="bg-muted p-3 shadow-sm"><div className="aspect-[4/3] overflow-hidden border-[7px] border-foreground bg-background"><img src={work.image} alt={work.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" /></div></div><span className={`mt-3 inline-flex border px-2 py-1 text-[9px] tracking-[0.18em] uppercase ${artRankClasses(rank)}`}>{rank}</span><h3 className="font-display mt-2 text-xl font-medium">{work.title}</h3><p className="text-sm text-muted-foreground">{work.painter.name}</p></Link>; })}</div> : <div className="mt-7 border border-dashed border-border p-8 text-center text-sm text-muted-foreground">Wähle unten bei einem gekauften Werk den Stern, um es hier auszustellen.</div>}
       </section>
@@ -231,7 +234,7 @@ function CollectionPage() {
             </Link>
           );
         })}
-      </div>
+      </div></div>
 
       <h2 className="font-display mt-14 mb-4 text-2xl font-medium">Maler</h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

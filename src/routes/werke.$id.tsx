@@ -2,6 +2,8 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { findStyle, findWork } from "@/lib/art-data";
 import { useTrackDiscovery } from "@/lib/progress";
+import { isFreeWork } from "@/lib/premium-access";
+import { PremiumLock } from "@/components/PremiumLock";
 
 export const Route = createFileRoute("/werke/$id")({
   loader: ({ params }) => {
@@ -31,7 +33,8 @@ export const Route = createFileRoute("/werke/$id")({
 
 function WorkPage() {
   const work = Route.useLoaderData();
-  useTrackDiscovery("work", work.id);
+  const free = isFreeWork(work.id);
+  useTrackDiscovery("work", work.id, free);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
@@ -94,7 +97,7 @@ function WorkPage() {
             {work.description}
           </p>
 
-          {work.significance ? (
+          {free && work.significance ? (
             <>
               <h2 className="font-display mt-8 text-xl font-medium">Warum das Werk zählt</h2>
               <p className="mt-2 text-base leading-relaxed text-muted-foreground">
@@ -103,7 +106,7 @@ function WorkPage() {
             </>
           ) : null}
 
-          {work.reception ? (
+          {free && work.reception ? (
             <>
               <h2 className="font-display mt-8 text-xl font-medium">Was die Kunstszene sagt</h2>
               <p className="mt-2 text-base leading-relaxed text-muted-foreground">
@@ -111,6 +114,8 @@ function WorkPage() {
               </p>
             </>
           ) : null}
+
+          {!free && <div className="mt-8"><PremiumLock title="Die ganze Bildgeschichte lesen" description="Öffne Bedeutung, Rezeption, kunsthistorische Zusammenhänge und alle zugehörigen Lerninhalte mit Premium." /></div>}
 
           <Link
             to="/maler/$slug"

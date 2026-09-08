@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { epochs, allPainters, allWorks } from "@/lib/art-data";
+import { isFreeEpoch } from "@/lib/premium-access";
+import { PremiumBadge } from "@/components/PremiumLock";
 
 export const Route = createFileRoute("/epochen/")({
   head: () => ({
@@ -44,6 +46,7 @@ function EpochenIndex() {
       <div className="grid gap-6 md:grid-cols-2">
         {chronologicalEpochs.map((epoch, i) => {
           const cover = epoch.painters[0]?.works[0];
+          const free = isFreeEpoch(epoch.slug);
           return (
             <Link
               key={epoch.slug}
@@ -69,10 +72,11 @@ function EpochenIndex() {
                     {epoch.name}
                   </h2>
                 </div>
+                {!free && <span className="absolute right-4 top-4"><PremiumBadge /></span>}
               </div>
               <div className="flex items-center justify-between p-6">
                 <p className="text-sm text-muted-foreground">
-                  {epoch.painters.length} Maler ·{" "}
+                  {free ? "Gratis" : "Vorschau"} · {epoch.painters.length} Maler ·{" "}
                   {epoch.painters.reduce((n, p) => n + p.works.length, 0)} Werke
                 </p>
                 <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1" />
