@@ -191,18 +191,6 @@
   }
 }
 
-/* Globus (alte Karte) */
-:root {
-  --globe-ocean-light: oklch(0.94 0.03 85);
-  --globe-ocean: oklch(0.88 0.045 80);
-  --globe-ocean-deep: oklch(0.78 0.055 72);
-  --globe-land: oklch(0.83 0.06 96);
-  --globe-ink: oklch(0.35 0.04 60);
-  --globe-ring: oklch(0.55 0.07 70);
-  --globe-marker: oklch(0.45 0.24 265);
-  --globe-marker-ring: oklch(0.99 0.003 95);
-}
-
 /* Atelier-Objekte auf der Startseite */
 @keyframes atelier-float {
   0% {
