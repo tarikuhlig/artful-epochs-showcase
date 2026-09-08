@@ -16,9 +16,13 @@ export const Route = createFileRoute("/maler/$slug")({
           { property: "og:title", content: `${loaderData.name} — Maler | Provenance` },
           { property: "og:description", content: loaderData.bio },
           { property: "og:type", content: "article" },
-          { property: "og:image", content: loaderData.works[0]?.image },
-          { name: "twitter:image", content: loaderData.works[0]?.image },
-        ].filter((m) => m.content)
+          ...(loaderData.works[0]
+            ? [
+                { property: "og:image", content: loaderData.works[0].image },
+                { name: "twitter:image", content: loaderData.works[0].image },
+              ]
+            : []),
+        ]
       : [{ title: "Maler nicht gefunden | Provenance" }, { name: "robots", content: "noindex" }],
   }),
   component: PainterPage,
