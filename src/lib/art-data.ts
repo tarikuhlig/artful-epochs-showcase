@@ -956,10 +956,10 @@ export const workData: WorkData[] = [
   {
     id: "regen-dampf-geschwindigkeit",
     title: "Regen, Dampf und Geschwindigkeit",
-    year: "1844 (hier: zeitgenössische Reproduktion)",
+    year: "1844",
     image: img_regen_dampf,
     painter: "william-turner",
-    museum: "National Gallery, London (Original)",
+    museum: "National Gallery, London",
     technique: "Öl auf Leinwand, 91 × 122 cm",
     styles: ["romantische-malerei"],
     description:
@@ -1339,8 +1339,8 @@ export const workData: WorkData[] = [
     year: "1892",
     image: img_moulin_warner,
     painter: "toulouse-lautrec",
-    museum: "Musée Toulouse-Lautrec, Albi",
-    technique: "Öl auf Karton",
+    museum: "Art Institute of Chicago",
+    technique: "Öl auf Leinwand, 123 × 141 cm",
     styles: ["postimpressionistische-malerei"],
     description:
       "Nachtleben im berühmtesten Tanzlokal von Paris: grelles Gaslicht, gepuderte Gesichter, Blicke aneinander vorbei.",
