@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as GlobusRouteImport } from './routes/globus'
 import { Route as KatalogRouteImport } from './routes/katalog'
 import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as AuthenticatedAtelierRouteImport } from './routes/_authenticated/atelier'
@@ -36,6 +37,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GlobusRoute = GlobusRouteImport.update({
+  id: '/globus',
+  path: '/globus',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KatalogRoute = KatalogRouteImport.update({
@@ -97,6 +103,7 @@ const WerkeIdRoute = WerkeIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/globus': typeof GlobusRoute
   '/katalog': typeof KatalogRoute
   '/quiz': typeof QuizRoute
   '/atelier': typeof AuthenticatedAtelierRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/globus': typeof GlobusRoute
   '/katalog': typeof KatalogRoute
   '/quiz': typeof QuizRoute
   '/atelier': typeof AuthenticatedAtelierRoute
@@ -129,6 +137,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/globus': typeof GlobusRoute
   '/katalog': typeof KatalogRoute
   '/quiz': typeof QuizRoute
   '/_authenticated/atelier': typeof AuthenticatedAtelierRoute
@@ -146,6 +155,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/globus'
     | '/katalog'
     | '/quiz'
     | '/atelier'
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/globus'
     | '/katalog'
     | '/quiz'
     | '/atelier'
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/globus'
     | '/katalog'
     | '/quiz'
     | '/_authenticated/atelier'
@@ -194,6 +206,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  GlobusRoute: typeof GlobusRoute
   KatalogRoute: typeof KatalogRoute
   QuizRoute: typeof QuizRoute
   EpochenEpocheRoute: typeof EpochenEpocheRoute
@@ -226,6 +239,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/globus': {
+      id: '/globus'
+      path: '/globus'
+      fullPath: '/globus'
+      preLoaderRoute: typeof GlobusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/katalog': {
@@ -325,6 +345,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  GlobusRoute: GlobusRoute,
   KatalogRoute: KatalogRoute,
   QuizRoute: QuizRoute,
   EpochenEpocheRoute: EpochenEpocheRoute,
