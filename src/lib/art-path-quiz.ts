@@ -32,14 +32,14 @@ export const stationQuizSets: ArtPathQuiz[][] = [
     { question: "Welche Technik ordnet den Bildraum neu?", options: ["Die Zentralperspektive", "Der Goldgrund", "Die Fotografie"], answer: "Die Zentralperspektive", explanation: "Fluchtlinien zu einem Punkt lassen die Fläche zum begehbaren Raum werden." },
   ],
   [
-    { question: "Was bedeutet Sfumato?", options: ["Weiche Übergänge ohne harte Konturen", "Grelle Farbkontraste", "Ein Bildformat"], answer: "Weiche Übergänge ohne harte Konturen", explanation: "Leonardo lässt Licht und Schatten wie Rauch ineinanderfließen." },
-    { question: "Wo befindet sich die Erschaffung Adams?", options: ["An der Decke der Sixtinischen Kapelle", "Im Louvre", "In der Hagia Sophia"], answer: "An der Decke der Sixtinischen Kapelle", explanation: "Michelangelo malte das Deckenfresko zwischen 1508 und 1512 in Rom." },
-    { question: "Wen versammelt Raffael in der Schule von Athen?", options: ["Antike Philosophen", "Römische Kaiser", "Heilige des Mittelalters"], answer: "Antike Philosophen", explanation: "Platon und Aristoteles stehen im Zentrum einer idealen Denkgemeinschaft." },
-  ],
-  [
     { question: "Welche Technik verbreitete Bilder erstmals in großer Zahl?", options: ["Die Druckgrafik", "Das Mosaik", "Die Freskomalerei"], answer: "Die Druckgrafik", explanation: "Holzschnitt und Kupferstich machen ein Motiv hundertfach verfügbar." },
     { question: "Was ist Dürers Feldhase?", options: ["Eine genaue Naturstudie in Wasserfarbe", "Ein Altarbild", "Ein Wandteppich"], answer: "Eine genaue Naturstudie in Wasserfarbe", explanation: "Jedes Haar ist beobachtet — Naturstudium wird zur eigenständigen Kunst." },
     { question: "In welcher Stadt arbeitete Dürer?", options: ["Nürnberg", "Köln", "Prag"], answer: "Nürnberg", explanation: "Nürnberg war Handels- und Druckzentrum des Heiligen Römischen Reiches." },
+  ],
+  [
+    { question: "Was bedeutet Sfumato?", options: ["Weiche Übergänge ohne harte Konturen", "Grelle Farbkontraste", "Ein Bildformat"], answer: "Weiche Übergänge ohne harte Konturen", explanation: "Leonardo lässt Licht und Schatten wie Rauch ineinanderfließen." },
+    { question: "Wo befindet sich die Erschaffung Adams?", options: ["An der Decke der Sixtinischen Kapelle", "Im Louvre", "In der Hagia Sophia"], answer: "An der Decke der Sixtinischen Kapelle", explanation: "Michelangelo malte das Deckenfresko zwischen 1508 und 1512 in Rom." },
+    { question: "Wen versammelt Raffael in der Schule von Athen?", options: ["Antike Philosophen", "Römische Kaiser", "Heilige des Mittelalters"], answer: "Antike Philosophen", explanation: "Platon und Aristoteles stehen im Zentrum einer idealen Denkgemeinschaft." },
   ],
   [
     { question: "Wie heißt die starke Hell-Dunkel-Malerei?", options: ["Chiaroscuro", "Grisaille", "Pointillismus"], answer: "Chiaroscuro", explanation: "Aus dem Dunkel geschnittenes Licht macht die Szene zur Bühne." },
