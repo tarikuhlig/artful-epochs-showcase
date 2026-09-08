@@ -13,6 +13,9 @@ export type GlobeMarker = {
 };
 
 const SIZE = 620;
+/** Rundet Zahlen, damit Server- und Browser-Rendering exakt gleich sind. */
+const r2 = (n: number) => Math.round(n * 100) / 100;
+const round = (d: string) => d.replace(/-?\d+\.\d+/g, (m) => String(r2(Number(m))));
 const R = 268;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -85,8 +88,8 @@ export function OldGlobe({
   );
 
   const path = useMemo(() => geoPath(projection), [projection]);
-  const landPath = path(landFeature) ?? "";
-  const gratPath = path(graticule) ?? "";
+  const landPath = round(path(landFeature) ?? "");
+  const gratPath = round(path(graticule) ?? "");
   const center: [number, number] = [-rotation[0], -rotation[1]];
 
   const onPointerDown = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
@@ -154,14 +157,14 @@ export function OldGlobe({
         {Array.from({ length: 72 }).map((_, i) => {
           const a = (i / 72) * Math.PI * 2;
           const r1 = R + 14;
-          const r2 = R + (i % 6 === 0 ? 22 : 18);
+          const rOuter = R + (i % 6 === 0 ? 22 : 18);
           return (
             <line
               key={i}
-              x1={SIZE / 2 + Math.cos(a) * r1}
-              y1={SIZE / 2 + Math.sin(a) * r1}
-              x2={SIZE / 2 + Math.cos(a) * r2}
-              y2={SIZE / 2 + Math.sin(a) * r2}
+              x1={r2(SIZE / 2 + Math.cos(a) * r1)}
+              y1={r2(SIZE / 2 + Math.sin(a) * r1)}
+              x2={r2(SIZE / 2 + Math.cos(a) * rOuter)}
+              y2={r2(SIZE / 2 + Math.sin(a) * rOuter)}
               stroke="var(--globe-ring)"
               strokeWidth={i % 6 === 0 ? 1.6 : 0.8}
               opacity={0.5}
@@ -208,7 +211,7 @@ export function OldGlobe({
           return (
             <g
               key={m.id}
-              transform={`translate(${pt[0]},${pt[1]})`}
+              transform={`translate(${r2(pt[0])},${r2(pt[1])})`}
               className="cursor-pointer"
               onPointerEnter={() => setHovered(m.id)}
               onPointerLeave={() => setHovered((h) => (h === m.id ? null : h))}
