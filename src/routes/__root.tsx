@@ -95,7 +95,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -128,11 +128,14 @@ function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-            <Palette className="h-4 w-4" />
-          </span>
-          <span className="font-display text-xl font-medium tracking-tight">Provenance</span>
+        <Link to="/" className="flex items-center">
+          <img
+            src={provenanceLogo}
+            alt="Provenance"
+            width={1400}
+            height={512}
+            className="h-9 w-auto"
+          />
         </Link>
         <nav className="flex items-center gap-1 text-sm font-medium">
           <Link
