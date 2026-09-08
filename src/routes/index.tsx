@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Palette } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { epochs, allPainters, allWorks } from "@/lib/art-data";
+import provenanceLogo from "@/assets/provenance-logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -24,44 +25,94 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+const TUNNEL_POSITIONS = [
+  { tx: "-32vw", ty: "-22vh", rot: "-4deg" },
+  { tx: "30vw", ty: "-26vh", rot: "3deg" },
+  { tx: "-36vw", ty: "18vh", rot: "5deg" },
+  { tx: "34vw", ty: "20vh", rot: "-3deg" },
+  { tx: "-18vw", ty: "30vh", rot: "2deg" },
+  { tx: "20vw", ty: "-32vh", rot: "-5deg" },
+  { tx: "-40vw", ty: "-2vh", rot: "3deg" },
+  { tx: "40vw", ty: "4vh", rot: "-2deg" },
+  { tx: "-12vw", ty: "-34vh", rot: "4deg" },
+  { tx: "14vw", ty: "32vh", rot: "-4deg" },
+  { tx: "-26vw", ty: "8vh", rot: "-3deg" },
+  { tx: "26vw", ty: "-10vh", rot: "4deg" },
+];
+
+function Tunnel() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+      style={{ perspective: "900px", perspectiveOrigin: "50% 50%" }}
+    >
+      {allWorks.map((work, i) => {
+        const pos = TUNNEL_POSITIONS[i % TUNNEL_POSITIONS.length]!;
+        return (
+          <img
+            key={work.id}
+            src={work.image}
+            alt=""
+            loading="lazy"
+            className="tunnel-tile absolute top-1/2 left-1/2 w-[clamp(140px,18vw,300px)] rounded-md object-cover shadow-2xl"
+            style={
+              {
+                "--tx": pos.tx,
+                "--ty": pos.ty,
+                "--rot": pos.rot,
+                "--dur": `${22 + (i % 5) * 2}s`,
+                "--delay": `${-i * 1.9}s`,
+              } as React.CSSProperties
+            }
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 function Index() {
   return (
     <div className="min-h-screen">
-      {/* Hero */}
-      <section className="mx-auto max-w-5xl px-6 pt-24 pb-16 text-center md:pt-32">
-        <p className="mb-4 inline-flex items-center gap-2 rounded-md border border-border px-4 py-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-          <Palette className="h-3.5 w-3.5" />
-          Kunstgeschichte zum Lernen
-        </p>
-        <h1 className="font-display text-5xl leading-tight font-medium tracking-tight md:text-7xl">
-          Die großen Maler
-          <br />
-          <span className="text-muted-foreground italic">und ihre Werke</span>
-        </h1>
-        <p className="mx-auto mt-6 max-w-xl text-base text-muted-foreground md:text-lg">
-          Entdecke {allPainters.length} Maler aus {epochs.length} Epochen — mit{" "}
-          {allWorks.length} Meisterwerken, kurzen Erklärungen und einem Quiz, das
-          dein Wissen testet.
-        </p>
-        <div className="mt-8 flex items-center justify-center gap-3">
-          <a
-            href="#epochen"
-            className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            Epochen entdecken
-            <ArrowRight className="h-4 w-4" />
-          </a>
-          <Link
-            to="/quiz"
-            className="inline-flex items-center gap-2 rounded-md border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-accent"
-          >
-            Zum Quiz
-          </Link>
+      {/* Hero mit Bilder-Tunnel */}
+      <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden bg-foreground">
+        <Tunnel />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_oklab,var(--foreground)_55%,transparent)_0%,var(--foreground)_72%)]" />
+        <div className="relative z-10 flex flex-col items-center px-6 text-center">
+          <img
+            src={provenanceLogo}
+            alt="Provenance"
+            width={1400}
+            height={512}
+            className="w-[min(78vw,760px)] drop-shadow-[0_20px_60px_rgba(0,0,0,0.55)]"
+          />
+          <p className="font-display mt-6 text-[11px] font-semibold tracking-[0.42em] text-background/70 uppercase sm:text-xs">
+            {epochs.length} Epochen · {allPainters.length} Maler · {allWorks.length} Werke
+          </p>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href="#epochen"
+              className="font-display inline-flex items-center gap-2 rounded-md bg-background px-7 py-3.5 text-xs font-bold tracking-[0.18em] text-foreground uppercase transition-transform hover:-translate-y-0.5"
+            >
+              Epochen entdecken
+              <ArrowRight className="h-4 w-4" />
+            </a>
+            <Link
+              to="/quiz"
+              className="font-display inline-flex items-center gap-2 rounded-md border border-background/40 px-7 py-3.5 text-xs font-bold tracking-[0.18em] text-background uppercase transition-colors hover:bg-background/10"
+            >
+              Zum Quiz
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* Epochen */}
-      <section id="epochen" className="mx-auto max-w-6xl px-6 pb-24">
+      <section id="epochen" className="mx-auto max-w-6xl px-6 py-24">
+        <h2 className="font-display mb-10 text-4xl font-extrabold tracking-[-0.03em] uppercase md:text-6xl">
+          Die Epochen
+        </h2>
         <div className="grid gap-6 md:grid-cols-2">
           {epochs.map((epoch, i) => {
             const cover = epoch.painters[0]?.works[0];
@@ -81,20 +132,19 @@ function Index() {
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 p-6">
-                    <p className="text-xs font-medium tracking-widest text-white/80 uppercase">
+                    <p className="font-display text-[10px] font-semibold tracking-[0.3em] text-white/80 uppercase">
                       {epoch.period}
                     </p>
-                    <h2 className="font-display mt-1 text-3xl font-medium text-white">
+                    <h3 className="font-display mt-1 text-3xl font-extrabold tracking-[-0.02em] text-white uppercase">
                       {epoch.name}
-                    </h2>
+                    </h3>
                   </div>
                 </div>
                 <div className="flex items-center justify-between p-6">
                   <p className="text-sm text-muted-foreground">
-                    {epoch.painters.length}{" "}
-                    {epoch.painters.length === 1 ? "Maler" : "Maler"} ·{" "}
+                    {epoch.painters.length} Maler ·{" "}
                     {epoch.painters.reduce((n, p) => n + p.works.length, 0)} Werke
                   </p>
                   <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1" />
