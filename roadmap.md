@@ -12,3 +12,8 @@
 - [x] Jede bestehende Kunstreise erhält eine vertiefte Geschichte mit Kontext, Künstlern, Konflikten und Entdeckungen
 - [x] Museumsinfos um Prüfdatum, offizielle Quellen und aktuelle Ausstellungen ergänzen
 - [x] Renaissance-Licht, Schatten und mobile 3D-Leistung des Globus verbessern
+- [ ] Chronologische Kunstreise als begehbaren Pfad von alter zu neuer Kunst aufbauen
+- [ ] Provenance Coins mit eigenem Münzlogo und Belohnungen für abgeschlossene Pfadstationen einführen
+- [ ] Auktionshaus mit kaufbaren Werken und sicherer Coin-Abbuchung ergänzen
+- [ ] Meine Sammlung um gekaufte Werke und eine interaktive Galerie erweitern
+- [ ] Globus vom Museumsmodus zur überdimensionalen Abenteuer-Reiseroute mit Weltpfad umbauen
