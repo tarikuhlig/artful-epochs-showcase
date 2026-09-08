@@ -1,4 +1,5 @@
 import { allPainters, findWork } from "@/lib/art-data";
+import { epochAteliers } from "@/lib/art-path-context";
 
 export type ArtPathStation = {
   index: number;
@@ -38,6 +39,7 @@ export const artPath: ArtPathStation[] = [
 
 export const artPathWithWorks = artPath.map((station) => ({
   ...station,
+  atelier: epochAteliers[station.index],
   work: findWork(station.workId),
   works: station.workIds.map((id) => findWork(id)).filter((work) => work !== undefined),
   artistProfiles: station.artists.map((name) => {
