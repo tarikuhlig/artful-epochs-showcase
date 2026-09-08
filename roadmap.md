@@ -1,10 +1,10 @@
 # Roadmap
 
 - [x] Werkbilder für neue Maler laden (Wikimedia, gemeinfrei)
-- [ ] Fehlende/falsche Bilder korrigieren (Dürer Selbstbildnis, Cassatt Bootspartie)
-- [ ] Katalog auf 30 Maler erweitern, Werke mit Entstehung, Bedeutung, Rezeption
-- [ ] Stilrichtungen (z. B. Abstrakter Expressionismus, Nachkriegsmalerei) + Katalogseite mit Suche/Filter
-- [ ] Kunstreisen: kuratierte Touren nach Strömungen und Orten
-- [ ] Farm-Funktion: tägliche Ernte, Punkte, Streak, Level, freischaltbare Galerie
-- [ ] Logo neu: Tinten-Signatur in Klein-Blau
-- [ ] Build + visuelle Prüfung
+- [x] Fehlende/falsche Bilder korrigiert (Dürer, Cassatt, Toulouse-Lautrec, Turner)
+- [x] Katalog auf 30 Maler / 60 Werke erweitert, mit Entstehung, Technik, Museum, Bedeutung, Rezeption
+- [x] Stilrichtungen + Katalogseite mit Suche und Filtern
+- [x] Kunstreisen: 6 kuratierte Touren (Orte, Strömungen, Thema)
+- [x] Farm-Funktion „Atelier“: tägliche Ernte, Punkte, Serie, Level
+- [x] Logo als Tinten-Signatur in Klein-Blau + Favicon
+- [x] Build und visuelle Prüfung
