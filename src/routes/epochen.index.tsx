@@ -24,6 +24,11 @@ export const Route = createFileRoute("/epochen/")({
 });
 
 function EpochenIndex() {
+  const chronologicalEpochs = [...epochs].sort((a, b) => {
+    const firstYear = (period: string) => Number(period.match(/\d{3,4}/)?.[0] ?? Number.MAX_SAFE_INTEGER);
+    return firstYear(a.period) - firstYear(b.period);
+  });
+
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
       <p className="font-display text-[11px] tracking-[0.35em] text-muted-foreground uppercase">
@@ -37,7 +42,7 @@ function EpochenIndex() {
       </p>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {epochs.map((epoch, i) => {
+        {chronologicalEpochs.map((epoch, i) => {
           const cover = epoch.painters[0]?.works[0];
           return (
             <Link

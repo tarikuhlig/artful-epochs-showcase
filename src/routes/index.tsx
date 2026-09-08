@@ -114,10 +114,10 @@ function HomePage() {
             </div>
           </div>
           <Link to={user ? "/atelier" : "/auth"} className="group relative min-h-80 overflow-hidden rounded-xl bg-muted">
-            <img src={discoveries[2]?.image} alt="Kunstwerk aus deinem Atelier" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+            <img src={discoveries[2]?.image} alt="Kunstwerk aus deiner Galerie" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
             <div className="absolute inset-x-0 bottom-0 m-3 rounded-lg bg-background/92 p-5 backdrop-blur-sm">
               <div className="flex items-start justify-between"><img src={coin} alt="Provenance Coin" className="h-11 w-11" /><ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" /></div>
-              <p className="mt-5 text-[10px] tracking-[0.24em] text-coin uppercase">Dein persönlicher Bereich</p><h2 className="font-display mt-1 text-2xl font-medium">Mein Atelier</h2><p className="mt-1 text-sm text-muted-foreground">Fortschritt, Coins und Sammlung.</p>
+              <p className="mt-5 text-[10px] tracking-[0.24em] text-coin uppercase">Dein persönlicher Bereich</p><h2 className="font-display mt-1 text-2xl font-medium">Meine Galerie</h2><p className="mt-1 text-sm text-muted-foreground">Fortschritt, Coins und deine Ausstellung.</p>
             </div>
           </Link>
         </div>
