@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { findPainter } from "@/lib/art-data";
+import { useTrackDiscovery } from "@/lib/progress";
 
 export const Route = createFileRoute("/maler/$slug")({
   loader: ({ params }) => {
