@@ -1,284 +1,285 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Compass, Globe2, Sparkles } from "lucide-react";
+import { ArrowRight, Compass, Flame, Globe2, Layers, Sparkles, Trophy } from "lucide-react";
+import { IntroTunnel } from "@/components/IntroTunnel";
 import { epochs, allPainters, allWorks } from "@/lib/art-data";
 import { journeys } from "@/lib/journeys";
 import { cities, museums } from "@/lib/museums";
-import provenanceLogo from "@/assets/provenance-logo.png";
-import atelierPalette from "@/assets/atelier/palette.png";
-import atelierBrushes from "@/assets/atelier/brushes.png";
-import atelierTube from "@/assets/atelier/tube.png";
-import atelierEasel from "@/assets/atelier/easel.png";
-import atelierInk from "@/assets/atelier/ink.png";
-import atelierFrame from "@/assets/atelier/frame.png";
+import { useAuth } from "@/hooks/useAuth";
+import { useDiscoveries, useQuizResults } from "@/lib/progress";
+import {
+  POINTS_PER_DISCOVERY,
+  levelFor,
+  levelTitle,
+  useJourneyProgress,
+  useUserStats,
+  workOfTheDay,
+} from "@/lib/farm";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Provenance — Maler, Epochen und ihre Werke entdecken" },
+      { title: "Dashboard — dein Kunstfortschritt | Provenance" },
       {
         name: "description",
         content:
-          "Lerne die großen Maler der Kunstgeschichte kennen: Epochen, Werke mit Beschreibung, Museen auf dem Globus bereisen und Quiz spielen.",
+          "Dein Provenance-Dashboard: Level, Punkte, Serie, entdeckte Maler und Werke, Werk des Tages und deine nächsten Kunstreisen.",
       },
-      { property: "og:title", content: "Provenance — Maler, Epochen und ihre Werke entdecken" },
+      { property: "og:title", content: "Dashboard | Provenance" },
       {
         property: "og:description",
-        content:
-          "Epochen, Maler, Meisterwerke, Museen auf dem Globus und geführte Kunstreisen — klar und schön geordnet.",
+        content: "Fortschritt, Werk des Tages und Kunstreisen auf einen Blick.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: Index,
+  component: Dashboard,
 });
 
-type AtelierItem = {
-  src: string;
-  alt: string;
-  className: string;
-  style: React.CSSProperties;
-};
+function Dashboard() {
+  const { user } = useAuth();
+  const { data: stats } = useUserStats();
+  const { data: discoveries } = useDiscoveries();
+  const { data: quiz } = useQuizResults();
+  const { data: journeyProgress } = useJourneyProgress();
 
-const ATELIER_ITEMS: AtelierItem[] = [
-  {
-    src: atelierEasel,
-    alt: "",
-    className: "left-[3%] top-[16%] w-[clamp(110px,15vw,240px)]",
-    style: { "--rot": "-6deg", "--fy": "-22px", "--dur": "15s" } as React.CSSProperties,
-  },
-  {
-    src: atelierPalette,
-    alt: "",
-    className: "right-[4%] top-[12%] w-[clamp(120px,16vw,260px)]",
-    style: { "--rot": "8deg", "--fy": "-26px", "--fx": "10px", "--dur": "13s", "--delay": "-3s" } as React.CSSProperties,
-  },
-  {
-    src: atelierBrushes,
-    alt: "",
-    className: "left-[10%] bottom-[12%] w-[clamp(100px,13vw,220px)]",
-    style: { "--rot": "14deg", "--fy": "-18px", "--dur": "11s", "--delay": "-5s" } as React.CSSProperties,
-  },
-  {
-    src: atelierTube,
-    alt: "",
-    className: "right-[12%] bottom-[14%] w-[clamp(70px,8vw,140px)]",
-    style: { "--rot": "-12deg", "--fy": "-20px", "--dur": "12s", "--delay": "-2s" } as React.CSSProperties,
-  },
-  {
-    src: atelierInk,
-    alt: "",
-    className: "left-[26%] top-[6%] hidden w-[clamp(70px,7vw,120px)] md:block",
-    style: { "--rot": "5deg", "--fy": "-16px", "--dur": "14s", "--delay": "-7s" } as React.CSSProperties,
-  },
-  {
-    src: atelierFrame,
-    alt: "",
-    className: "right-[30%] bottom-[8%] hidden w-[clamp(90px,10vw,180px)] md:block",
-    style: { "--rot": "-8deg", "--fy": "-24px", "--dur": "16s", "--delay": "-4s" } as React.CSSProperties,
-  },
-];
-
-const HERO_WORKS = [
-  allWorks.find((w) => w.id === "sternennacht") ?? allWorks[0]!,
-  allWorks.find((w) => w.id === "mona-lisa") ?? allWorks[1]!,
-  allWorks.find((w) => w.id === "der-kuss") ?? allWorks[2]!,
-];
-
-function Atelier() {
-  return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-      {/* schwebende Bilder in Rahmen */}
-      <img
-        src={HERO_WORKS[0]!.image}
-        alt=""
-        loading="lazy"
-        className="atelier-item absolute top-[24%] left-[19%] hidden w-[clamp(90px,11vw,180px)] rounded-sm border-[6px] border-card object-cover shadow-[0_24px_50px_-24px_rgba(0,0,0,0.45)] lg:block"
-        style={{ "--rot": "-7deg", "--fy": "-20px", "--dur": "17s" } as React.CSSProperties}
-      />
-      <img
-        src={HERO_WORKS[1]!.image}
-        alt=""
-        loading="lazy"
-        className="atelier-item absolute top-[76%] left-[14%] hidden w-[clamp(70px,8vw,130px)] rounded-sm border-[6px] border-card object-cover shadow-[0_24px_50px_-24px_rgba(0,0,0,0.45)] lg:block"
-        style={{ "--rot": "6deg", "--fy": "-16px", "--dur": "13s", "--delay": "-6s" } as React.CSSProperties}
-      />
-      <img
-        src={HERO_WORKS[2]!.image}
-        alt=""
-        loading="lazy"
-        className="atelier-item absolute top-[30%] right-[18%] hidden w-[clamp(90px,10vw,170px)] rounded-sm border-[6px] border-card object-cover shadow-[0_24px_50px_-24px_rgba(0,0,0,0.45)] lg:block"
-        style={{ "--rot": "9deg", "--fy": "-22px", "--dur": "15s", "--delay": "-9s" } as React.CSSProperties}
-      />
-
-      {ATELIER_ITEMS.map((item, i) => (
-        <img
-          key={i}
-          src={item.src}
-          alt={item.alt}
-          loading="lazy"
-          width={768}
-          height={768}
-          className={`atelier-item absolute drop-shadow-[0_28px_40px_rgba(0,0,0,0.16)] ${item.className}`}
-          style={item.style}
-        />
-      ))}
-    </div>
+  const list = discoveries ?? [];
+  const count = (kind: string) => list.filter((d) => d.kind === kind).length;
+  const totalPoints = (stats?.points ?? 0) + list.length * POINTS_PER_DISCOVERY;
+  const lvl = levelFor(totalPoints);
+  const work = workOfTheDay();
+  const bestQuiz = (quiz ?? []).reduce(
+    (best, q) => (q.total && q.score / q.total > best ? q.score / q.total : best),
+    0,
   );
-}
+  const name =
+    (user?.user_metadata?.["display_name"] as string | undefined) ??
+    user?.email?.split("@")[0] ??
+    null;
 
-function Index() {
-  const works = allWorks.length;
   return (
     <div className="min-h-screen">
-      {/* Hero: Logo im Atelier */}
-      <section className="relative flex min-h-[88vh] items-center justify-center overflow-hidden bg-background">
-        <div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "radial-gradient(ellipse at 50% 45%, color-mix(in oklab, var(--accent) 70%, transparent) 0%, transparent 62%)",
-          }}
-        />
-        <Atelier />
-        <div className="relative z-10 flex max-w-3xl flex-col items-center px-6 py-14 text-center">
-          <img
-            src={provenanceLogo}
-            alt="Provenance"
-            width={1920}
-            height={640}
-            className="w-[min(74vw,680px)] drop-shadow-[0_18px_50px_rgba(0,0,0,0.12)]"
-          />
-          <h1 className="sr-only">Provenance — Kunstgeschichte lernen</h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Das Atelier der Kunstgeschichte: Maler kennenlernen, Werke verstehen und Museen auf dem
-            Globus bereisen.
+      <IntroTunnel />
+
+      <section className="border-b border-border bg-card">
+        <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
+          <p className="font-display text-[11px] tracking-[0.35em] text-muted-foreground uppercase">
+            Dashboard
           </p>
-          <p className="font-display mt-4 text-[11px] tracking-[0.4em] text-muted-foreground uppercase">
-            {epochs.length} Epochen · {allPainters.length} Maler · {works} Werke ·{" "}
-            {museums.length} Museen
+          <h1 className="font-display mt-3 text-4xl font-medium tracking-[-0.03em] md:text-5xl">
+            {name ? `Willkommen zurück, ${name}` : "Willkommen bei Provenance"}
+          </h1>
+          <p className="mt-4 max-w-xl text-muted-foreground">
+            {user
+              ? `Level ${lvl.level} · ${levelTitle(lvl.level)} — noch ${lvl.toNext} Punkte bis Level ${lvl.level + 1}.`
+              : "Melde dich an, um Fortschritt, Punkte und deine Sammlung zu speichern."}
           </p>
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              to="/globus"
-              className="font-display inline-flex items-center gap-2 rounded-full bg-foreground px-7 py-3.5 text-xs font-normal tracking-[0.18em] text-background uppercase transition-transform hover:-translate-y-0.5"
-            >
-              <Globe2 className="h-4 w-4" />
-              Globus öffnen
-            </Link>
-            <a
-              href="#epochen"
-              className="font-display inline-flex items-center gap-2 rounded-full border border-foreground/20 px-7 py-3.5 text-xs font-normal tracking-[0.18em] text-foreground uppercase transition-colors hover:bg-foreground/5"
-            >
-              Epochen ansehen
-            </a>
+
+          {user ? (
+            <div className="mt-6 max-w-xl">
+              <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-primary transition-all duration-700"
+                  style={{ width: `${lvl.progress}%` }}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link
+                to="/auth"
+                className="font-display inline-flex items-center gap-2 rounded-full bg-foreground px-7 py-3.5 text-xs tracking-[0.18em] text-background uppercase transition-transform hover:-translate-y-0.5"
+              >
+                Anmelden
+              </Link>
+              <Link
+                to="/epochen"
+                className="font-display inline-flex items-center gap-2 rounded-full border border-foreground/20 px-7 py-3.5 text-xs tracking-[0.18em] uppercase transition-colors hover:bg-foreground/5"
+              >
+                Epochen ansehen
+              </Link>
+            </div>
+          )}
+
+          <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <Stat
+              icon={<Trophy className="h-4 w-4" />}
+              label="Punkte"
+              value={user ? totalPoints : "—"}
+            />
+            <Stat
+              icon={<Flame className="h-4 w-4" />}
+              label="Serie"
+              value={user ? `${stats?.streak ?? 0} Tage` : "—"}
+            />
+            <Stat
+              icon={<Sparkles className="h-4 w-4" />}
+              label="Entdeckt"
+              value={user ? list.length : "—"}
+            />
+            <Stat
+              icon={<Layers className="h-4 w-4" />}
+              label="Bestes Quiz"
+              value={user && bestQuiz ? `${Math.round(bestQuiz * 100)} %` : "—"}
+            />
           </div>
         </div>
       </section>
 
-      {/* Drei Wege — intuitiver Einstieg */}
+      {/* Profilmerkmale */}
+      <section className="mx-auto max-w-6xl px-6 py-14">
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="rounded-xl border border-border p-6 lg:col-span-2">
+            <h2 className="font-display text-xl font-medium">Dein Profil</h2>
+            <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
+              <Mini label="Maler" value={count("painter")} total={allPainters.length} />
+              <Mini label="Werke" value={count("work")} total={allWorks.length} />
+              <Mini label="Museen" value={count("museum")} total={museums.length} />
+              <Mini
+                label="Kunstreisen"
+                value={(journeyProgress ?? []).length}
+                total={journeys.length}
+              />
+            </div>
+            <div className="mt-6 flex flex-wrap gap-3 text-sm">
+              <Link
+                to={user ? "/atelier" : "/auth"}
+                className="rounded-full border border-input px-5 py-2.5 transition-colors hover:bg-accent"
+              >
+                Mein Atelier
+              </Link>
+              <Link
+                to={user ? "/sammlung" : "/auth"}
+                className="rounded-full border border-input px-5 py-2.5 transition-colors hover:bg-accent"
+              >
+                Meine Sammlung
+              </Link>
+              <Link
+                to="/quiz"
+                className="rounded-full border border-input px-5 py-2.5 transition-colors hover:bg-accent"
+              >
+                Quiz spielen
+              </Link>
+            </div>
+          </div>
+
+          <Link
+            to="/werke/$id"
+            params={{ id: work.id }}
+            className="group overflow-hidden rounded-xl border border-border bg-card"
+          >
+            <div className="aspect-[4/3] overflow-hidden bg-muted">
+              <img
+                src={work.image}
+                alt={work.title}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
+            <div className="p-6">
+              <p className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+                Werk des Tages
+              </p>
+              <h3 className="font-display mt-2 text-lg font-medium">{work.title}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {typeof work.painter === "string" ? work.painter : work.painter.name}{" "}
+                {work.year ? `· ${work.year}` : ""}
+              </p>
+            </div>
+          </Link>
+        </div>
+      </section>
+
+      {/* Wege in die Sammlung */}
       <section className="border-y border-border bg-card">
-        <div className="mx-auto grid max-w-6xl gap-px px-6 py-4 sm:grid-cols-3">
+        <div className="mx-auto grid max-w-6xl gap-px px-6 py-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StartCard
+            to="/epochen"
+            icon={<Layers className="h-5 w-5" />}
+            title="Epochen"
+            text={`${epochs.length} Kapitel der Malerei, von der Gotik bis zur Moderne.`}
+          />
           <StartCard
             to="/globus"
             icon={<Globe2 className="h-5 w-5" />}
             title="Globus & Museen"
-            text={`${cities.length} Städte, ${museums.length} Häuser — dreh den Globus und geh hinein.`}
+            text={`${cities.length} Städte, ${museums.length} Häuser — dreh den Globus.`}
           />
           <StartCard
             to="/reisen"
             icon={<Compass className="h-5 w-5" />}
             title="Kunstreisen"
-            text={`${journeys.length} geführte Touren durch Städte, Strömungen und Ideen.`}
+            text={`${journeys.length} geführte Touren durch Städte und Strömungen.`}
           />
           <StartCard
             to="/quiz"
             icon={<Sparkles className="h-5 w-5" />}
             title="Quiz"
-            text="Teste, was hängen geblieben ist — und sammle Punkte im Atelier."
+            text="Teste, was hängen geblieben ist — und sammle Punkte."
           />
         </div>
       </section>
 
-      {/* Epochen */}
-      <section id="epochen" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-24">
-        <h2 className="font-display mb-3 text-4xl font-medium tracking-[-0.03em] uppercase md:text-5xl">
-          Die Epochen
-        </h2>
-        <p className="mb-10 max-w-2xl text-muted-foreground">
-          Der Anfang: sechs große Kapitel der Malerei, jedes mit seinen Malern und Werken.
-        </p>
-        <div className="grid gap-6 md:grid-cols-2">
-          {epochs.map((epoch, i) => {
-            const cover = epoch.painters[0]?.works[0];
-            return (
-              <Link
-                key={epoch.slug}
-                to="/epochen/$epoche"
-                params={{ epoche: epoch.slug }}
-                className="group overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-lg"
-              >
-                <div className="relative aspect-[16/9] overflow-hidden bg-muted">
-                  {cover && (
-                    <img
-                      src={cover.image}
-                      alt={cover.title}
-                      loading={i > 0 ? "lazy" : undefined}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-transparent" />
-                  <div className="absolute bottom-0 left-0 p-6">
-                    <p className="font-display text-[10px] font-medium tracking-[0.3em] text-white/80 uppercase">
-                      {epoch.period}
-                    </p>
-                    <h3 className="font-display mt-1 text-3xl font-medium tracking-[-0.02em] text-white uppercase">
-                      {epoch.name}
-                    </h3>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between p-6">
-                  <p className="text-sm text-muted-foreground">
-                    {epoch.painters.length} Maler ·{" "}
-                    {epoch.painters.reduce((n, p) => n + p.works.length, 0)} Werke
-                  </p>
-                  <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1" />
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
       {/* Kunstreisen */}
-      <section className="border-t border-border">
-        <div className="mx-auto max-w-6xl px-6 py-24">
-          <h2 className="font-display mb-3 text-4xl font-medium tracking-[-0.03em] uppercase md:text-5xl">
-            Kunstreisen
-          </h2>
-          <p className="mb-10 max-w-2xl text-muted-foreground">
-            Geführte Touren durch Städte, Strömungen und Ideen — von Florenz der Medici bis zur New
-            Yorker Schule.
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {journeys.map((j) => (
-              <Link
-                key={j.slug}
-                to="/reisen/$slug"
-                params={{ slug: j.slug }}
-                className="group rounded-xl border border-border p-6 transition-colors hover:bg-accent"
-              >
-                <p className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
-                  {j.kind} · {j.era}
-                </p>
-                <h3 className="font-display mt-2 text-xl font-medium">{j.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{j.subtitle}</p>
-              </Link>
-            ))}
-          </div>
+      <section className="mx-auto max-w-6xl px-6 py-20">
+        <h2 className="font-display mb-3 text-3xl font-medium tracking-[-0.03em] uppercase md:text-4xl">
+          Weiterreisen
+        </h2>
+        <p className="mb-8 max-w-2xl text-muted-foreground">
+          Geführte Touren durch Städte, Strömungen und Ideen.
+        </p>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {journeys.map((j) => (
+            <Link
+              key={j.slug}
+              to="/reisen/$slug"
+              params={{ slug: j.slug }}
+              className="group rounded-xl border border-border p-6 transition-colors hover:bg-accent"
+            >
+              <p className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+                {j.kind} · {j.era}
+              </p>
+              <h3 className="font-display mt-2 text-xl font-medium">{j.title}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{j.subtitle}</p>
+            </Link>
+          ))}
         </div>
       </section>
+    </div>
+  );
+}
+
+function Stat({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-xl border border-border bg-background p-5">
+      <span className="flex items-center gap-2 text-[10px] tracking-[0.25em] text-muted-foreground uppercase">
+        {icon}
+        {label}
+      </span>
+      <p className="font-display mt-2 text-2xl font-medium">{value}</p>
+    </div>
+  );
+}
+
+function Mini({ label, value, total }: { label: string; value: number; total: number }) {
+  const pct = total ? Math.min(100, Math.round((value / total) * 100)) : 0;
+  return (
+    <div>
+      <p className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase">{label}</p>
+      <p className="font-display mt-1 text-xl font-medium">
+        {value}
+        <span className="text-sm text-muted-foreground"> / {total}</span>
+      </p>
+      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+        <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
+      </div>
     </div>
   );
 }
@@ -289,7 +290,7 @@ function StartCard({
   title,
   text,
 }: {
-  to: "/globus" | "/reisen" | "/quiz";
+  to: "/epochen" | "/globus" | "/reisen" | "/quiz";
   icon: React.ReactNode;
   title: string;
   text: string;
