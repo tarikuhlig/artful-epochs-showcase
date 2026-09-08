@@ -144,30 +144,44 @@ function SiteHeader() {
           <Link
             to="/"
             activeOptions={{ exact: true }}
-            className="rounded-md px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            className="hidden rounded-full px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:inline-flex"
             activeProps={{ className: "bg-accent text-foreground" }}
           >
             Epochen
           </Link>
           <Link
+            to="/katalog"
+            className="hidden rounded-full px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:inline-flex"
+            activeProps={{ className: "bg-accent text-foreground" }}
+          >
+            Katalog
+          </Link>
+          <Link
+            to="/reisen"
+            className="hidden rounded-full px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:inline-flex"
+            activeProps={{ className: "bg-accent text-foreground" }}
+          >
+            Kunstreisen
+          </Link>
+          <Link
             to="/quiz"
-            className="rounded-md px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            className="rounded-full px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             activeProps={{ className: "bg-accent text-foreground" }}
           >
             Quiz
           </Link>
           {user ? (
             <Link
-              to="/sammlung"
-              className="rounded-md border border-input px-4 py-2 text-foreground transition-colors hover:bg-accent"
+              to="/atelier"
+              className="rounded-full border border-input px-4 py-2 text-foreground transition-colors hover:bg-accent"
               activeProps={{ className: "bg-accent" }}
             >
-              Meine Sammlung
+              Mein Atelier
             </Link>
           ) : (
             <Link
               to="/auth"
-              className="rounded-md bg-primary px-4 py-2 text-primary-foreground transition-opacity hover:opacity-90"
+              className="rounded-full bg-primary px-4 py-2 text-primary-foreground transition-opacity hover:opacity-90"
             >
               Anmelden
             </Link>
