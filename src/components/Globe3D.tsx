@@ -235,13 +235,40 @@ function Globe({
         <meshStandardMaterial map={texture} roughness={0.95} metalness={0} />
       </mesh>
 
+      {/* Messing-Meridianring der alten Globus-Halterung */}
+      <mesh rotation={[0, 0, Math.PI / 2]}>
+        <torusGeometry args={[RADIUS * 1.05, 0.016, 12, 96]} />
+        <meshStandardMaterial color="#b98b3c" metalness={0.9} roughness={0.32} />
+      </mesh>
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[RADIUS * 1.05, 0.012, 12, 96]} />
+        <meshStandardMaterial color="#a9782f" metalness={0.9} roughness={0.38} />
+      </mesh>
+
       {markers.map((m) => {
-        const pos = latLonToVec3(m.lat, m.lon, RADIUS * 1.008);
         const active = selectedId === m.id || hovered === m.id;
-        const s = (0.014 + Math.min(m.weight, 8) * 0.0022) * (active ? 1.5 : 1);
+        const normal = latLonToVec3(m.lat, m.lon, 1).normalize();
+        const pos = normal.clone().multiplyScalar(RADIUS * 0.995);
+        const quat = new THREE.Quaternion().setFromUnitVectors(
+          new THREE.Vector3(0, 1, 0),
+          normal,
+        );
+        const len = (0.075 + Math.min(m.weight, 8) * 0.004) * (active ? 1.25 : 1);
+        const head = (0.019 + Math.min(m.weight, 8) * 0.0016) * (active ? 1.35 : 1);
+        const pick = (e: { stopPropagation: () => void }) => {
+          e.stopPropagation();
+          onSelect(m.id);
+        };
         return (
-          <group key={m.id} position={pos}>
+          <group key={m.id} position={pos} quaternion={quat}>
+            {/* Nadel */}
+            <mesh position={[0, len / 2, 0]}>
+              <cylinderGeometry args={[0.0035, 0.0022, len, 8]} />
+              <meshStandardMaterial color="#d8d2c6" metalness={0.85} roughness={0.3} />
+            </mesh>
+            {/* Nadelkopf */}
             <mesh
+              position={[0, len + head * 0.7, 0]}
               onPointerOver={(e) => {
                 e.stopPropagation();
                 setHovered(m.id);
@@ -251,28 +278,20 @@ function Globe({
                 setHovered((h) => (h === m.id ? null : h));
                 document.body.style.cursor = "";
               }}
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelect(m.id);
-              }}
+              onClick={pick}
             >
-              <sphereGeometry args={[s, 16, 16]} />
+              <sphereGeometry args={[head, 18, 18]} />
               <meshStandardMaterial
-                color={active ? "#0f2ea8" : "#1b3fd6"}
+                color={active ? "#0f2ea8" : "#9b1b1b"}
                 emissive={active ? "#0f2ea8" : "#000000"}
-                emissiveIntensity={active ? 0.6 : 0}
-                roughness={0.4}
+                emissiveIntensity={active ? 0.5 : 0}
+                roughness={0.35}
+                metalness={0.1}
               />
             </mesh>
             {/* größere unsichtbare Trefferfläche für Finger */}
-            <mesh
-              visible={false}
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelect(m.id);
-              }}
-            >
-              <sphereGeometry args={[Math.max(s * 2.6, 0.045), 8, 8]} />
+            <mesh visible={false} position={[0, len * 0.8, 0]} onClick={pick}>
+              <sphereGeometry args={[Math.max(head * 3, 0.05), 8, 8]} />
               <meshBasicMaterial />
             </mesh>
           </group>
