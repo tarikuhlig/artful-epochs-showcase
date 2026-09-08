@@ -27,3 +27,7 @@
 - [x] Private Galerie per Ziehen sortierbar machen und Werkvergleich ergänzen
 - [x] Dashboard in „Mein Atelier“ integrieren und Startseite als farbige Kunstentdeckung mit Tagestipps neu gestalten
 - [x] Handy-Optimierung (Safe Areas, kein Auto-Zoom, Touch-Ziele) und Installierbarkeit als App-Symbol (Manifest, Icons)
+
+- [ ] Reise-Karte: genauere Standortkarte via OpenStreetMap (Leaflet, client-only)
+- [ ] Sicherstellen: keine Laufzeit-Credits (keine AI/Cloud-Calls im normalen Seitenbetrieb), nur eigener Katalog
+- [ ] Katalog: viele neue Kuenstler + Werke pro Epoche
