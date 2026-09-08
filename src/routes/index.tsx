@@ -74,7 +74,7 @@ const ATELIER_ITEMS: AtelierItem[] = [
   {
     src: atelierFrame,
     alt: "",
-    className: "right-[24%] bottom-[4%] hidden w-[clamp(90px,10vw,180px)] md:block",
+    className: "right-[30%] bottom-[8%] hidden w-[clamp(90px,10vw,180px)] md:block",
     style: { "--rot": "-8deg", "--fy": "-24px", "--dur": "16s", "--delay": "-4s" } as React.CSSProperties,
   },
 ];
@@ -100,7 +100,7 @@ function Atelier() {
         src={HERO_WORKS[1]!.image}
         alt=""
         loading="lazy"
-        className="atelier-item absolute top-[62%] left-[30%] hidden w-[clamp(70px,8vw,130px)] rounded-sm border-[6px] border-card object-cover shadow-[0_24px_50px_-24px_rgba(0,0,0,0.45)] lg:block"
+        className="atelier-item absolute top-[76%] left-[14%] hidden w-[clamp(70px,8vw,130px)] rounded-sm border-[6px] border-card object-cover shadow-[0_24px_50px_-24px_rgba(0,0,0,0.45)] lg:block"
         style={{ "--rot": "6deg", "--fy": "-16px", "--dur": "13s", "--delay": "-6s" } as React.CSSProperties}
       />
       <img
