@@ -132,8 +132,8 @@ function SiteHeader() {
           <img
             src={provenanceLogo}
             alt="Provenance"
-            width={1400}
-            height={512}
+            width={1920}
+            height={640}
             className="h-9 w-auto"
           />
         </Link>

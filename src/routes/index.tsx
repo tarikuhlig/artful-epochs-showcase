@@ -89,8 +89,8 @@ function Index() {
           <img
             src={provenanceLogo}
             alt="Provenance"
-            width={1400}
-            height={512}
+            width={1920}
+            height={640}
             className="w-[min(78vw,760px)] drop-shadow-[0_20px_60px_rgba(0,0,0,0.55)]"
           />
           <p className="font-display mt-6 text-[11px] font-semibold tracking-[0.42em] text-background/70 uppercase sm:text-xs">
