@@ -60,6 +60,7 @@ import img_blaues_pferd from "@/assets/art/blaues-pferd.jpg";
 import img_blaue_pferde from "@/assets/art/die-grossen-blauen-pferde.jpg";
 
 import { extraEpochs, extraPainters, extraStyles, extraWorks } from "./art-catalog-extra";
+import { extraPainters2, extraStyles2, extraWorks2 } from "./art-catalog-extra2";
 
 export type WorkData = {
   id: string;
