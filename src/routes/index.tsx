@@ -123,6 +123,6 @@ function HomePage() {
   );
 }
 
-function ExploreCard({ to, image, icon, title, text, tint }: { to: "/kunstpfad" | "/epochen" | "/museen" | "/auktionshaus"; image?: string; icon: React.ReactNode; title: string; text: string; tint: string }) {
+function ExploreCard({ to, image, icon, title, text, tint }: { to: "/kunstpfad" | "/epochen" | "/museen" | "/auktionshaus"; image: string | undefined; icon: React.ReactNode; title: string; text: string; tint: string }) {
   return <Link to={to} className={`group overflow-hidden rounded-xl ${tint}`}><div className="aspect-[4/3] overflow-hidden bg-muted"><img src={image} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" /></div><div className="p-5"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-background [&_svg]:h-4 [&_svg]:w-4">{icon}</span><span className="font-display mt-5 flex items-center justify-between text-xl font-medium">{title}<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span><span className="mt-2 block text-sm text-muted-foreground">{text}</span></div></Link>;
 }
