@@ -450,7 +450,7 @@ export function Globe3D({
         </button>
       </div>
 
-      <p className="mt-2 text-center text-[10px] tracking-[0.2em] text-muted-foreground uppercase sm:text-[11px]">
+      <p className="mx-auto mt-2 w-fit rounded-full bg-background/80 px-3 py-1 text-center text-[10px] tracking-[0.2em] text-muted-foreground uppercase backdrop-blur sm:text-[11px]">
         Ziehen und anstoßen · Scrollen oder zwei Finger zum Zoomen
       </p>
     </div>
