@@ -43,4 +43,4 @@
 - [x] Paywall mit 15-%-Gratisvorschau sowie Monats- und Jahresabo einführen
 - [x] Coin-Guthaben ausschließlich im Galerie-Dashboard zeigen, nicht in der oberen Leiste
 - [x] Reise-Epochen um vertiefte Biografien sowie Farben, Pigmente, Materialien und Techniken ergänzen
-- [ ] Echte Monats-/Jahresabos, Premiumstatus und Admin-Testzugang fertig verbinden und prüfen
+- [x] Echte Monats-/Jahresabos, Premiumstatus und Admin-Testzugang fertig verbinden und prüfen
