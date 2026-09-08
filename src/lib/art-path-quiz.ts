@@ -8,8 +8,8 @@ export type ArtPathQuiz = {
 export const artPathQuizzes: ArtPathQuiz[] = [
   { question: "Welche Technik machte van Eycks Bildwelt so detailreich?", options: ["Ölfarbe in feinen Schichten", "Fresko auf nassem Putz", "Grobe Holzschnitte"], answer: "Ölfarbe in feinen Schichten", explanation: "Transparente Öllasuren erzeugen Tiefe, Glanz und feinste Oberflächen." },
   { question: "Welche Idee prägt Botticellis Renaissancebild?", options: ["Der Mensch und die Antike rücken ins Zentrum", "Nur religiöse Regeln zählen", "Farbe wird vollständig vermieden"], answer: "Der Mensch und die Antike rücken ins Zentrum", explanation: "Humanismus und antike Mythologie erweiterten die Bildthemen der Renaissance." },
-  { question: "Was verbindet Leonardo in der Mona Lisa?", options: ["Forschung und psychologische Beobachtung", "Zufall und reine Geometrie", "Mittelalterliche Goldgründe"], answer: "Forschung und psychologische Beobachtung", explanation: "Sfumato, Anatomie und genaue Beobachtung machen das Porträt zu einer Begegnung." },
   { question: "Was verändert Dürers Selbstbildnis am Künstlerbild?", options: ["Der Künstler erscheint als selbstbewusster Schöpfer", "Der Maler bleibt anonym", "Nur der Auftraggeber ist wichtig"], answer: "Der Künstler erscheint als selbstbewusster Schöpfer", explanation: "Dürer präsentiert sich nicht als Handwerker, sondern als geistiger Autor." },
+  { question: "Was verbindet Leonardo in der Mona Lisa?", options: ["Forschung und psychologische Beobachtung", "Zufall und reine Geometrie", "Mittelalterliche Goldgründe"], answer: "Forschung und psychologische Beobachtung", explanation: "Sfumato, Anatomie und genaue Beobachtung machen das Porträt zu einer Begegnung." },
   { question: "Womit lenkt Caravaggio die Handlung?", options: ["Mit dramatischem Licht", "Mit einer Vogelperspektive", "Mit pastellfarbenen Flächen"], answer: "Mit dramatischem Licht", explanation: "Der harte Lichtstrahl führt Blick, Handlung und religiöse Bedeutung zusammen." },
   { question: "Was macht Vermeer zum großen Bildthema?", options: ["Den konzentrierten Alltag", "Antike Schlachten", "Königliche Zeremonien"], answer: "Den konzentrierten Alltag", explanation: "Stilles Licht und alltägliche Arbeit erhalten bei Vermeer Würde und Größe." },
   { question: "Welche Rolle spielt die Natur in der Romantik?", options: ["Sie spiegelt innere Erfahrung", "Sie ist nur Dekoration", "Sie wird exakt vermessen"], answer: "Sie spiegelt innere Erfahrung", explanation: "Die Landschaft wird zur Projektionsfläche für Sehnsucht, Erhabenheit und das Ich." },
@@ -32,14 +32,14 @@ export const stationQuizSets: ArtPathQuiz[][] = [
     { question: "Welche Technik ordnet den Bildraum neu?", options: ["Die Zentralperspektive", "Der Goldgrund", "Die Fotografie"], answer: "Die Zentralperspektive", explanation: "Fluchtlinien zu einem Punkt lassen die Fläche zum begehbaren Raum werden." },
   ],
   [
-    { question: "Was bedeutet Sfumato?", options: ["Weiche Übergänge ohne harte Konturen", "Grelle Farbkontraste", "Ein Bildformat"], answer: "Weiche Übergänge ohne harte Konturen", explanation: "Leonardo lässt Licht und Schatten wie Rauch ineinanderfließen." },
-    { question: "Wo befindet sich die Erschaffung Adams?", options: ["An der Decke der Sixtinischen Kapelle", "Im Louvre", "In der Hagia Sophia"], answer: "An der Decke der Sixtinischen Kapelle", explanation: "Michelangelo malte das Deckenfresko zwischen 1508 und 1512 in Rom." },
-    { question: "Wen versammelt Raffael in der Schule von Athen?", options: ["Antike Philosophen", "Römische Kaiser", "Heilige des Mittelalters"], answer: "Antike Philosophen", explanation: "Platon und Aristoteles stehen im Zentrum einer idealen Denkgemeinschaft." },
-  ],
-  [
     { question: "Welche Technik verbreitete Bilder erstmals in großer Zahl?", options: ["Die Druckgrafik", "Das Mosaik", "Die Freskomalerei"], answer: "Die Druckgrafik", explanation: "Holzschnitt und Kupferstich machen ein Motiv hundertfach verfügbar." },
     { question: "Was ist Dürers Feldhase?", options: ["Eine genaue Naturstudie in Wasserfarbe", "Ein Altarbild", "Ein Wandteppich"], answer: "Eine genaue Naturstudie in Wasserfarbe", explanation: "Jedes Haar ist beobachtet — Naturstudium wird zur eigenständigen Kunst." },
     { question: "In welcher Stadt arbeitete Dürer?", options: ["Nürnberg", "Köln", "Prag"], answer: "Nürnberg", explanation: "Nürnberg war Handels- und Druckzentrum des Heiligen Römischen Reiches." },
+  ],
+  [
+    { question: "Was bedeutet Sfumato?", options: ["Weiche Übergänge ohne harte Konturen", "Grelle Farbkontraste", "Ein Bildformat"], answer: "Weiche Übergänge ohne harte Konturen", explanation: "Leonardo lässt Licht und Schatten wie Rauch ineinanderfließen." },
+    { question: "Wo befindet sich die Erschaffung Adams?", options: ["An der Decke der Sixtinischen Kapelle", "Im Louvre", "In der Hagia Sophia"], answer: "An der Decke der Sixtinischen Kapelle", explanation: "Michelangelo malte das Deckenfresko zwischen 1508 und 1512 in Rom." },
+    { question: "Wen versammelt Raffael in der Schule von Athen?", options: ["Antike Philosophen", "Römische Kaiser", "Heilige des Mittelalters"], answer: "Antike Philosophen", explanation: "Platon und Aristoteles stehen im Zentrum einer idealen Denkgemeinschaft." },
   ],
   [
     { question: "Wie heißt die starke Hell-Dunkel-Malerei?", options: ["Chiaroscuro", "Grisaille", "Pointillismus"], answer: "Chiaroscuro", explanation: "Aus dem Dunkel geschnittenes Licht macht die Szene zur Bühne." },
