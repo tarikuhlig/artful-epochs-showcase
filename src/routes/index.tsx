@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { epochs, allPainters, allWorks } from "@/lib/art-data";
+import { journeys } from "@/lib/journeys";
 import provenanceLogo from "@/assets/provenance-logo.png";
 
 export const Route = createFileRoute("/")({
@@ -171,6 +172,35 @@ function Index() {
               </Link>
             );
           })}
+        </div>
+      </section>
+
+      {/* Kunstreisen */}
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-6xl px-6 py-24">
+          <h2 className="font-display mb-3 text-4xl font-medium tracking-[-0.03em] uppercase md:text-6xl">
+            Kunstreisen
+          </h2>
+          <p className="mb-10 max-w-2xl text-muted-foreground">
+            Geführte Touren durch Städte, Strömungen und Ideen — von Florenz der Medici bis zur New
+            Yorker Schule.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {journeys.map((j) => (
+              <Link
+                key={j.slug}
+                to="/reisen/$slug"
+                params={{ slug: j.slug }}
+                className="group rounded-xl border border-border p-6 transition-colors hover:bg-accent"
+              >
+                <p className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+                  {j.kind} · {j.era}
+                </p>
+                <h3 className="font-display mt-2 text-xl font-medium">{j.title}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{j.subtitle}</p>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
     </div>
