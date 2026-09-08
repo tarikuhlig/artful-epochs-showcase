@@ -85,7 +85,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Lerne die großen Maler und ihre Werke kennen — geordnet nach Epochen, mit Kurzbeschreibungen und Quiz.",
+          "Lerne die großen Maler und ihre Werke kennen — geordnet nach Epochen und als interaktiver Kunstpfad.",
       },
       { name: "author", content: "Provenance" },
       { property: "og:title", content: "Provenance — Kunstgeschichte lernen" },
@@ -128,16 +128,15 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 const NAV: {
-  to: "/" | "/kunstpfad" | "/epochen" | "/globus" | "/museen" | "/quiz";
+  to: "/" | "/kunstpfad" | "/epochen" | "/museen" | "/auktionshaus";
   label: string;
   exact?: boolean;
 }[] = [
   { to: "/", label: "Dashboard", exact: true },
   { to: "/kunstpfad", label: "Kunstpfad" },
   { to: "/epochen", label: "Epochen" },
-  { to: "/globus", label: "Globus" },
   { to: "/museen", label: "Museen" },
-  { to: "/quiz", label: "Quiz" },
+  { to: "/auktionshaus", label: "Auktionshaus" },
 ];
 
 function SiteHeader() {

@@ -2,6 +2,6 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/katalog")({
   beforeLoad: () => {
-    throw redirect({ to: "/globus" });
+    throw redirect({ to: "/kunstpfad" });
   },
 });
