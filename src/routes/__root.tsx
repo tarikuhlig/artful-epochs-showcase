@@ -166,7 +166,7 @@ function SiteHeader() {
   }, [router]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/85 pt-[env(safe-area-inset-top)] backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:h-16 sm:px-6">
         <Link to="/" className="flex items-center">
           <img
@@ -230,7 +230,7 @@ function SiteHeader() {
       </div>
 
       {open && (
-        <nav className="border-t border-border bg-background px-4 pt-2 pb-4 text-base md:hidden">
+        <nav className="max-h-[calc(100dvh-3.5rem)] overflow-y-auto border-t border-border bg-background px-4 pt-2 pb-[calc(1rem+env(safe-area-inset-bottom))] text-base md:hidden">
           {NAV.map((item) => (
             <Link
               key={item.to}
