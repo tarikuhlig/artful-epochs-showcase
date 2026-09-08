@@ -50,7 +50,7 @@ export async function openPaddleCheckout(options: { priceId: string; userId: str
   const checkout: CheckoutOptions = {
     items: [{ priceId, quantity: 1 }],
     customData: { userId: options.userId },
-    settings: { displayMode: "overlay", successUrl: `${window.location.origin}/premium?checkout=success`, allowLogout: false, variant: "one-page" },
+    settings: { displayMode: "overlay", successUrl: `${window.location.origin}/premium`, allowLogout: false, variant: "one-page" },
   };
   if (options.email) checkout.customer = { email: options.email };
   window.Paddle.Checkout.open(checkout);
