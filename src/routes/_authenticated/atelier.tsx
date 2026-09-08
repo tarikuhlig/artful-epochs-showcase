@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Coins, Flame, Sparkles, Trophy } from "lucide-react";
+import { ArrowRight, Coins, Flame, Images, Landmark, Layers, Sparkles, Trophy } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useDiscoveries } from "@/lib/progress";
-import { allWorks } from "@/lib/art-data";
+import { allPainters, allWorks } from "@/lib/art-data";
 import { journeys } from "@/lib/journeys";
+import { museums } from "@/lib/museums";
+import { artPathWithWorks } from "@/lib/art-path";
+import { useArtPathProgress, useOwnedItems } from "@/lib/economy";
 import {
   POINTS_PER_DISCOVERY,
   harvestToday,
@@ -41,6 +45,8 @@ function AtelierPage() {
   const { data: stats } = useUserStats();
   const { data: discoveries } = useDiscoveries();
   const { data: journeyProgress } = useJourneyProgress();
+  const { data: pathProgress } = useArtPathProgress();
+  const { data: ownedItems } = useOwnedItems();
   const invalidate = useInvalidateFarm();
   const [busy, setBusy] = useState(false);
 
@@ -49,6 +55,9 @@ function AtelierPage() {
   const discoveryPoints = (discoveries?.length ?? 0) * POINTS_PER_DISCOVERY;
   const totalPoints = (stats?.points ?? 0) + discoveryPoints;
   const lvl = levelFor(totalPoints);
+  const list = discoveries ?? [];
+  const count = (kind: string) => list.filter((item) => item.kind === kind).length;
+  const name = (user?.user_metadata?.["display_name"] as string | undefined) ?? user?.email?.split("@")[0] ?? "Kunstfreund";
 
   async function harvest() {
     if (!user || !stats) return;
@@ -62,13 +71,14 @@ function AtelierPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-16 md:py-20">
+    <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
       <p className="text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase">
-        Atelier
+        Mein Atelier
       </p>
       <h1 className="font-display mt-3 text-4xl font-medium tracking-tight md:text-5xl">
-        Level {lvl.level} · {levelTitle(lvl.level)}
+        Willkommen, {name}
       </h1>
+      <p className="mt-3 text-muted-foreground">Level {lvl.level} · {levelTitle(lvl.level)} — hier wächst deine persönliche Kunstwelt.</p>
 
       <div className="mt-6 max-w-xl">
         <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
@@ -82,7 +92,7 @@ function AtelierPage() {
         </p>
       </div>
 
-      <div className="mt-10 grid gap-4 sm:grid-cols-4">
+      <div className="mt-10 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat icon={<Sparkles className="h-4 w-4" />} label="Punkte" value={totalPoints} />
         <Stat
           icon={<Flame className="h-4 w-4" />}
@@ -96,6 +106,22 @@ function AtelierPage() {
           value={`${stats?.best_streak ?? 0} Tage`}
         />
       </div>
+
+      <section className="mt-8 grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
+        <div className="rounded-xl border border-border p-6 sm:p-8">
+          <div className="flex items-center justify-between gap-4"><div><p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Dein Dashboard</p><h2 className="font-display mt-2 text-2xl font-medium">Entdeckungen</h2></div><Sparkles className="h-5 w-5 text-coin" /></div>
+          <div className="mt-7 grid grid-cols-2 gap-5 sm:grid-cols-4">
+            <Progress label="Künstler" value={count("painter")} total={allPainters.length} icon={<Sparkles />} />
+            <Progress label="Werke" value={count("work")} total={allWorks.length} icon={<Images />} />
+            <Progress label="Museen" value={count("museum")} total={museums.length} icon={<Landmark />} />
+            <Progress label="Reisen" value={pathProgress?.length ?? 0} total={artPathWithWorks.length} icon={<Layers />} />
+          </div>
+        </div>
+        <Link to="/sammlung" className="group flex flex-col justify-between rounded-xl bg-path-leaf p-6 sm:p-8">
+          <div className="flex items-start justify-between"><Images className="h-6 w-6" /><ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" /></div>
+          <div className="mt-10"><p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Private Galerie</p><h2 className="font-display mt-2 text-2xl font-medium">{ownedItems?.length ?? 0} Werke gesammelt</h2><p className="mt-2 text-sm text-muted-foreground">Ordnen, vergleichen und deine Sammlung kuratieren.</p></div>
+        </Link>
+      </section>
 
       <section className="mt-14 overflow-hidden rounded-2xl border border-border bg-card md:grid md:grid-cols-[1.1fr_1fr]">
         <div className="aspect-4/3 overflow-hidden bg-muted md:aspect-auto">
@@ -113,20 +139,14 @@ function AtelierPage() {
           </p>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{work.description}</p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <button
+            <Button
               onClick={harvest}
               disabled={harvestedToday || busy}
-              className="rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
+              className="rounded-full px-6"
             >
               {harvestedToday ? "Heute geerntet" : busy ? "Wird geerntet …" : "Heute ernten"}
-            </button>
-            <Link
-              to="/werke/$id"
-              params={{ id: work.id }}
-              className="rounded-full border border-input px-6 py-2.5 text-sm transition-colors hover:bg-accent"
-            >
-              Werk ansehen
-            </Link>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full px-6"><Link to="/werke/$id" params={{ id: work.id }}>Werk ansehen</Link></Button>
           </div>
           <p className="mt-4 text-xs text-muted-foreground">
             Jeder Tag in Folge erhöht deinen Bonus – bis zu 60 Punkte pro Ernte.
@@ -187,6 +207,11 @@ function AtelierPage() {
       </section>
     </div>
   );
+}
+
+function Progress({ label, value, total, icon }: { label: string; value: number; total: number; icon: React.ReactNode }) {
+  const percent = total ? Math.min(100, Math.round((value / total) * 100)) : 0;
+  return <div><span className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase [&_svg]:h-3.5 [&_svg]:w-3.5">{icon}{label}</span><p className="font-display mt-2 text-xl font-medium">{value} <span className="text-sm text-muted-foreground">/ {total}</span></p><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted"><div className="h-full rounded-full bg-coin" style={{ width: `${percent}%` }} /></div></div>;
 }
 
 function Stat({
