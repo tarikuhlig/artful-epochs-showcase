@@ -150,11 +150,18 @@ function SiteHeader() {
             Epochen
           </Link>
           <Link
-            to="/katalog"
+            to="/globus"
             className="hidden rounded-full px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:inline-flex"
             activeProps={{ className: "bg-accent text-foreground" }}
           >
-            Katalog
+            Globus
+          </Link>
+          <Link
+            to="/museen"
+            className="hidden rounded-full px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:inline-flex"
+            activeProps={{ className: "bg-accent text-foreground" }}
+          >
+            Museen
           </Link>
           <Link
             to="/reisen"

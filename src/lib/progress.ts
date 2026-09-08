@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
-export type DiscoveryKind = "painter" | "work" | "epoch";
+export type DiscoveryKind = "painter" | "work" | "epoch" | "museum";
 
 export function useDiscoveries() {
   const { user } = useAuth();

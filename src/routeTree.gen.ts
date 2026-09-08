@@ -12,12 +12,15 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as GlobusRouteImport } from './routes/globus'
 import { Route as KatalogRouteImport } from './routes/katalog'
 import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as AuthenticatedAtelierRouteImport } from './routes/_authenticated/atelier'
 import { Route as AuthenticatedSammlungRouteImport } from './routes/_authenticated/sammlung'
 import { Route as EpochenEpocheRouteImport } from './routes/epochen.$epoche'
 import { Route as MalerSlugRouteImport } from './routes/maler.$slug'
+import { Route as MuseenIndexRouteImport } from './routes/museen.index'
+import { Route as MuseenSlugRouteImport } from './routes/museen.$slug'
 import { Route as ReisenIndexRouteImport } from './routes/reisen.index'
 import { Route as ReisenSlugRouteImport } from './routes/reisen.$slug'
 import { Route as WerkeIdRouteImport } from './routes/werke.$id'
@@ -34,6 +37,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GlobusRoute = GlobusRouteImport.update({
+  id: '/globus',
+  path: '/globus',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KatalogRoute = KatalogRouteImport.update({
@@ -66,6 +74,16 @@ const MalerSlugRoute = MalerSlugRouteImport.update({
   path: '/maler/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MuseenIndexRoute = MuseenIndexRouteImport.update({
+  id: '/museen/',
+  path: '/museen/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MuseenSlugRoute = MuseenSlugRouteImport.update({
+  id: '/museen/$slug',
+  path: '/museen/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReisenIndexRoute = ReisenIndexRouteImport.update({
   id: '/reisen/',
   path: '/reisen/',
@@ -85,27 +103,33 @@ const WerkeIdRoute = WerkeIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/globus': typeof GlobusRoute
   '/katalog': typeof KatalogRoute
   '/quiz': typeof QuizRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/sammlung': typeof AuthenticatedSammlungRoute
   '/epochen/$epoche': typeof EpochenEpocheRoute
   '/maler/$slug': typeof MalerSlugRoute
+  '/museen/$slug': typeof MuseenSlugRoute
   '/reisen/$slug': typeof ReisenSlugRoute
   '/werke/$id': typeof WerkeIdRoute
+  '/museen/': typeof MuseenIndexRoute
   '/reisen/': typeof ReisenIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/globus': typeof GlobusRoute
   '/katalog': typeof KatalogRoute
   '/quiz': typeof QuizRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/sammlung': typeof AuthenticatedSammlungRoute
   '/epochen/$epoche': typeof EpochenEpocheRoute
   '/maler/$slug': typeof MalerSlugRoute
+  '/museen/$slug': typeof MuseenSlugRoute
   '/reisen/$slug': typeof ReisenSlugRoute
   '/werke/$id': typeof WerkeIdRoute
+  '/museen': typeof MuseenIndexRoute
   '/reisen': typeof ReisenIndexRoute
 }
 export interface FileRoutesById {
@@ -113,14 +137,17 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/globus': typeof GlobusRoute
   '/katalog': typeof KatalogRoute
   '/quiz': typeof QuizRoute
   '/_authenticated/atelier': typeof AuthenticatedAtelierRoute
   '/_authenticated/sammlung': typeof AuthenticatedSammlungRoute
   '/epochen/$epoche': typeof EpochenEpocheRoute
   '/maler/$slug': typeof MalerSlugRoute
+  '/museen/$slug': typeof MuseenSlugRoute
   '/reisen/$slug': typeof ReisenSlugRoute
   '/werke/$id': typeof WerkeIdRoute
+  '/museen/': typeof MuseenIndexRoute
   '/reisen/': typeof ReisenIndexRoute
 }
 export interface FileRouteTypes {
@@ -128,41 +155,50 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/globus'
     | '/katalog'
     | '/quiz'
     | '/atelier'
     | '/sammlung'
     | '/epochen/$epoche'
     | '/maler/$slug'
+    | '/museen/$slug'
     | '/reisen/$slug'
     | '/werke/$id'
+    | '/museen/'
     | '/reisen/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/globus'
     | '/katalog'
     | '/quiz'
     | '/atelier'
     | '/sammlung'
     | '/epochen/$epoche'
     | '/maler/$slug'
+    | '/museen/$slug'
     | '/reisen/$slug'
     | '/werke/$id'
+    | '/museen'
     | '/reisen'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/globus'
     | '/katalog'
     | '/quiz'
     | '/_authenticated/atelier'
     | '/_authenticated/sammlung'
     | '/epochen/$epoche'
     | '/maler/$slug'
+    | '/museen/$slug'
     | '/reisen/$slug'
     | '/werke/$id'
+    | '/museen/'
     | '/reisen/'
   fileRoutesById: FileRoutesById
 }
@@ -170,12 +206,15 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  GlobusRoute: typeof GlobusRoute
   KatalogRoute: typeof KatalogRoute
   QuizRoute: typeof QuizRoute
   EpochenEpocheRoute: typeof EpochenEpocheRoute
   MalerSlugRoute: typeof MalerSlugRoute
+  MuseenSlugRoute: typeof MuseenSlugRoute
   ReisenSlugRoute: typeof ReisenSlugRoute
   WerkeIdRoute: typeof WerkeIdRoute
+  MuseenIndexRoute: typeof MuseenIndexRoute
   ReisenIndexRoute: typeof ReisenIndexRoute
 }
 
@@ -200,6 +239,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/globus': {
+      id: '/globus'
+      path: '/globus'
+      fullPath: '/globus'
+      preLoaderRoute: typeof GlobusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/katalog': {
@@ -244,6 +290,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MalerSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/museen/': {
+      id: '/museen/'
+      path: '/museen'
+      fullPath: '/museen/'
+      preLoaderRoute: typeof MuseenIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/museen/$slug': {
+      id: '/museen/$slug'
+      path: '/museen/$slug'
+      fullPath: '/museen/$slug'
+      preLoaderRoute: typeof MuseenSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reisen/': {
       id: '/reisen/'
       path: '/reisen'
@@ -285,12 +345,15 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  GlobusRoute: GlobusRoute,
   KatalogRoute: KatalogRoute,
   QuizRoute: QuizRoute,
   EpochenEpocheRoute: EpochenEpocheRoute,
   MalerSlugRoute: MalerSlugRoute,
+  MuseenSlugRoute: MuseenSlugRoute,
   ReisenSlugRoute: ReisenSlugRoute,
   WerkeIdRoute: WerkeIdRoute,
+  MuseenIndexRoute: MuseenIndexRoute,
   ReisenIndexRoute: ReisenIndexRoute,
 }
 export const routeTree = rootRouteImport
