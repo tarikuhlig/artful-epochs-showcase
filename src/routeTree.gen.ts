@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as KatalogRouteImport } from './routes/katalog'
+import { Route as KuenstlerDesTagesRouteImport } from './routes/kuenstler-des-tages'
 import { Route as KunstpfadRouteImport } from './routes/kunstpfad'
 import { Route as AuthenticatedAtelierRouteImport } from './routes/_authenticated/atelier'
 import { Route as AuthenticatedAuktionshausRouteImport } from './routes/_authenticated/auktionshaus'
@@ -44,6 +45,11 @@ const AuthRoute = AuthRouteImport.update({
 const KatalogRoute = KatalogRouteImport.update({
   id: '/katalog',
   path: '/katalog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KuenstlerDesTagesRoute = KuenstlerDesTagesRouteImport.update({
+  id: '/kuenstler-des-tages',
+  path: '/kuenstler-des-tages',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KunstpfadRoute = KunstpfadRouteImport.update({
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/katalog': typeof KatalogRoute
+  '/kuenstler-des-tages': typeof KuenstlerDesTagesRoute
   '/kunstpfad': typeof KunstpfadRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/auktionshaus': typeof AuthenticatedAuktionshausRoute
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/katalog': typeof KatalogRoute
+  '/kuenstler-des-tages': typeof KuenstlerDesTagesRoute
   '/kunstpfad': typeof KunstpfadRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/auktionshaus': typeof AuthenticatedAuktionshausRoute
@@ -155,6 +163,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/katalog': typeof KatalogRoute
+  '/kuenstler-des-tages': typeof KuenstlerDesTagesRoute
   '/kunstpfad': typeof KunstpfadRoute
   '/_authenticated/atelier': typeof AuthenticatedAtelierRoute
   '/_authenticated/auktionshaus': typeof AuthenticatedAuktionshausRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/katalog'
+    | '/kuenstler-des-tages'
     | '/kunstpfad'
     | '/atelier'
     | '/auktionshaus'
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/katalog'
+    | '/kuenstler-des-tages'
     | '/kunstpfad'
     | '/atelier'
     | '/auktionshaus'
@@ -212,6 +223,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/katalog'
+    | '/kuenstler-des-tages'
     | '/kunstpfad'
     | '/_authenticated/atelier'
     | '/_authenticated/auktionshaus'
@@ -232,6 +244,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   KatalogRoute: typeof KatalogRoute
+  KuenstlerDesTagesRoute: typeof KuenstlerDesTagesRoute
   KunstpfadRoute: typeof KunstpfadRoute
   EpochenEpocheRoute: typeof EpochenEpocheRoute
   MalerSlugRoute: typeof MalerSlugRoute
@@ -272,6 +285,13 @@ declare module '@tanstack/react-router' {
       path: '/katalog'
       fullPath: '/katalog'
       preLoaderRoute: typeof KatalogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kuenstler-des-tages': {
+      id: '/kuenstler-des-tages'
+      path: '/kuenstler-des-tages'
+      fullPath: '/kuenstler-des-tages'
+      preLoaderRoute: typeof KuenstlerDesTagesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kunstpfad': {
@@ -388,6 +408,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   KatalogRoute: KatalogRoute,
+  KuenstlerDesTagesRoute: KuenstlerDesTagesRoute,
   KunstpfadRoute: KunstpfadRoute,
   EpochenEpocheRoute: EpochenEpocheRoute,
   MalerSlugRoute: MalerSlugRoute,

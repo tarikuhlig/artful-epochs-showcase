@@ -9,6 +9,7 @@ import { museums } from "@/lib/museums";
 import { artPathWithWorks } from "@/lib/art-path";
 import { useAuth } from "@/hooks/useAuth";
 import { workOfTheDay } from "@/lib/farm";
+import { painterOfTheDay, worksOfPainter } from "@/lib/daily-artist";
 import coin from "@/assets/provenance-coin.png";
 
 export const Route = createFileRoute("/")({
@@ -51,6 +52,8 @@ function HomePage() {
   const workIndex = Math.max(0, allWorks.indexOf(work));
   const discoveries = [work, allWorks[(workIndex + 29) % allWorks.length], allWorks[(workIndex + 71) % allWorks.length]].filter(Boolean);
   const tip = DAILY_TIPS[new Date().getDay() % DAILY_TIPS.length];
+  const dailyPainter = painterOfTheDay();
+  const painterWorks = worksOfPainter(dailyPainter.slug);
 
   return (
     <div className="min-h-screen bg-background">
@@ -76,6 +79,25 @@ function HomePage() {
             </div>
           </Link>
         </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 pb-4">
+        <Link to="/kuenstler-des-tages" className="group grid overflow-hidden rounded-xl border border-border sm:grid-cols-[1.15fr_0.85fr]">
+          <div className="p-7 sm:p-9">
+            <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Künstler des Tages</p>
+            <h2 className="font-display mt-2 text-3xl font-medium">{dailyPainter.name}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{dailyPainter.life} · {dailyPainter.epoch.name}</p>
+            <p className="mt-4 line-clamp-3 max-w-xl leading-relaxed text-muted-foreground">{dailyPainter.bio}</p>
+            <span className="font-display mt-6 inline-flex items-center gap-2 text-base">Künstler kennenlernen <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
+          </div>
+          <div className="grid grid-cols-2 gap-1 p-1 sm:p-2">
+            {painterWorks.slice(0, 4).map((item) => (
+              <div key={item.id} className="aspect-square overflow-hidden rounded-lg bg-muted">
+                <img src={item.image} alt={item.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
+              </div>
+            ))}
+          </div>
+        </Link>
       </section>
 
       <section className="mx-auto max-w-6xl px-6 py-14">
