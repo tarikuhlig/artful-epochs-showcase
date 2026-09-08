@@ -76,14 +76,14 @@ function Index() {
   return (
     <div className="min-h-screen">
       {/* Hero mit Bilder-Tunnel */}
-      <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden bg-foreground">
+      <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden bg-background">
         <Tunnel />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_15%,color-mix(in_oklab,var(--foreground)_60%,transparent)_85%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_15%,var(--background)_88%)]" />
         <div
           className="relative z-10 flex flex-col items-center px-6 py-10 text-center"
           style={{
             backgroundImage:
-              "radial-gradient(ellipse at center, color-mix(in oklab, var(--foreground) 88%, transparent) 0%, color-mix(in oklab, var(--foreground) 60%, transparent) 45%, transparent 72%)",
+              "radial-gradient(ellipse at center, var(--background) 0%, color-mix(in oklab, var(--background) 72%, transparent) 48%, transparent 74%)",
           }}
         >
           <img
@@ -91,22 +91,22 @@ function Index() {
             alt="Provenance"
             width={1920}
             height={640}
-            className="w-[min(78vw,760px)] drop-shadow-[0_20px_60px_rgba(0,0,0,0.55)]"
+            className="w-[min(78vw,760px)] drop-shadow-[0_18px_50px_rgba(0,0,0,0.18)]"
           />
-          <p className="font-display mt-6 text-[11px] font-medium tracking-[0.42em] text-background/70 uppercase sm:text-xs">
+          <p className="font-display mt-6 text-[11px] font-normal tracking-[0.42em] text-muted-foreground uppercase sm:text-xs">
             {epochs.length} Epochen · {allPainters.length} Maler · {allWorks.length} Werke
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <a
               href="#epochen"
-              className="font-display inline-flex items-center gap-2 rounded-md bg-background px-7 py-3.5 text-xs font-medium tracking-[0.18em] text-foreground uppercase transition-transform hover:-translate-y-0.5"
+              className="font-display inline-flex items-center gap-2 rounded-full bg-foreground px-7 py-3.5 text-xs font-normal tracking-[0.18em] text-background uppercase transition-transform hover:-translate-y-0.5"
             >
               Epochen entdecken
               <ArrowRight className="h-4 w-4" />
             </a>
             <Link
               to="/quiz"
-              className="font-display inline-flex items-center gap-2 rounded-md border border-background/40 px-7 py-3.5 text-xs font-medium tracking-[0.18em] text-background uppercase transition-colors hover:bg-background/10"
+              className="font-display inline-flex items-center gap-2 rounded-full border border-foreground/25 px-7 py-3.5 text-xs font-normal tracking-[0.18em] text-foreground uppercase transition-colors hover:bg-foreground/5"
             >
               Zum Quiz
             </Link>
