@@ -30,7 +30,7 @@ export const Route = createFileRoute("/_authenticated/sammlung")({
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-md border border-border p-5">
-      <p className="font-display text-3xl font-semibold tracking-tight">{value}</p>
+      <p className="font-display text-3xl font-medium tracking-tight">{value}</p>
       <p className="mt-1 text-xs tracking-widest text-muted-foreground uppercase">{label}</p>
     </div>
   );
@@ -82,7 +82,7 @@ function CollectionPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-sm tracking-widest text-muted-foreground uppercase">Meine Sammlung</p>
-          <h1 className="font-display mt-2 text-4xl font-semibold tracking-tight md:text-5xl">
+          <h1 className="font-display mt-2 text-4xl font-medium tracking-tight md:text-5xl">
             {name ? `Hallo, ${name}` : "Dein Katalog"}
           </h1>
         </div>
@@ -101,7 +101,7 @@ function CollectionPage() {
         <Stat label="Bestes Quiz" value={best ? `${Math.round(best * 100)}%` : "—"} />
       </div>
 
-      <h2 className="font-display mt-16 mb-4 text-2xl font-semibold">Epochen</h2>
+      <h2 className="font-display mt-16 mb-4 text-2xl font-medium">Epochen</h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {epochs.map((e) => {
           const found = sets.epoch.has(e.slug);
@@ -122,7 +122,7 @@ function CollectionPage() {
         })}
       </div>
 
-      <h2 className="font-display mt-14 mb-4 text-2xl font-semibold">Maler</h2>
+      <h2 className="font-display mt-14 mb-4 text-2xl font-medium">Maler</h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {allPainters.map((p) => {
           const found = sets.painter.has(p.slug);
@@ -145,7 +145,7 @@ function CollectionPage() {
         })}
       </div>
 
-      <h2 className="font-display mt-14 mb-4 text-2xl font-semibold">Werke</h2>
+      <h2 className="font-display mt-14 mb-4 text-2xl font-medium">Werke</h2>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {allWorks.map((w) => {
           const found = sets.work.has(w.id);
@@ -166,7 +166,7 @@ function CollectionPage() {
         })}
       </div>
 
-      <h2 className="font-display mt-14 mb-4 text-2xl font-semibold">Quiz-Ergebnisse</h2>
+      <h2 className="font-display mt-14 mb-4 text-2xl font-medium">Quiz-Ergebnisse</h2>
       {results.length === 0 ? (
         <p className="text-sm text-muted-foreground">
           Noch keine Ergebnisse —{" "}

@@ -84,7 +84,7 @@ function AuthPage() {
 
   return (
     <div className="mx-auto flex min-h-[80vh] max-w-md flex-col justify-center px-6 py-16">
-      <h1 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
+      <h1 className="font-display text-3xl font-medium tracking-tight md:text-4xl">
         {mode === "signin" ? "Willkommen zurück" : "Konto anlegen"}
       </h1>
       <p className="mt-2 text-sm text-muted-foreground">
