@@ -42,7 +42,7 @@ function makeEarthTexture() {
 
   // Vergilbtes Pergament als Meer
   const ocean = ctx.createLinearGradient(0, 0, 0, h);
-  ocean.addColorStop(0, "#cbb race".replace(" race", "88"));
+  ocean.addColorStop(0, "#cbb188");
   ocean.addColorStop(0.5, "#e6d3a8");
   ocean.addColorStop(1, "#cbb188");
   ctx.fillStyle = ocean;
