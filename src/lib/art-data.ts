@@ -61,6 +61,7 @@ import img_blaue_pferde from "@/assets/art/die-grossen-blauen-pferde.jpg";
 
 import { extraEpochs, extraPainters, extraStyles, extraWorks } from "./art-catalog-extra";
 import { extraPainters2, extraStyles2, extraWorks2 } from "./art-catalog-extra2";
+import { extraPainters3, extraStyles3, extraWorks3 } from "./art-catalog-extra3";
 
 export type WorkData = {
   id: string;
@@ -1558,7 +1559,7 @@ export type Work = Omit<WorkData, "painter"> & { painter: Painter; epoch: Epoch 
 export type Epoch = EpochData & { painters: Painter[] };
 
 export const epochData: EpochData[] = [...baseEpochData, ...extraEpochs];
-const allStyleCandidates: Style[] = [...baseStyles, ...extraStyles, ...extraStyles2];
+const allStyleCandidates: Style[] = [...baseStyles, ...extraStyles, ...extraStyles2, ...extraStyles3];
 export const styles: Style[] = allStyleCandidates.filter(
   (s, i) => allStyleCandidates.findIndex((o) => o.slug === s.slug) === i,
 );
