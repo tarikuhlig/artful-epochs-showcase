@@ -22,3 +22,4 @@
 - [x] Globus und separates Quiz entfernen; Stationsquiz als Freischaltung in den Kunstpfad integrieren
 - [x] Auktionshaus in die Hauptnavigation aufnehmen und Coins pastellfarben neu gestalten
 - [x] Rote Startseiten-Akzente durch Pastelltöne ersetzen, Atelier mit Coin-Anzeige verbinden und Kunstpfad als Reise benennen
+- [x] Alle 12 Reise-Stationen mit echten Epochen, Künstlern, mehreren Werken und Reiseerlebnissen ausbauen

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check, ChevronRight, Coins, Lock, MapPin, X } from "lucide-react";
+import { Check, ChevronRight, Coins, Compass, Lock, MapPin, Palette, X } from "lucide-react";
 import { artPathWithWorks, totalArtPathCoins } from "@/lib/art-path";
 import { useArtPathProgress } from "@/lib/economy";
 import { completePathStation } from "@/lib/economy.functions";
@@ -78,12 +78,20 @@ function ArtPathPage() {
                   <div className="flex flex-wrap items-center justify-between gap-2"><p className="text-[10px] tracking-[0.24em] text-muted-foreground uppercase">{station.era} · {station.years}</p><span className="flex items-center gap-1 text-xs text-coin"><Coins className="h-3.5 w-3.5" /> +{station.coinReward}</span></div>
                   <h2 className="font-display mt-2 text-2xl font-medium">{station.title}</h2>
                   <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground"><MapPin className="h-3 w-3" />{station.place}</p>
-                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{station.lesson}</p>
-                  {unlocked && <p className="mt-3 text-sm"><span className="font-medium">Der Wendepunkt:</span> {station.turningPoint}</p>}
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    <Link to="/werke/$id" params={{ id: work.id }} className="inline-flex items-center gap-2 rounded-full border border-input px-4 py-2 text-sm hover:bg-accent">Werk lernen <ChevronRight className="h-4 w-4" /></Link>
-                  </div>
-                   {!done && unlocked && quiz && <div className="mt-6 border-t border-border pt-5"><p className="text-[10px] tracking-[0.24em] text-muted-foreground uppercase">Prüfung zum Freischalten</p><h3 className="mt-2 text-base font-medium">{quiz.question}</h3><div className="mt-3 grid gap-2">{quiz.options.map((option) => <button key={option} type="button" onClick={() => { setAnswers((current) => ({ ...current, [station.index]: option })); setFeedback((current) => { const copy = { ...current }; delete copy[station.index]; return copy; }); }} className={`rounded-lg border px-4 py-3 text-left text-sm transition-colors ${selected === option ? "border-coin bg-coin-soft" : "border-border bg-background hover:bg-accent"}`}>{option}</button>)}</div>{result === "wrong" && <p className="mt-3 flex items-center gap-2 text-sm text-destructive"><X className="h-4 w-4" />Noch nicht richtig – lies den Wendepunkt noch einmal.</p>}<button type="button" disabled={!selected || busy === station.index} onClick={() => finish(station.index, selected)} className="mt-4 rounded-full bg-primary px-5 py-2.5 text-sm text-primary-foreground disabled:opacity-40">{user ? (busy === station.index ? "Wird geprüft …" : "Antwort prüfen") : "Anmelden & antworten"}</button></div>}
+                   <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{station.lesson}</p>
+                   {unlocked && <>
+                     <p className="mt-3 text-sm"><span className="font-medium">Der Wendepunkt:</span> {station.turningPoint}</p>
+                     <div className="mt-5 flex items-start gap-3 rounded-lg bg-path-sky p-4">
+                       <Compass className="mt-0.5 h-5 w-5 shrink-0 text-coin" />
+                       <div><p className="font-display font-medium">{station.experience.title}</p><p className="mt-1 text-sm leading-relaxed text-muted-foreground">{station.experience.story}</p><p className="mt-3 text-sm"><span className="font-medium">Deine Aufgabe:</span> {station.experience.mission}</p></div>
+                     </div>
+                     <div className="mt-5 flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Palette className="h-4 w-4" /> Künstler dieser Station</div>
+                     <p className="mt-2 text-sm">{station.artists.join(" · ")}</p>
+                     <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
+                       {station.works.map((stationWork) => <Link key={stationWork.id} to="/werke/$id" params={{ id: stationWork.id }} className="group min-w-0"><div className="aspect-[4/3] overflow-hidden rounded-md bg-muted"><img src={stationWork.image} alt={stationWork.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></div><p className="mt-2 truncate text-sm font-medium">{stationWork.title}</p><p className="truncate text-xs text-muted-foreground">{stationWork.painter.name} · {stationWork.year}</p></Link>)}
+                     </div>
+                   </>}
+                   {!done && unlocked && quiz && <div className="mt-6 border-t border-border pt-5"><p className="text-[10px] tracking-[0.24em] text-muted-foreground uppercase">Prüfung zum Freischalten</p><h3 className="mt-2 text-base font-medium">{quiz.question}</h3><div className="mt-3 grid gap-2">{quiz.options.map((option) => <button key={option} type="button" onClick={() => { setAnswers((current) => ({ ...current, [station.index]: option })); setFeedback((current) => { const copy = { ...current }; delete copy[station.index]; return copy; }); }} className={`rounded-lg border px-4 py-3 text-left text-sm transition-colors ${selected === option ? "border-coin bg-coin-soft" : "border-border bg-background hover:bg-accent"}`}>{option}</button>)}</div>{result === "wrong" && <p className="mt-3 flex items-center gap-2 text-sm text-destructive"><X className="h-4 w-4" />Noch nicht richtig – lies den Wendepunkt noch einmal.</p>}{result === "correct" && <p className="mt-3 flex items-center gap-2 text-sm text-coin"><Check className="h-4 w-4" />{quiz.explanation}</p>}<button type="button" disabled={!selected || busy === station.index} onClick={() => finish(station.index, selected)} className="mt-4 rounded-full bg-primary px-5 py-2.5 text-sm text-primary-foreground disabled:opacity-40">{user ? (busy === station.index ? "Wird geprüft …" : `Antwort prüfen · Station ${station.index + 2 <= artPathWithWorks.length ? station.index + 2 : "abschließen"} öffnen`) : "Anmelden & antworten"}</button></div>}
                 </div>
               </div>}
             </article>
