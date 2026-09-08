@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_authenticated/sammlung")({
       {
         name: "description",
         content:
-          "Dein persönlicher Katalog: welche Maler, Epochen und Werke du schon entdeckt hast, dazu deine Quiz-Ergebnisse.",
+          "Dein persönlicher Katalog mit entdeckten und im Auktionshaus erworbenen Werken.",
       },
       { property: "og:title", content: "Meine Sammlung | Provenance" },
       {

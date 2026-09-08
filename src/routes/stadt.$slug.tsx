@@ -24,7 +24,7 @@ export const Route = createFileRoute("/stadt/$slug")({
     const title = city ? `${city.city}: Museen & Kunstreisen | Provenance` : "Stadt nicht gefunden | Provenance";
     const description = city
       ? `${city.city} für Kunstreisende: ${city.museums.length} Museen, aktuelle Besuchsinfos, Ausstellungen und eine kuratierte Tagesroute.`
-      : "Kunststädte auf dem Provenance-Globus entdecken.";
+      : "Kunststädte, Museen und ihre wichtigsten Sammlungen entdecken.";
     return {
       meta: [
         { title },
