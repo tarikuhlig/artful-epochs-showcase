@@ -1,0 +1,2 @@
+ALTER TABLE public.discoveries DROP CONSTRAINT IF EXISTS discoveries_kind_check;
+ALTER TABLE public.discoveries ADD CONSTRAINT discoveries_kind_check CHECK (kind IN ('painter','work','epoch','museum'));
