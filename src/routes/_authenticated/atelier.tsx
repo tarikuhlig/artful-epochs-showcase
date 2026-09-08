@@ -25,14 +25,14 @@ import coin from "@/assets/provenance-coin.png";
 export const Route = createFileRoute("/_authenticated/atelier")({
   head: () => ({
     meta: [
-      { title: "Atelier — tägliche Ernte, Serie und Level | Provenance" },
+      { title: "Galerie — Kunstsammlung & Fortschritt | Provenance" },
       {
         name: "description",
         content:
-          "Dein Atelier: Werk des Tages ernten, Serie halten, Punkte sammeln und neue Level freischalten.",
+          "Deine Galerie: Lieblingswerke ausstellen, Fortschritt sehen, Coins sammeln und neue Level freischalten.",
       },
-      { property: "og:title", content: "Atelier | Provenance" },
-      { property: "og:description", content: "Tägliche Ernte, Serie und Level in Provenance." },
+      { property: "og:title", content: "Galerie | Provenance" },
+      { property: "og:description", content: "Kunstsammlung, Ausstellung und persönlicher Fortschritt in Provenance." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -73,7 +73,7 @@ function AtelierPage() {
   return (
     <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
       <p className="text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase">
-        Mein Atelier
+         Meine Galerie
       </p>
       <h1 className="font-display mt-3 text-4xl font-medium tracking-tight md:text-5xl">
         Willkommen, {name}

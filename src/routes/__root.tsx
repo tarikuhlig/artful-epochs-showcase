@@ -197,7 +197,7 @@ function SiteHeader() {
                 className="inline-flex items-center rounded-l-full border border-input bg-background px-4 py-2 text-foreground transition-colors hover:bg-accent"
                 activeProps={{ className: "bg-accent" }}
               >
-                Atelier
+                Galerie
               </Link>
               <Link
                 to="/auktionshaus"
@@ -245,7 +245,7 @@ function SiteHeader() {
           ))}
           {user ? (
             <div className="mt-2 flex items-stretch">
-              <Link to="/atelier" onClick={() => setOpen(false)} className="flex-1 rounded-l-full bg-primary px-4 py-3 text-center text-primary-foreground">Atelier</Link>
+               <Link to="/atelier" onClick={() => setOpen(false)} className="flex-1 rounded-l-full bg-primary px-4 py-3 text-center text-primary-foreground">Galerie</Link>
               <Link to="/auktionshaus" onClick={() => setOpen(false)} className="-ml-px inline-flex items-center gap-2 rounded-r-full border border-coin/35 bg-coin-soft px-4 py-3 text-coin">
                 <img src={provenanceCoin} alt="" width={1024} height={1024} className="h-6 w-6" />
                 <span className="font-medium tabular-nums">{stats?.coins ?? 0}</span>

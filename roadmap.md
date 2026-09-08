@@ -35,3 +35,5 @@
 - [x] Jede Reise-Epoche mit vier prägenden Künstlerprofilen ausstatten
 - [x] Reise als durchklickbaren Kartenstapel pro Epoche gestalten
 - [x] Auktionshaus prächtiger gestalten und berühmte Meisterwerke deutlich höher bepreisen
+- [x] Auktionshaus täglich mit 1 Platin-, 2 Gold- und 2 Bronze-Werken rotieren lassen
+- [x] Galerie-Ausstellung, Benutzername und Profilbild umsetzen
