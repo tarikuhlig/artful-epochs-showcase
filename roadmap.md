@@ -6,5 +6,5 @@
 - [x] Museen bereisen: 38 Häuser mit eigener Seite, Werken und Fortschritt
 - [x] Katalog ersetzt durch interaktiven alten Globus (/globus) mit Städten, Museen und Kunstreisen
 - [x] Startseite: Logo im Atelier (schwebende Malutensilien) statt Bildertunnel, klare Einstiege
-- [ ] Globus in echtem 3D (Drehen, Schwung, Zoom), Museen mit Öffnungszeiten/Tipps, Stadt-Kunstreise-Karte, Mobile-Optimierung
-- [ ] Katalog auf min. 100 Künstler mit je min. 5 Werken erweitern (Bilder gemeinfrei via Wikimedia)
+- [x] Globus in echtem 3D (Drehen, Schwung, Zoom), Museen mit Öffnungszeiten/Tipps, Stadt-Kunstreise-Karte, Mobile-Optimierung
+- [x] Katalog auf 128 Künstler (98 neu) mit je min. 5 Werken, 826 Werke mit je min. 5 Werken erweitern (Bilder gemeinfrei via Wikimedia)
