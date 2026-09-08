@@ -38,6 +38,27 @@ export type Database = {
         }
         Relationships: []
       }
+      journey_progress: {
+        Row: {
+          completed_at: string
+          id: string
+          journey_slug: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          id?: string
+          journey_slug: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          id?: string
+          journey_slug?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -79,6 +100,36 @@ export type Database = {
           id?: string
           score?: number
           total?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_stats: {
+        Row: {
+          best_streak: number
+          created_at: string
+          last_harvest_date: string | null
+          points: number
+          streak: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          best_streak?: number
+          created_at?: string
+          last_harvest_date?: string | null
+          points?: number
+          streak?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          best_streak?: number
+          created_at?: string
+          last_harvest_date?: string | null
+          points?: number
+          streak?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: []

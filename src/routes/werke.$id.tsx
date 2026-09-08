@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { findWork } from "@/lib/art-data";
+import { findStyle, findWork } from "@/lib/art-data";
 import { useTrackDiscovery } from "@/lib/progress";
 
 export const Route = createFileRoute("/werke/$id")({
@@ -59,13 +59,53 @@ function WorkPage() {
           <h1 className="font-display mt-2 text-4xl font-medium tracking-tight md:text-5xl">
             {work.title}
           </h1>
+          <p className="mt-1 text-base text-muted-foreground">{work.painter.name}</p>
+
+          <dl className="mt-6 divide-y divide-border border-y border-border text-sm">
+            <div className="flex justify-between gap-6 py-3">
+              <dt className="text-muted-foreground">Entstanden</dt>
+              <dd className="text-right font-medium">{work.year}</dd>
+            </div>
+            <div className="flex justify-between gap-6 py-3">
+              <dt className="text-muted-foreground">Technik & Maß</dt>
+              <dd className="text-right font-medium">{work.technique}</dd>
+            </div>
+            <div className="flex justify-between gap-6 py-3">
+              <dt className="text-muted-foreground">Heute zu sehen</dt>
+              <dd className="text-right font-medium">{work.museum}</dd>
+            </div>
+          </dl>
+
+          <div className="mt-5 flex flex-wrap gap-2">
+            {work.styles.map((s) => {
+              const style = findStyle(s);
+              return style ? (
+                <span
+                  key={s}
+                  className="rounded-full border border-input px-3 py-1 text-xs text-muted-foreground"
+                >
+                  {style.name}
+                </span>
+              ) : null;
+            })}
+          </div>
+
           <p className="mt-6 text-base leading-relaxed text-muted-foreground">
             {work.description}
           </p>
+
+          <h2 className="font-display mt-8 text-xl font-medium">Warum das Werk zählt</h2>
+          <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+            {work.significance}
+          </p>
+
+          <h2 className="font-display mt-8 text-xl font-medium">Was die Kunstszene sagt</h2>
+          <p className="mt-2 text-base leading-relaxed text-muted-foreground">{work.reception}</p>
+
           <Link
             to="/maler/$slug"
             params={{ slug: work.painter.slug }}
-            className="mt-8 inline-flex items-center gap-2 rounded-md border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-accent"
+            className="mt-8 inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-accent"
           >
             Mehr von {work.painter.name}
           </Link>
