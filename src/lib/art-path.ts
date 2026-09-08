@@ -1,4 +1,4 @@
-import { findWork } from "@/lib/art-data";
+import { allPainters, findWork } from "@/lib/art-data";
 
 export type ArtPathStation = {
   index: number;
@@ -40,6 +40,16 @@ export const artPathWithWorks = artPath.map((station) => ({
   ...station,
   work: findWork(station.workId),
   works: station.workIds.map((id) => findWork(id)).filter((work) => work !== undefined),
+  artistProfiles: station.artists.map((name) => {
+    const aliases: Record<string, string> = {
+      "J. M. W. Turner": "william-turner",
+      "Édouard Manet": "edouard-manet",
+      "Piet Mondrian": "piet-mondrian",
+    };
+    return allPainters.find((painter) =>
+      aliases[name] ? painter.slug === aliases[name] : painter.name === name,
+    );
+  }).filter((painter) => painter !== undefined),
 }));
 
 export const totalArtPathCoins = artPath.reduce((sum, station) => sum + station.coinReward, 0);

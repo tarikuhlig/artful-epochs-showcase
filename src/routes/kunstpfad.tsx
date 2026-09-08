@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useInvalidateFarm } from "@/lib/farm";
 import coin from "@/assets/provenance-coin.png";
 import { artPathQuizzes } from "@/lib/art-path-quiz";
+import { ArtJourneyMap } from "@/components/ArtJourneyMap";
 
 export const Route = createFileRoute("/kunstpfad")({
   head: () => ({ meta: [
@@ -85,8 +86,19 @@ function ArtPathPage() {
                        <Compass className="mt-0.5 h-5 w-5 shrink-0 text-coin" />
                        <div><p className="font-display font-medium">{station.experience.title}</p><p className="mt-1 text-sm leading-relaxed text-muted-foreground">{station.experience.story}</p><p className="mt-3 text-sm"><span className="font-medium">Deine Aufgabe:</span> {station.experience.mission}</p></div>
                      </div>
+                      <div className="mt-5">
+                        <ArtJourneyMap activeIndex={station.index} unlockedThrough={next} />
+                      </div>
                      <div className="mt-5 flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Palette className="h-4 w-4" /> Künstler dieser Station</div>
-                     <p className="mt-2 text-sm">{station.artists.join(" · ")}</p>
+                      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                        {station.artistProfiles.map((artist) => {
+                          const portrait = artist.works[0];
+                          return <Link key={artist.slug} to="/maler/$slug" params={{ slug: artist.slug }} className="group flex gap-3 rounded-md border border-border p-3 transition-colors hover:bg-accent">
+                            <div className="h-16 w-14 shrink-0 overflow-hidden rounded-md bg-muted">{portrait && <img src={portrait.image} alt={`Werk von ${artist.name}`} loading="lazy" className="h-full w-full object-cover" />}</div>
+                            <div className="min-w-0"><p className="text-sm font-medium">{artist.name}</p><p className="text-xs text-muted-foreground">{artist.life}</p><p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">{artist.bio}</p></div>
+                          </Link>;
+                        })}
+                      </div>
                      <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
                        {station.works.map((stationWork) => <Link key={stationWork.id} to="/werke/$id" params={{ id: stationWork.id }} className="group min-w-0"><div className="aspect-[4/3] overflow-hidden rounded-md bg-muted"><img src={stationWork.image} alt={stationWork.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></div><p className="mt-2 truncate text-sm font-medium">{stationWork.title}</p><p className="truncate text-xs text-muted-foreground">{stationWork.painter.name} · {stationWork.year}</p></Link>)}
                      </div>

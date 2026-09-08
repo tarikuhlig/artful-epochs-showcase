@@ -23,3 +23,5 @@
 - [x] Auktionshaus in die Hauptnavigation aufnehmen und Coins pastellfarben neu gestalten
 - [x] Rote Startseiten-Akzente durch Pastelltöne ersetzen, Atelier mit Coin-Anzeige verbinden und Kunstpfad als Reise benennen
 - [x] Alle 12 Reise-Stationen mit echten Epochen, Künstlern, mehreren Werken und Reiseerlebnissen ausbauen
+- [x] Reise-Stationen um echte Werkbilder, Ortskarten und Künstlerbiografien ergänzen
+- [x] Private Galerie per Ziehen sortierbar machen und Werkvergleich ergänzen
