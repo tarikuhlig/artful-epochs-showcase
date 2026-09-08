@@ -94,13 +94,23 @@ function WorkPage() {
             {work.description}
           </p>
 
-          <h2 className="font-display mt-8 text-xl font-medium">Warum das Werk zählt</h2>
-          <p className="mt-2 text-base leading-relaxed text-muted-foreground">
-            {work.significance}
-          </p>
+          {work.significance ? (
+            <>
+              <h2 className="font-display mt-8 text-xl font-medium">Warum das Werk zählt</h2>
+              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                {work.significance}
+              </p>
+            </>
+          ) : null}
 
-          <h2 className="font-display mt-8 text-xl font-medium">Was die Kunstszene sagt</h2>
-          <p className="mt-2 text-base leading-relaxed text-muted-foreground">{work.reception}</p>
+          {work.reception ? (
+            <>
+              <h2 className="font-display mt-8 text-xl font-medium">Was die Kunstszene sagt</h2>
+              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                {work.reception}
+              </p>
+            </>
+          ) : null}
 
           <Link
             to="/maler/$slug"

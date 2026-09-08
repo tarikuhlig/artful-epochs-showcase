@@ -362,8 +362,16 @@ const META: Record<string, MuseumMeta> = {
 
 export type Museum = MuseumMeta & { works: Work[] };
 
+const BY_NAME: Record<string, string> = {};
+for (const [key, meta] of Object.entries(META)) {
+  if (!BY_NAME[meta.name]) BY_NAME[meta.name] = key;
+}
+
 function canonical(museumString: string) {
-  return ALIASES[museumString] ?? museumString;
+  const s = ALIASES[museumString] ?? museumString;
+  if (META[s]) return s;
+  const byName = BY_NAME[s] ?? BY_NAME[s.split(",")[0]!.trim()];
+  return byName ?? s;
 }
 
 const byKey = new Map<string, Museum>();

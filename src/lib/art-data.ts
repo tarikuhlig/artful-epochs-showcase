@@ -59,6 +59,8 @@ import img_tableau_i from "@/assets/art/tableau-i.jpg";
 import img_blaues_pferd from "@/assets/art/blaues-pferd.jpg";
 import img_blaue_pferde from "@/assets/art/die-grossen-blauen-pferde.jpg";
 
+import { extraEpochs, extraPainters, extraStyles, extraWorks } from "./art-catalog-extra";
+
 export type WorkData = {
   id: string;
   title: string;
@@ -97,7 +99,7 @@ export type Style = {
   description: string;
 };
 
-export const epochData: EpochData[] = [
+const baseEpochData: EpochData[] = [
   {
     slug: "renaissance",
     name: "Renaissance",
@@ -142,7 +144,7 @@ export const epochData: EpochData[] = [
   },
 ];
 
-export const styles: Style[] = [
+const baseStyles: Style[] = [
   {
     slug: "hochrenaissance",
     name: "Hochrenaissance",
@@ -271,7 +273,7 @@ export const styles: Style[] = [
   },
 ];
 
-export const painterData: PainterData[] = [
+const basePainterData: PainterData[] = [
   // ---------- Renaissance ----------
   {
     slug: "leonardo-da-vinci",
@@ -555,7 +557,7 @@ export const painterData: PainterData[] = [
   },
 ];
 
-export const workData: WorkData[] = [
+const baseWorkData: WorkData[] = [
   // Leonardo
   {
     id: "mona-lisa",
@@ -1553,6 +1555,17 @@ export const workData: WorkData[] = [
 export type Painter = PainterData & { works: WorkData[] };
 export type Work = Omit<WorkData, "painter"> & { painter: Painter; epoch: Epoch };
 export type Epoch = EpochData & { painters: Painter[] };
+
+export const epochData: EpochData[] = [...baseEpochData, ...extraEpochs];
+export const styles: Style[] = [...baseStyles, ...extraStyles];
+export const painterData: PainterData[] = [
+  ...basePainterData,
+  ...extraPainters.filter((p) => !basePainterData.some((b) => b.slug === p.slug)),
+];
+export const workData: WorkData[] = [
+  ...baseWorkData,
+  ...extraWorks.filter((w) => !baseWorkData.some((b) => b.id === w.id)),
+];
 
 const painters: Painter[] = painterData.map((p) => ({
   ...p,
