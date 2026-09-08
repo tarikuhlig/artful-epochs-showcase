@@ -28,6 +28,7 @@ import { Route as ReisenIndexRouteImport } from './routes/reisen.index'
 import { Route as ReisenSlugRouteImport } from './routes/reisen.$slug'
 import { Route as StadtSlugRouteImport } from './routes/stadt.$slug'
 import { Route as WerkeIdRouteImport } from './routes/werke.$id'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -124,6 +125,12 @@ const WerkeIdRoute = WerkeIdRouteImport.update({
   path: '/werke/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -144,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/epochen/': typeof EpochenIndexRoute
   '/museen/': typeof MuseenIndexRoute
   '/reisen/': typeof ReisenIndexRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -164,6 +172,7 @@ export interface FileRoutesByTo {
   '/epochen': typeof EpochenIndexRoute
   '/museen': typeof MuseenIndexRoute
   '/reisen': typeof ReisenIndexRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -186,6 +195,7 @@ export interface FileRoutesById {
   '/epochen/': typeof EpochenIndexRoute
   '/museen/': typeof MuseenIndexRoute
   '/reisen/': typeof ReisenIndexRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -208,6 +218,7 @@ export interface FileRouteTypes {
     | '/epochen/'
     | '/museen/'
     | '/reisen/'
+    | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -228,6 +239,7 @@ export interface FileRouteTypes {
     | '/epochen'
     | '/museen'
     | '/reisen'
+    | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
@@ -249,6 +261,7 @@ export interface FileRouteTypes {
     | '/epochen/'
     | '/museen/'
     | '/reisen/'
+    | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -268,6 +281,7 @@ export interface RootRouteChildren {
   EpochenIndexRoute: typeof EpochenIndexRoute
   MuseenIndexRoute: typeof MuseenIndexRoute
   ReisenIndexRoute: typeof ReisenIndexRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -405,6 +419,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WerkeIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -440,6 +461,7 @@ const rootRouteChildren: RootRouteChildren = {
   EpochenIndexRoute: EpochenIndexRoute,
   MuseenIndexRoute: MuseenIndexRoute,
   ReisenIndexRoute: ReisenIndexRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
