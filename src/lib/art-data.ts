@@ -61,6 +61,7 @@ import img_blaue_pferde from "@/assets/art/die-grossen-blauen-pferde.jpg";
 
 import { extraEpochs, extraPainters, extraStyles, extraWorks } from "./art-catalog-extra";
 import { extraPainters2, extraStyles2, extraWorks2 } from "./art-catalog-extra2";
+import { extraPainters3, extraStyles3, extraWorks3 } from "./art-catalog-extra3";
 
 export type WorkData = {
   id: string;
@@ -517,7 +518,7 @@ const basePainterData: PainterData[] = [
     life: "1866–1944",
     origin: "Moskau, Russland",
     epoch: "moderne",
-    styles: ["abstrakte-kunst", "blauer-reiter"],
+    styles: ["abstrakte-kunst", "blauer-reiter", "bauhaus"],
     bio: "Pionier der abstrakten Malerei und Lehrer am Bauhaus. Kandinsky glaubte, Farben und Formen wirken wie Musik direkt auf die Seele.",
   },
   {
@@ -1393,7 +1394,7 @@ const baseWorkData: WorkData[] = [
     painter: "wassily-kandinsky",
     museum: "Solomon R. Guggenheim Museum, New York",
     technique: "Öl auf Leinwand, 140 × 201 cm",
-    styles: ["abstrakte-kunst"],
+    styles: ["abstrakte-kunst", "bauhaus"],
     description:
       "Aus der Bauhaus-Zeit: strenge Geometrie – Kreise, Dreiecke, Geraden – in präzisem Gleichgewicht.",
     significance:
@@ -1409,7 +1410,7 @@ const baseWorkData: WorkData[] = [
     painter: "wassily-kandinsky",
     museum: "Centre Pompidou, Paris",
     technique: "Öl auf Leinwand, 128 × 202 cm",
-    styles: ["abstrakte-kunst"],
+    styles: ["abstrakte-kunst", "bauhaus"],
     description:
       "Die drei Grundfarben treffen aufeinander: links helle, flächige Klarheit, rechts dunkle, kreisende Formen – ein Bild über Gegensätze.",
     significance:
@@ -1558,15 +1559,15 @@ export type Work = Omit<WorkData, "painter"> & { painter: Painter; epoch: Epoch 
 export type Epoch = EpochData & { painters: Painter[] };
 
 export const epochData: EpochData[] = [...baseEpochData, ...extraEpochs];
-const allStyleCandidates: Style[] = [...baseStyles, ...extraStyles, ...extraStyles2];
+const allStyleCandidates: Style[] = [...baseStyles, ...extraStyles, ...extraStyles2, ...extraStyles3];
 export const styles: Style[] = allStyleCandidates.filter(
   (s, i) => allStyleCandidates.findIndex((o) => o.slug === s.slug) === i,
 );
-const painterCandidates: PainterData[] = [...basePainterData, ...extraPainters, ...extraPainters2];
+const painterCandidates: PainterData[] = [...basePainterData, ...extraPainters, ...extraPainters2, ...extraPainters3];
 export const painterData: PainterData[] = painterCandidates.filter(
   (p, i) => painterCandidates.findIndex((o) => o.slug === p.slug) === i,
 );
-const workCandidates: WorkData[] = [...baseWorkData, ...extraWorks, ...extraWorks2];
+const workCandidates: WorkData[] = [...baseWorkData, ...extraWorks, ...extraWorks2, ...extraWorks3];
 export const workData: WorkData[] = workCandidates.filter(
   (w, i) => workCandidates.findIndex((o) => o.id === w.id) === i,
 );
