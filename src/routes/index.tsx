@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useCallback, useEffect, useState } from "react";
 import { ArrowRight, Compass, Flame, Globe2, Layers, Sparkles, Trophy } from "lucide-react";
 import { IntroTunnel } from "@/components/IntroTunnel";
+import { TitleGate } from "@/components/TitleGate";
 import { epochs, allPainters, allWorks } from "@/lib/art-data";
 import { journeys } from "@/lib/journeys";
 import { cities, museums } from "@/lib/museums";
