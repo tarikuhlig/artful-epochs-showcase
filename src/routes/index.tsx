@@ -57,8 +57,7 @@ function HomePage() {
       {stage === "title" && <TitleGate onDone={() => setStage("intro")} />}
       {stage === "intro" && <IntroTunnel onDone={finishIntro} />}
 
-      <section className="relative overflow-hidden border-b border-border">
-        <div className="absolute inset-y-0 right-0 hidden w-[46%] bg-path-sky lg:block" />
+      <section className="relative overflow-hidden border-b border-border bg-background">
         <div className="relative mx-auto grid max-w-6xl gap-10 px-6 py-12 lg:grid-cols-[0.88fr_1.12fr] lg:items-center lg:py-16">
           <div>
             <p className="text-[11px] tracking-[0.32em] text-muted-foreground uppercase">Deine Welt der Kunst</p>
@@ -81,7 +80,7 @@ function HomePage() {
 
       <section className="mx-auto max-w-6xl px-6 py-14">
         <div className="grid gap-4 md:grid-cols-[1.35fr_0.65fr]">
-          <div className="grid overflow-hidden rounded-xl bg-path-leaf sm:grid-cols-[0.78fr_1.22fr]">
+          <div className="grid overflow-hidden rounded-xl bg-pastel-tip sm:grid-cols-[0.78fr_1.22fr]">
             <div className="aspect-[4/3] min-h-56 overflow-hidden sm:aspect-auto">
               <img src={discoveries[1]?.image} alt={discoveries[1]?.title ?? "Detail eines Kunstwerks"} loading="lazy" className="h-full w-full object-cover" />
             </div>
@@ -107,10 +106,10 @@ function HomePage() {
           <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Wähle deinen Einstieg</p>
           <h2 className="font-display mt-2 text-3xl font-medium">Was möchtest du heute entdecken?</h2>
           <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <ExploreCard to="/kunstpfad" image={allWorks[(workIndex + 101) % allWorks.length]?.image} icon={<Map />} title="Reise" text={`${artPathWithWorks.length} Epochen Schritt für Schritt`} tint="bg-path-sky" />
-            <ExploreCard to="/epochen" image={allWorks[(workIndex + 157) % allWorks.length]?.image} icon={<Layers />} title="Epochen" text={`${epochs.length} Kapitel der Kunstgeschichte`} tint="bg-path-leaf" />
-            <ExploreCard to="/museen" image={allWorks[(workIndex + 223) % allWorks.length]?.image} icon={<Landmark />} title="Museen" text={`${museums.length} Häuser weltweit`} tint="bg-coin-soft" />
-            <ExploreCard to="/auktionshaus" image={allWorks[(workIndex + 311) % allWorks.length]?.image} icon={<Coins />} title="Auktionshaus" text="Werke für deine Galerie finden" tint="bg-path-coral" />
+            <ExploreCard to="/kunstpfad" image={allWorks[(workIndex + 101) % allWorks.length]?.image} icon={<Map />} title="Reise" text={`${artPathWithWorks.length} Epochen Schritt für Schritt`} />
+            <ExploreCard to="/epochen" image={allWorks[(workIndex + 157) % allWorks.length]?.image} icon={<Layers />} title="Epochen" text={`${epochs.length} Kapitel der Kunstgeschichte`} />
+            <ExploreCard to="/museen" image={allWorks[(workIndex + 223) % allWorks.length]?.image} icon={<Landmark />} title="Museen" text={`${museums.length} Häuser weltweit`} />
+            <ExploreCard to="/auktionshaus" image={allWorks[(workIndex + 311) % allWorks.length]?.image} icon={<Coins />} title="Auktionshaus" text="Werke für deine Galerie finden" />
           </div>
         </div>
       </section>
@@ -123,6 +122,6 @@ function HomePage() {
   );
 }
 
-function ExploreCard({ to, image, icon, title, text, tint }: { to: "/kunstpfad" | "/epochen" | "/museen" | "/auktionshaus"; image: string | undefined; icon: React.ReactNode; title: string; text: string; tint: string }) {
-  return <Link to={to} className={`group overflow-hidden rounded-xl ${tint}`}><div className="aspect-[4/3] overflow-hidden bg-muted"><img src={image} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" /></div><div className="p-5"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-background [&_svg]:h-4 [&_svg]:w-4">{icon}</span><span className="font-display mt-5 flex items-center justify-between text-xl font-medium">{title}<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span><span className="mt-2 block text-sm text-muted-foreground">{text}</span></div></Link>;
+function ExploreCard({ to, image, icon, title, text }: { to: "/kunstpfad" | "/epochen" | "/museen" | "/auktionshaus"; image: string | undefined; icon: React.ReactNode; title: string; text: string }) {
+  return <Link to={to} className="group overflow-hidden rounded-xl border border-border bg-background hover:border-pastel-tip/60"><div className="aspect-[4/3] overflow-hidden bg-muted"><img src={image} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" /></div><div className="p-5"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-pastel-tip/25 text-foreground [&_svg]:h-4 [&_svg]:w-4">{icon}</span><span className="font-display mt-5 flex items-center justify-between text-xl font-medium">{title}<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span><span className="mt-2 block text-sm text-muted-foreground">{text}</span></div></Link>;
 }
