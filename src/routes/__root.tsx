@@ -8,12 +8,14 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { Menu, X } from "lucide-react";
+import { Coins, Menu, X } from "lucide-react";
 
 import appCss from "../styles.css?url";
 import provenanceLogo from "../assets/provenance-logo.png";
+import provenanceCoin from "../assets/provenance-coin.png";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { useAuth } from "@/hooks/useAuth";
+import { useUserStats } from "@/lib/farm";
 import { supabase } from "@/integrations/supabase/client";
 
 function NotFoundComponent() {
@@ -85,7 +87,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Lerne die großen Maler und ihre Werke kennen — geordnet nach Epochen und als interaktiver Kunstpfad.",
+          "Lerne die großen Maler und ihre Werke kennen — geordnet nach Epochen und als interaktive Reise.",
       },
       { name: "author", content: "Provenance" },
       { property: "og:title", content: "Provenance — Kunstgeschichte lernen" },
@@ -133,7 +135,7 @@ const NAV: {
   exact?: boolean;
 }[] = [
   { to: "/", label: "Dashboard", exact: true },
-  { to: "/kunstpfad", label: "Kunstpfad" },
+  { to: "/kunstpfad", label: "Reise" },
   { to: "/epochen", label: "Epochen" },
   { to: "/museen", label: "Museen" },
   { to: "/auktionshaus", label: "Auktionshaus" },
@@ -141,6 +143,7 @@ const NAV: {
 
 function SiteHeader() {
   const { user } = useAuth();
+  const { data: stats } = useUserStats();
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
@@ -174,13 +177,23 @@ function SiteHeader() {
             </Link>
           ))}
           {user ? (
-            <Link
-              to="/atelier"
-              className="ml-1 rounded-full border border-input px-4 py-2 text-foreground transition-colors hover:bg-accent"
-              activeProps={{ className: "bg-accent" }}
-            >
-              Mein Atelier
-            </Link>
+            <div className="ml-2 flex items-stretch">
+              <Link
+                to="/atelier"
+                className="inline-flex items-center rounded-l-full border border-input bg-background px-4 py-2 text-foreground transition-colors hover:bg-accent"
+                activeProps={{ className: "bg-accent" }}
+              >
+                Atelier
+              </Link>
+              <Link
+                to="/auktionshaus"
+                aria-label={`${stats?.coins ?? 0} Provenance Coins – zum Auktionshaus`}
+                className="-ml-px inline-flex items-center gap-1.5 rounded-r-full border border-coin/35 bg-coin-soft px-3 py-2 text-coin transition-colors hover:bg-path-sky"
+              >
+                <img src={provenanceCoin} alt="" width={1024} height={1024} className="h-5 w-5" />
+                <span className="font-medium tabular-nums">{stats?.coins ?? 0}</span>
+              </Link>
+            </div>
           ) : (
             <Link
               to="/auth"
@@ -216,13 +229,17 @@ function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <Link
-            to={user ? "/atelier" : "/auth"}
-            onClick={() => setOpen(false)}
-            className="mt-2 block rounded-full bg-primary px-4 py-3 text-center text-primary-foreground"
-          >
-            {user ? "Mein Atelier" : "Anmelden"}
-          </Link>
+          {user ? (
+            <div className="mt-2 flex items-stretch">
+              <Link to="/atelier" onClick={() => setOpen(false)} className="flex-1 rounded-l-full bg-primary px-4 py-3 text-center text-primary-foreground">Atelier</Link>
+              <Link to="/auktionshaus" onClick={() => setOpen(false)} className="-ml-px inline-flex items-center gap-2 rounded-r-full border border-coin/35 bg-coin-soft px-4 py-3 text-coin">
+                <img src={provenanceCoin} alt="" width={1024} height={1024} className="h-6 w-6" />
+                <span className="font-medium tabular-nums">{stats?.coins ?? 0}</span>
+              </Link>
+            </div>
+          ) : (
+            <Link to="/auth" onClick={() => setOpen(false)} className="mt-2 block rounded-full bg-primary px-4 py-3 text-center text-primary-foreground">Anmelden</Link>
+          )}
         </nav>
       )}
     </header>

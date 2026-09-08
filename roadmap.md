@@ -21,3 +21,4 @@
 - [x] Navigation aufräumen und Museen als eigenen Lernbereich stärker einbinden
 - [x] Globus und separates Quiz entfernen; Stationsquiz als Freischaltung in den Kunstpfad integrieren
 - [x] Auktionshaus in die Hauptnavigation aufnehmen und Coins pastellfarben neu gestalten
+- [x] Rote Startseiten-Akzente durch Pastelltöne ersetzen, Atelier mit Coin-Anzeige verbinden und Kunstpfad als Reise benennen

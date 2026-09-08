@@ -17,6 +17,7 @@ import {
   workOfTheDay,
 } from "@/lib/farm";
 import { artPathWithWorks } from "@/lib/art-path";
+import coin from "@/assets/provenance-coin.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -136,7 +137,7 @@ function Dashboard() {
             />
             <Stat
               icon={<Layers className="h-4 w-4" />}
-              label="Kunstpfad"
+              label="Reise"
               value={`${artPathWithWorks.length} Stationen`}
             />
           </div>
@@ -158,13 +159,23 @@ function Dashboard() {
                 total={journeys.length}
               />
             </div>
-            <div className="mt-6 flex flex-wrap gap-3 text-sm">
-              <Link
-                to={user ? "/atelier" : "/auth"}
-                className="rounded-full border border-input px-5 py-2.5 transition-colors hover:bg-accent"
-              >
-                Mein Atelier
-              </Link>
+            <div className="mt-6 flex flex-wrap items-stretch gap-3 text-sm">
+              <div className="flex items-stretch">
+                <Link
+                  to={user ? "/atelier" : "/auth"}
+                  className="inline-flex items-center rounded-l-full border border-input bg-background px-5 py-2.5 font-medium transition-colors hover:bg-accent"
+                >
+                  Mein Atelier
+                </Link>
+                <Link
+                  to={user ? "/auktionshaus" : "/auth"}
+                  className="-ml-px inline-flex items-center gap-2 rounded-r-full border border-coin/35 bg-coin-soft px-3.5 py-2.5 text-coin transition-colors hover:bg-path-sky"
+                  aria-label={`${user ? stats?.coins ?? 0 : 0} Provenance Coins`}
+                >
+                  <img src={coin} alt="" width={1024} height={1024} className="h-6 w-6" />
+                  <span className="font-medium tabular-nums">{user ? stats?.coins ?? 0 : "—"}</span>
+                </Link>
+              </div>
               <Link
                 to={user ? "/sammlung" : "/auth"}
                 className="rounded-full border border-input px-5 py-2.5 transition-colors hover:bg-accent"
@@ -175,11 +186,11 @@ function Dashboard() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-border bg-path-coral p-6"><BookOpen className="h-5 w-5" /><p className="mt-6 text-[10px] tracking-[0.3em] text-muted-foreground uppercase">Tipp des Tages</p><h3 className="font-display mt-2 text-xl font-medium">Schau zuerst auf das Licht</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">Woher kommt es? Was hebt es hervor? Diese zwei Fragen entschlüsseln Komposition und Stimmung oft schneller als der Titel.</p></div>
+          <div className="rounded-xl border border-border bg-path-leaf p-6"><BookOpen className="h-5 w-5 text-coin" /><p className="mt-6 text-[10px] tracking-[0.3em] text-muted-foreground uppercase">Tipp des Tages</p><h3 className="font-display mt-2 text-xl font-medium">Schau zuerst auf das Licht</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">Woher kommt es? Was hebt es hervor? Diese zwei Fragen entschlüsseln Komposition und Stimmung oft schneller als der Titel.</p></div>
         </div>
       </section>
 
-      <section className="border-t border-border bg-card"><div className="mx-auto max-w-6xl px-6 py-14"><div className="flex items-end justify-between gap-4"><div><p className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">Heute entdecken</p><h2 className="font-display mt-2 text-3xl font-medium">Drei Bilder, drei Blickwinkel</h2></div><Link to="/kunstpfad" className="hidden items-center gap-2 text-sm sm:inline-flex">Kunstpfad öffnen <ArrowRight className="h-4 w-4" /></Link></div><div className="mt-7 grid gap-4 sm:grid-cols-3">{dailyHighlights.map((item, index) => item && <Link key={item.id} to="/werke/$id" params={{ id: item.id }} className="group"><div className="aspect-[4/3] overflow-hidden rounded-lg bg-muted"><img src={item.image} alt={item.title} loading={index === 0 ? "eager" : "lazy"} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></div><p className="mt-3 text-[10px] tracking-[0.22em] text-muted-foreground uppercase">{index === 0 ? "Bild des Tages" : index === 1 ? "Technik entdecken" : "Im Museum sehen"}</p><h3 className="font-display mt-1 text-lg font-medium">{item.title}</h3><p className="text-sm text-muted-foreground">{item.painter.name} · {item.year}</p></Link>)}</div></div></section>
+      <section className="border-t border-border bg-card"><div className="mx-auto max-w-6xl px-6 py-14"><div className="flex items-end justify-between gap-4"><div><p className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">Heute entdecken</p><h2 className="font-display mt-2 text-3xl font-medium">Drei Bilder, drei Blickwinkel</h2></div><Link to="/kunstpfad" className="hidden items-center gap-2 text-sm sm:inline-flex">Reise öffnen <ArrowRight className="h-4 w-4" /></Link></div><div className="mt-7 grid gap-4 sm:grid-cols-3">{dailyHighlights.map((item, index) => item && <Link key={item.id} to="/werke/$id" params={{ id: item.id }} className="group"><div className="aspect-[4/3] overflow-hidden rounded-lg bg-muted"><img src={item.image} alt={item.title} loading={index === 0 ? "eager" : "lazy"} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></div><p className="mt-3 text-[10px] tracking-[0.22em] text-muted-foreground uppercase">{index === 0 ? "Bild des Tages" : index === 1 ? "Technik entdecken" : "Im Museum sehen"}</p><h3 className="font-display mt-1 text-lg font-medium">{item.title}</h3><p className="text-sm text-muted-foreground">{item.painter.name} · {item.year}</p></Link>)}</div></div></section>
 
       {/* Wege in die Sammlung */}
       <section className="border-y border-border bg-card">
@@ -193,7 +204,7 @@ function Dashboard() {
           <StartCard
             to="/kunstpfad"
             icon={<Sparkles className="h-5 w-5" />}
-            title="Großer Kunstpfad"
+            title="Die große Reise"
             text={`${artPathWithWorks.length} Stationen, Schritt für Schritt — mit Provenance Coins.`}
           />
           <StartCard
