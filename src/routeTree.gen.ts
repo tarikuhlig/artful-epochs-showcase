@@ -10,33 +10,79 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as QuizRouteImport } from './routes/quiz'
+import { Route as EpochenEpocheRouteImport } from './routes/epochen.$epoche'
+import { Route as MalerSlugRouteImport } from './routes/maler.$slug'
+import { Route as WerkeIdRouteImport } from './routes/werke.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QuizRoute = QuizRouteImport.update({
+  id: '/quiz',
+  path: '/quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EpochenEpocheRoute = EpochenEpocheRouteImport.update({
+  id: '/epochen/$epoche',
+  path: '/epochen/$epoche',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MalerSlugRoute = MalerSlugRouteImport.update({
+  id: '/maler/$slug',
+  path: '/maler/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WerkeIdRoute = WerkeIdRouteImport.update({
+  id: '/werke/$id',
+  path: '/werke/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/quiz': typeof QuizRoute
+  '/epochen/$epoche': typeof EpochenEpocheRoute
+  '/maler/$slug': typeof MalerSlugRoute
+  '/werke/$id': typeof WerkeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/quiz': typeof QuizRoute
+  '/epochen/$epoche': typeof EpochenEpocheRoute
+  '/maler/$slug': typeof MalerSlugRoute
+  '/werke/$id': typeof WerkeIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/quiz': typeof QuizRoute
+  '/epochen/$epoche': typeof EpochenEpocheRoute
+  '/maler/$slug': typeof MalerSlugRoute
+  '/werke/$id': typeof WerkeIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/quiz' | '/epochen/$epoche' | '/maler/$slug' | '/werke/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/quiz' | '/epochen/$epoche' | '/maler/$slug' | '/werke/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/quiz'
+    | '/epochen/$epoche'
+    | '/maler/$slug'
+    | '/werke/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  QuizRoute: typeof QuizRoute
+  EpochenEpocheRoute: typeof EpochenEpocheRoute
+  MalerSlugRoute: typeof MalerSlugRoute
+  WerkeIdRoute: typeof WerkeIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +94,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/quiz': {
+      id: '/quiz'
+      path: '/quiz'
+      fullPath: '/quiz'
+      preLoaderRoute: typeof QuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/epochen/$epoche': {
+      id: '/epochen/$epoche'
+      path: '/epochen/$epoche'
+      fullPath: '/epochen/$epoche'
+      preLoaderRoute: typeof EpochenEpocheRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/maler/$slug': {
+      id: '/maler/$slug'
+      path: '/maler/$slug'
+      fullPath: '/maler/$slug'
+      preLoaderRoute: typeof MalerSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/werke/$id': {
+      id: '/werke/$id'
+      path: '/werke/$id'
+      fullPath: '/werke/$id'
+      preLoaderRoute: typeof WerkeIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  QuizRoute: QuizRoute,
+  EpochenEpocheRoute: EpochenEpocheRoute,
+  MalerSlugRoute: MalerSlugRoute,
+  WerkeIdRoute: WerkeIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
