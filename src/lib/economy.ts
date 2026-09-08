@@ -28,6 +28,23 @@ export function useOwnedItems() {
   });
 }
 
+export function useDailyCoinChallenge(date: string) {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["daily_coin_challenges", user?.id, date],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("daily_coin_challenges")
+        .select("score, coin_reward, completed_at")
+        .eq("challenge_date", date)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
 export function utcRotationSlot() {
   const now = new Date();
   const start = Date.UTC(now.getUTCFullYear(), 0, 0);

@@ -39,3 +39,4 @@
 - [x] Galerie-Ausstellung, Benutzername und Profilbild umsetzen
 - [x] Platin-Weltwerk im Auktionshaus oben zentriert hervorheben, danach Gold und Bronze anordnen
 - [x] Epochen-Reiter chronologisch vom ältesten bis zum neuesten Zeitraum anordnen
+- [x] Tägliche Kunst-Challenge mit bis zu 60 Provenance Coins ohne KI- oder Credit-Verbrauch ergänzen
