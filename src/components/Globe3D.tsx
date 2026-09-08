@@ -424,9 +424,9 @@ export function Globe3D({
           gl={{ antialias: true, alpha: true }}
           style={{ touchAction: "none", width: "100%", height: "100%" }}
         >
-          <ambientLight intensity={1.1} />
-          <directionalLight position={[3, 2, 4]} intensity={1.4} />
-          <directionalLight position={[-4, -1, -2]} intensity={0.35} color="#c8d4e6" />
+          <ambientLight intensity={0.75} color="#ffe9c9" />
+          <directionalLight position={[3, 2.5, 4]} intensity={1.5} color="#ffdca8" />
+          <directionalLight position={[-4, -1, -2]} intensity={0.3} color="#8a6a44" />
           <Globe markers={markers} selectedId={selectedId} onSelect={onSelect} ctl={ctl} />
         </Canvas>
       </div>
