@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Clock, ExternalLink, Lightbulb, MapPin } from "lucide-react";
+import { ArrowLeft, CalendarDays, Clock, ExternalLink, Lightbulb, MapPin } from "lucide-react";
 import { findMuseum } from "@/lib/museums";
 import { getVisitInfo } from "@/lib/museum-info";
 import { useTrackDiscovery } from "@/lib/progress";
@@ -40,11 +40,12 @@ function MuseumPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 md:py-20">
       <Link
-        to="/globus"
+        to="/stadt/$slug"
+        params={{ slug: citySlug(museum.city) }}
         className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
-        Zurück zum Globus
+        Zurück zu {museum.city}
       </Link>
 
       <div className="mt-8 flex flex-wrap items-center gap-2 text-xs tracking-[0.25em] text-muted-foreground uppercase">
@@ -87,16 +88,16 @@ function MuseumPage() {
               </div>
             </dl>
             <a
-              href={info.website}
+              href={info.visitUrl}
               target="_blank"
               rel="noreferrer"
               className="mt-4 inline-flex items-center gap-1.5 text-sm text-foreground hover:underline"
             >
-              Offizielle Seite <ExternalLink className="h-3.5 w-3.5" />
+              Offizielle Besuchsinfo <ExternalLink className="h-3.5 w-3.5" />
             </a>
             <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
-              Zeiten redaktionell gepflegt und ohne Gewähr — an Feiertagen bitte auf der offiziellen
-              Seite prüfen.
+              Zuletzt geprüft am {formatVerifiedDate(info.verifiedAt)}. Feiertage und Sonderöffnungen
+              bitte vor dem Besuch offiziell prüfen.
             </p>
           </div>
           <div className="rounded-2xl border border-border bg-muted/30 p-5">
@@ -106,6 +107,26 @@ function MuseumPage() {
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{info.tip}</p>
           </div>
         </div>
+      )}
+
+      {info && (
+        <section className="mt-8 rounded-xl border border-border bg-card p-5 sm:p-6">
+          <h2 className="font-display flex items-center gap-2 text-lg font-medium"><CalendarDays className="h-4 w-4" /> Aktuelle Ausstellungen</h2>
+          {info.exhibitions?.length ? (
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+              {info.exhibitions.map((exhibition) => (
+                <li key={exhibition.title} className="rounded-lg bg-muted/40 p-4">
+                  <a href={exhibition.sourceUrl} target="_blank" rel="noreferrer" className="text-sm font-medium hover:underline">{exhibition.title}</a>
+                  <p className="mt-1 text-xs text-muted-foreground">{exhibition.dates}</p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <a href={info.exhibitionsUrl} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-sm hover:underline">
+              Laufendes Programm auf der offiziellen Museumsseite <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          )}
+        </section>
       )}
 
 
@@ -138,4 +159,20 @@ function MuseumPage() {
       </div>
     </div>
   );
+}
+
+function formatVerifiedDate(date: string) {
+  const [year, month, day] = date.split("-");
+  return `${day}.${month}.${year}`;
+}
+
+function citySlug(city: string) {
+  const normalized: Record<string, string> = {
+    München: "muenchen",
+    Köln: "koeln",
+    Zürich: "zuerich",
+    "Den Haag": "den-haag",
+    "New York": "new-york",
+  };
+  return normalized[city] ?? city.toLowerCase().replaceAll(" ", "-");
 }

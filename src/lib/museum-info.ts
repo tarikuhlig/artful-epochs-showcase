@@ -10,7 +10,26 @@ export type VisitInfo = {
   ticket: string;
   tip: string;
   website: string;
+  /** Deep link to the museum's official visitor information when available. */
+  visitUrl?: string;
+  /** Official current and upcoming exhibition programme. */
+  exhibitionsUrl?: string;
+  /** ISO date of the latest editorial check. These details are not a live feed. */
+  verifiedAt?: string;
+  exhibitions?: Array<{
+    title: string;
+    dates: string;
+    sourceUrl: string;
+  }>;
 };
+
+export type VerifiedVisitInfo = VisitInfo & {
+  verifiedAt: string;
+  visitUrl: string;
+  exhibitionsUrl: string;
+};
+
+const VERIFIED_AT = "2026-09-08";
 
 export const visitInfo: Record<string, VisitInfo> = {
   "louvre-paris": {
@@ -20,6 +39,20 @@ export const visitInfo: Record<string, VisitInfo> = {
     ticket: "ca. 22 €, unter 26 Jahren aus der EU frei",
     tip: "Zeitfenster online buchen und über den Eingang Porte des Lions kommen — dort steht fast niemand. Die Mona Lisa früh am Morgen ansteuern, danach in Ruhe die italienischen Säle.",
     website: "https://www.louvre.fr",
+    visitUrl: "https://www.louvre.fr/visiter/horaires-tarifs",
+    exhibitionsUrl: "https://www.louvre.fr/expositions-et-evenements/expositions",
+    exhibitions: [
+      {
+        title: "Les Hôtes du Louvre — Kader Attia und Elizabeth Peyton",
+        dates: "24. September–14. Dezember 2026",
+        sourceUrl: "https://www.louvre.fr/expositions-et-evenements/expositions/les-hotes-du-louvre",
+      },
+      {
+        title: "L’Eau primordiale",
+        dates: "20. Mai 2026–15. März 2027",
+        sourceUrl: "https://www.louvre.fr/expositions-et-evenements/expositions",
+      },
+    ],
   },
   "orsay-paris": {
     address: "Esplanade Valéry Giscard d'Estaing, 75007 Paris",
@@ -140,6 +173,15 @@ export const visitInfo: Record<string, VisitInfo> = {
     ticket: "ca. 25 €, unter 18 frei",
     tip: "Um 9:00 in die Eregalerij gehen — die „Nachtwache“ hat dann noch Platz davor. Nachmittags ist die Bibliothek der ruhigste Raum im Haus.",
     website: "https://www.rijksmuseum.nl",
+    visitUrl: "https://www.rijksmuseum.nl/en/visit/practical-info/opening-hours-and-prices",
+    exhibitionsUrl: "https://www.rijksmuseum.nl/en/whats-on/exhibitions/now-on-view",
+    exhibitions: [
+      {
+        title: "Willem de Kooning at work",
+        dates: "9. Oktober 2026–17. Januar 2027",
+        sourceUrl: "https://www.rijksmuseum.nl/en/whats-on/exhibitions/willem-de-kooning-at-work",
+      },
+    ],
   },
   "mauritshuis-den-haag": {
     address: "Plein 29, 2511 CS Den Haag",
@@ -284,6 +326,20 @@ export const visitInfo: Record<string, VisitInfo> = {
     ticket: "ca. $ 30, freitags ab 17:30 frei",
     tip: "Freitags ab 17:30 freier Eintritt, dafür sehr voll. Mit Etage 5 anfangen (van Gogh, Picasso) und nach unten arbeiten.",
     website: "https://www.moma.org",
+    visitUrl: "https://www.moma.org/visit/",
+    exhibitionsUrl: "https://www.moma.org/calendar/exhibitions/",
+    exhibitions: [
+      {
+        title: "Frida and Diego: The Last Dream",
+        dates: "bis 12. September 2026",
+        sourceUrl: "https://www.moma.org/calendar/exhibitions/5882",
+      },
+      {
+        title: "Pierre Huyghe: UUmwelt",
+        dates: "bis 29. November 2026",
+        sourceUrl: "https://www.moma.org/calendar/exhibitions/",
+      },
+    ],
   },
   "guggenheim-new-york": {
     address: "1071 5th Ave, New York, NY 10128",
@@ -319,6 +375,13 @@ export const visitInfo: Record<string, VisitInfo> = {
   },
 };
 
-export function getVisitInfo(slug: string): VisitInfo | undefined {
-  return visitInfo[slug];
+export function getVisitInfo(slug: string): VerifiedVisitInfo | undefined {
+  const info = visitInfo[slug];
+  if (!info) return undefined;
+  return {
+    ...info,
+    verifiedAt: info.verifiedAt ?? VERIFIED_AT,
+    visitUrl: info.visitUrl ?? info.website,
+    exhibitionsUrl: info.exhibitionsUrl ?? info.website,
+  };
 }

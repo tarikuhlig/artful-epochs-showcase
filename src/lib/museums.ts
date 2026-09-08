@@ -393,12 +393,42 @@ export function findMuseum(slug: string) {
 }
 
 export type City = {
+  slug: string;
   city: string;
   country: string;
   lat: number;
   lon: number;
   museums: Museum[];
   workCount: number;
+};
+
+const CITY_SLUGS: Record<string, string> = {
+  Paris: "paris",
+  Albi: "albi",
+  London: "london",
+  Edinburgh: "edinburgh",
+  Madrid: "madrid",
+  Florenz: "florenz",
+  Venedig: "venedig",
+  Vatikanstadt: "vatikanstadt",
+  Rom: "rom",
+  Amsterdam: "amsterdam",
+  "Den Haag": "den-haag",
+  Antwerpen: "antwerpen",
+  München: "muenchen",
+  Dresden: "dresden",
+  Berlin: "berlin",
+  Hamburg: "hamburg",
+  Köln: "koeln",
+  Wien: "wien",
+  Zürich: "zuerich",
+  Oslo: "oslo",
+  Moskau: "moskau",
+  Chicago: "chicago",
+  Washington: "washington",
+  "New York": "new-york",
+  Boston: "boston",
+  Minneapolis: "minneapolis",
 };
 
 export const cities: City[] = (() => {
@@ -410,6 +440,7 @@ export const cities: City[] = (() => {
       existing.workCount += m.works.length;
     } else {
       map.set(m.city, {
+        slug: CITY_SLUGS[m.city] ?? m.city.toLowerCase().replaceAll(" ", "-"),
         city: m.city,
         country: m.country,
         lat: m.lat,
@@ -421,6 +452,10 @@ export const cities: City[] = (() => {
   }
   return Array.from(map.values()).sort((a, b) => b.workCount - a.workCount);
 })();
+
+export function findCity(slug: string) {
+  return cities.find((city) => city.slug === slug);
+}
 
 export function museumForWork(work: Work) {
   return museums.find((m) => m.slug === META[canonical(work.museum)]?.slug);

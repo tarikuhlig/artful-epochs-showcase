@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useMemo, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Clock, Compass, ExternalLink, Lightbulb, MapPin, Search } from "lucide-react";
 import type { GlobeMarker } from "@/components/Globe3D";
 import { cities } from "@/lib/museums";
@@ -32,6 +32,7 @@ export const Route = createFileRoute("/globus")({
 });
 
 function GlobusPage() {
+  const navigate = useNavigate();
   const [selected, setSelected] = useState<string | null>("Paris");
   const [query, setQuery] = useState("");
   const [epoch, setEpoch] = useState<string | null>(null);
@@ -74,6 +75,12 @@ function GlobusPage() {
     });
   }, [query, epoch, style]);
 
+  const openCity = (slug: string) => {
+    const nextCity = cities.find((candidate) => candidate.slug === slug);
+    if (nextCity) setSelected(nextCity.city);
+    void navigate({ to: "/stadt/$slug", params: { slug } });
+  };
+
   return (
     <div>
       <section className="mx-auto max-w-6xl px-4 pt-10 pb-8 sm:px-6 md:pt-20">
@@ -102,7 +109,14 @@ function GlobusPage() {
               <div className="relative px-1 pt-8 pb-2 sm:px-4 sm:pt-10 sm:pb-4">
               {mounted ? (
                 <Suspense fallback={<GlobePlaceholder />}>
-                  <Globe3D markers={markers} selectedId={selected} onSelect={setSelected} />
+                  <Globe3D
+                    markers={markers.map((marker) => ({
+                      ...marker,
+                      id: cities.find((candidate) => candidate.city === marker.id)?.slug ?? marker.id,
+                    }))}
+                    selectedId={city?.slug}
+                    onSelect={openCity}
+                  />
                 </Suspense>
               ) : (
                 <GlobePlaceholder />
@@ -112,9 +126,10 @@ function GlobusPage() {
 
             <div className="mt-4 flex snap-x gap-2 overflow-x-auto pb-2 lg:flex-wrap lg:overflow-visible">
               {cities.slice(0, 10).map((c) => (
-                <button
+                <Link
                   key={c.city}
-                  onClick={() => setSelected(c.city)}
+                  to="/stadt/$slug"
+                  params={{ slug: c.slug }}
                   className={
                     "shrink-0 snap-start rounded-full border px-4 py-2 text-sm transition-colors " +
                     (selected === c.city
@@ -123,7 +138,7 @@ function GlobusPage() {
                   }
                 >
                   {c.city}
-                </button>
+                </Link>
               ))}
               <Link
                 to="/museen"
@@ -145,6 +160,14 @@ function GlobusPage() {
                   {city.museums.length} {city.museums.length === 1 ? "Haus" : "Häuser"} ·{" "}
                   {city.workCount} Werke · {formatDuration(tour.totalMinutes)} Besuchszeit
                 </p>
+
+                <Link
+                  to="/stadt/$slug"
+                  params={{ slug: city.slug }}
+                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                >
+                  Stadtseite öffnen <ArrowRight className="h-4 w-4" />
+                </Link>
 
                 {journey && (
                   <Link
