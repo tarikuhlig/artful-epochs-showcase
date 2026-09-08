@@ -1,5 +1,6 @@
 import { geoNaturalEarth1, geoPath } from "d3-geo";
 import { feature } from "topojson-client";
+import type { Topology, GeometryCollection } from "topojson-specification";
 import land from "world-atlas/land-110m.json";
 import { artPath } from "@/lib/art-path";
 
@@ -10,13 +11,13 @@ type JourneyMapProps = {
 
 const mapWidth = 720;
 const mapHeight = 300;
+const topology = land as unknown as Topology<{ land: GeometryCollection }>;
+const geography = feature(topology, topology.objects.land);
 const projection = geoNaturalEarth1().fitExtent(
   [[12, 12], [mapWidth - 12, mapHeight - 12]],
-  feature(land as never, (land as { objects: { land: never } }).objects.land),
+  geography,
 );
-const landPath = geoPath(projection)(
-  feature(land as never, (land as { objects: { land: never } }).objects.land),
-);
+const landPath = geoPath(projection)(geography);
 
 export function ArtJourneyMap({ activeIndex, unlockedThrough }: JourneyMapProps) {
   const active = artPath[activeIndex];
