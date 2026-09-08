@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import provenanceLogo from "@/assets/provenance-logo.png";
 import { allWorks } from "@/lib/art-data";
 
@@ -17,20 +17,11 @@ const TILES = Array.from({ length: 18 }, (_, i) => {
 });
 
 /** Kurzes Intro: Logo schwebt, ein Tunnel aus Bildern rauscht vorbei (ca. 3 s). */
-export function IntroTunnel() {
-  const [gone, setGone] = useState(false);
-
+export function IntroTunnel({ onDone }: { onDone: () => void }) {
   useEffect(() => {
-    if (sessionStorage.getItem("provenance-intro") === "done") {
-      setGone(true);
-      return;
-    }
-    sessionStorage.setItem("provenance-intro", "done");
-    const t = setTimeout(() => setGone(true), 3200);
+    const t = setTimeout(onDone, 3200);
     return () => clearTimeout(t);
-  }, []);
-
-  if (gone) return null;
+  }, [onDone]);
 
   return (
     <div
