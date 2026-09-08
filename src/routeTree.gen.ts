@@ -18,6 +18,8 @@ import { Route as AuthenticatedAtelierRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedSammlungRouteImport } from './routes/_authenticated/sammlung'
 import { Route as EpochenEpocheRouteImport } from './routes/epochen.$epoche'
 import { Route as MalerSlugRouteImport } from './routes/maler.$slug'
+import { Route as MuseenIndexRouteImport } from './routes/museen.index'
+import { Route as MuseenSlugRouteImport } from './routes/museen.$slug'
 import { Route as ReisenIndexRouteImport } from './routes/reisen.index'
 import { Route as ReisenSlugRouteImport } from './routes/reisen.$slug'
 import { Route as WerkeIdRouteImport } from './routes/werke.$id'
@@ -66,6 +68,16 @@ const MalerSlugRoute = MalerSlugRouteImport.update({
   path: '/maler/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MuseenIndexRoute = MuseenIndexRouteImport.update({
+  id: '/museen/',
+  path: '/museen/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MuseenSlugRoute = MuseenSlugRouteImport.update({
+  id: '/museen/$slug',
+  path: '/museen/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReisenIndexRoute = ReisenIndexRouteImport.update({
   id: '/reisen/',
   path: '/reisen/',
@@ -91,8 +103,10 @@ export interface FileRoutesByFullPath {
   '/sammlung': typeof AuthenticatedSammlungRoute
   '/epochen/$epoche': typeof EpochenEpocheRoute
   '/maler/$slug': typeof MalerSlugRoute
+  '/museen/$slug': typeof MuseenSlugRoute
   '/reisen/$slug': typeof ReisenSlugRoute
   '/werke/$id': typeof WerkeIdRoute
+  '/museen/': typeof MuseenIndexRoute
   '/reisen/': typeof ReisenIndexRoute
 }
 export interface FileRoutesByTo {
@@ -104,8 +118,10 @@ export interface FileRoutesByTo {
   '/sammlung': typeof AuthenticatedSammlungRoute
   '/epochen/$epoche': typeof EpochenEpocheRoute
   '/maler/$slug': typeof MalerSlugRoute
+  '/museen/$slug': typeof MuseenSlugRoute
   '/reisen/$slug': typeof ReisenSlugRoute
   '/werke/$id': typeof WerkeIdRoute
+  '/museen': typeof MuseenIndexRoute
   '/reisen': typeof ReisenIndexRoute
 }
 export interface FileRoutesById {
@@ -119,8 +135,10 @@ export interface FileRoutesById {
   '/_authenticated/sammlung': typeof AuthenticatedSammlungRoute
   '/epochen/$epoche': typeof EpochenEpocheRoute
   '/maler/$slug': typeof MalerSlugRoute
+  '/museen/$slug': typeof MuseenSlugRoute
   '/reisen/$slug': typeof ReisenSlugRoute
   '/werke/$id': typeof WerkeIdRoute
+  '/museen/': typeof MuseenIndexRoute
   '/reisen/': typeof ReisenIndexRoute
 }
 export interface FileRouteTypes {
@@ -134,8 +152,10 @@ export interface FileRouteTypes {
     | '/sammlung'
     | '/epochen/$epoche'
     | '/maler/$slug'
+    | '/museen/$slug'
     | '/reisen/$slug'
     | '/werke/$id'
+    | '/museen/'
     | '/reisen/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -147,8 +167,10 @@ export interface FileRouteTypes {
     | '/sammlung'
     | '/epochen/$epoche'
     | '/maler/$slug'
+    | '/museen/$slug'
     | '/reisen/$slug'
     | '/werke/$id'
+    | '/museen'
     | '/reisen'
   id:
     | '__root__'
@@ -161,8 +183,10 @@ export interface FileRouteTypes {
     | '/_authenticated/sammlung'
     | '/epochen/$epoche'
     | '/maler/$slug'
+    | '/museen/$slug'
     | '/reisen/$slug'
     | '/werke/$id'
+    | '/museen/'
     | '/reisen/'
   fileRoutesById: FileRoutesById
 }
@@ -174,8 +198,10 @@ export interface RootRouteChildren {
   QuizRoute: typeof QuizRoute
   EpochenEpocheRoute: typeof EpochenEpocheRoute
   MalerSlugRoute: typeof MalerSlugRoute
+  MuseenSlugRoute: typeof MuseenSlugRoute
   ReisenSlugRoute: typeof ReisenSlugRoute
   WerkeIdRoute: typeof WerkeIdRoute
+  MuseenIndexRoute: typeof MuseenIndexRoute
   ReisenIndexRoute: typeof ReisenIndexRoute
 }
 
@@ -244,6 +270,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MalerSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/museen/': {
+      id: '/museen/'
+      path: '/museen'
+      fullPath: '/museen/'
+      preLoaderRoute: typeof MuseenIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/museen/$slug': {
+      id: '/museen/$slug'
+      path: '/museen/$slug'
+      fullPath: '/museen/$slug'
+      preLoaderRoute: typeof MuseenSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reisen/': {
       id: '/reisen/'
       path: '/reisen'
@@ -289,8 +329,10 @@ const rootRouteChildren: RootRouteChildren = {
   QuizRoute: QuizRoute,
   EpochenEpocheRoute: EpochenEpocheRoute,
   MalerSlugRoute: MalerSlugRoute,
+  MuseenSlugRoute: MuseenSlugRoute,
   ReisenSlugRoute: ReisenSlugRoute,
   WerkeIdRoute: WerkeIdRoute,
+  MuseenIndexRoute: MuseenIndexRoute,
   ReisenIndexRoute: ReisenIndexRoute,
 }
 export const routeTree = rootRouteImport
