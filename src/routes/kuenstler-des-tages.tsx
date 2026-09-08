@@ -7,6 +7,7 @@ import {
   formatDate,
   painterOfTheDay,
   recentPainters,
+  styleLabel,
   todayISO,
   worksOfPainter,
 } from "@/lib/daily-artist";
@@ -55,7 +56,7 @@ function DailyArtistPage() {
             <div className="mt-5 flex flex-wrap gap-2">
               {painter.styles.map((style) => (
                 <span key={style} className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
-                  {style}
+                  {styleLabel(style)}
                 </span>
               ))}
             </div>

@@ -1,4 +1,4 @@
-import { allPainters, allWorks } from "@/lib/art-data";
+import { allPainters, allWorks, styles } from "@/lib/art-data";
 
 export function todayISO(date = new Date()) {
   return date.toISOString().slice(0, 10);
@@ -36,7 +36,18 @@ export function recentPainters(count = 6, dateISO = todayISO()) {
 }
 
 export function worksOfPainter(slug: string) {
-  return allWorks.filter((work) => work.painter.slug === slug);
+  const seen = new Set<string>();
+  return allWorks.filter((work) => {
+    if (work.painter.slug !== slug) return false;
+    const key = work.title.trim().toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+export function styleLabel(slug: string) {
+  return styles.find((style) => style.slug === slug)?.name ?? slug;
 }
 
 const FOCUS = [
