@@ -17,7 +17,7 @@ export type GlobeMarker = {
 
 const RADIUS = 1;
 const MIN_DIST = 2.45;
-const MAX_DIST = 5;
+const MAX_DIST = 5.5;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const landFeature = feature(landTopo as any, (landTopo as any).objects.land) as any;
@@ -317,7 +317,7 @@ function GlobeStand() {
         <meshStandardMaterial color={brass} metalness={0.88} roughness={0.3} />
       </mesh>
       <mesh rotation={[Math.PI / 2, 0, 0]} castShadow>
-        <torusGeometry args={[1.15, 0.07, 18, 128]} />
+        <torusGeometry args={[1.15, 0.042, 18, 128]} />
         <meshStandardMaterial color={darkWood} roughness={0.48} metalness={0.08} />
       </mesh>
       <mesh rotation={[Math.PI / 2, 0, 0]}>
@@ -380,8 +380,8 @@ export function Globe3D({
     rotY: 0.3,
     velX: 0,
     velY: 0,
-    dist: 3.75,
-    targetDist: 3.55,
+    dist: 4.25,
+    targetDist: 4.15,
     target: null,
     dragging: false,
     spin: true,
@@ -484,7 +484,7 @@ export function Globe3D({
       >
         <Canvas
           shadows
-          camera={{ position: [0, 0, 3.75], fov: 42 }}
+          camera={{ position: [0, 0, 4.25], fov: 42 }}
           dpr={[1, 2]}
           gl={{ antialias: true, alpha: true }}
           style={{ touchAction: "none", width: "100%", height: "100%" }}
