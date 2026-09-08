@@ -1,6 +1,6 @@
 import { resolvePaddlePrice } from "@/lib/payments.functions";
 
-const clientToken = import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN;
+const clientToken = import.meta.env["VITE_PAYMENTS_CLIENT_TOKEN"];
 
 type CheckoutOptions = {
   items: Array<{ priceId: string; quantity: number }>;
@@ -47,10 +47,11 @@ export async function initializePaddle() {
 export async function openPaddleCheckout(options: { priceId: string; userId: string; email?: string }) {
   await initializePaddle();
   const priceId = await resolvePaddlePrice({ data: { priceId: options.priceId, environment: getPaddleEnvironment() } });
-  window.Paddle.Checkout.open({
+  const checkout: CheckoutOptions = {
     items: [{ priceId, quantity: 1 }],
-    customer: options.email ? { email: options.email } : undefined,
     customData: { userId: options.userId },
     settings: { displayMode: "overlay", successUrl: `${window.location.origin}/premium?checkout=success`, allowLogout: false, variant: "one-page" },
-  });
+  };
+  if (options.email) checkout.customer = { email: options.email };
+  window.Paddle.Checkout.open(checkout);
 }

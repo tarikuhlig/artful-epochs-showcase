@@ -5,6 +5,7 @@ import { getVisitInfo } from "@/lib/museum-info";
 import { useTrackDiscovery } from "@/lib/progress";
 import { isFreeMuseum } from "@/lib/premium-access";
 import { PremiumLock } from "@/components/PremiumLock";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 
 
 export const Route = createFileRoute("/museen/$slug")({
@@ -36,7 +37,8 @@ export const Route = createFileRoute("/museen/$slug")({
 function MuseumPage() {
   const { museum } = Route.useLoaderData();
   const info = getVisitInfo(museum.slug);
-  const free = isFreeMuseum(museum.slug);
+  const { hasAccess } = usePremiumAccess();
+  const free = hasAccess || isFreeMuseum(museum.slug);
   useTrackDiscovery("museum", museum.slug, free);
 
 
