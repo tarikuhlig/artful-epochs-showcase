@@ -34,3 +34,4 @@
 - [x] Provenance Coin schwarz-weiß gestalten und die Reise sichtbar von Epoche zu Epoche strukturieren
 - [x] Jede Reise-Epoche mit vier prägenden Künstlerprofilen ausstatten
 - [x] Reise als durchklickbaren Kartenstapel pro Epoche gestalten
+- [x] Auktionshaus prächtiger gestalten und berühmte Meisterwerke deutlich höher bepreisen
