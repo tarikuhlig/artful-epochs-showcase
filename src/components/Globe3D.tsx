@@ -31,7 +31,7 @@ function latLonToVec3(lat: number, lon: number, r = RADIUS) {
   );
 }
 
-/** Erdtextur wird im Browser gezeichnet – kein externer Download nötig. */
+/** Antiker Pergament-Globus – im Browser gezeichnet, kein externer Download nötig. */
 function makeEarthTexture() {
   const w = 2048;
   const h = 1024;
@@ -40,21 +40,49 @@ function makeEarthTexture() {
   canvas.height = h;
   const ctx = canvas.getContext("2d")!;
 
+  // Vergilbtes Pergament als Meer
   const ocean = ctx.createLinearGradient(0, 0, 0, h);
-  ocean.addColorStop(0, "#cfd9e2");
-  ocean.addColorStop(0.5, "#e3e9ee");
-  ocean.addColorStop(1, "#cfd9e2");
+  ocean.addColorStop(0, "#cbb race".replace(" race", "88"));
+  ocean.addColorStop(0.5, "#e6d3a8");
+  ocean.addColorStop(1, "#cbb188");
   ctx.fillStyle = ocean;
   ctx.fillRect(0, 0, w, h);
+
+  // Altersflecken
+  for (let i = 0; i < 240; i++) {
+    const x = Math.random() * w;
+    const y = Math.random() * h;
+    const r = 20 + Math.random() * 120;
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, `rgba(120,88,48,${0.03 + Math.random() * 0.05})`);
+    g.addColorStop(1, "rgba(120,88,48,0)");
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
 
   const projection = geoEquirectangular()
     .translate([w / 2, h / 2])
     .scale(w / (2 * Math.PI));
   const path = geoPath(projection, ctx);
 
-  // Gradnetz
-  ctx.strokeStyle = "rgba(90,110,130,0.22)";
+  // Kompass-/Rhumbenlinien wie auf alten Portolankarten
+  ctx.strokeStyle = "rgba(140,105,60,0.18)";
   ctx.lineWidth = 1;
+  for (const cx of [w * 0.28, w * 0.72]) {
+    const cy = h * 0.5;
+    for (let a = 0; a < 32; a++) {
+      const ang = (a / 32) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(ang) * w, cy + Math.sin(ang) * w);
+      ctx.stroke();
+    }
+  }
+
+  // Gradnetz
+  ctx.strokeStyle = "rgba(120,90,50,0.3)";
   for (let lon = -180; lon <= 180; lon += 15) {
     const x = ((lon + 180) / 360) * w;
     ctx.beginPath();
@@ -69,19 +97,45 @@ function makeEarthTexture() {
     ctx.lineTo(w, y);
     ctx.stroke();
   }
+  // Äquator und Wendekreise betont
+  ctx.strokeStyle = "rgba(110,75,40,0.55)";
+  ctx.lineWidth = 2.5;
+  for (const lat of [0, 23.44, -23.44]) {
+    const y = ((90 - lat) / 180) * h;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(w, y);
+    ctx.stroke();
+  }
 
+  // Landmassen in Sepia mit Tuschekontur
   ctx.beginPath();
   path(landFeature);
-  ctx.fillStyle = "#f6f1e7";
+  ctx.fillStyle = "#c9a86d";
   ctx.fill();
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = "#8b7f6b";
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "#5b4022";
   ctx.stroke();
+
+  // Küstenschraffur
+  ctx.save();
+  ctx.beginPath();
+  path(landFeature);
+  ctx.clip();
+  ctx.strokeStyle = "rgba(91,64,34,0.16)";
+  ctx.lineWidth = 1;
+  for (let x = -h; x < w; x += 9) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x + h, h);
+    ctx.stroke();
+  }
+  ctx.restore();
 
   // feines Papierkorn
   const grain = ctx.getImageData(0, 0, w, h);
   for (let i = 0; i < grain.data.length; i += 4) {
-    const n = (Math.random() - 0.5) * 12;
+    const n = (Math.random() - 0.5) * 16;
     grain.data[i] = (grain.data[i] ?? 0) + n;
     grain.data[i + 1] = (grain.data[i + 1] ?? 0) + n;
     grain.data[i + 2] = (grain.data[i + 2] ?? 0) + n;
