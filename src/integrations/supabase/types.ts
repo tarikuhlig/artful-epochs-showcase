@@ -68,6 +68,36 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_coin_challenges: {
+        Row: {
+          challenge_date: string
+          coin_reward: number
+          completed_at: string
+          id: string
+          score: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_date?: string
+          coin_reward: number
+          completed_at?: string
+          id?: string
+          score: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_date?: string
+          coin_reward?: number
+          completed_at?: string
+          id?: string
+          score?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       discoveries: {
         Row: {
           created_at: string
@@ -247,6 +277,14 @@ export type Database = {
         Returns: {
           awarded: number
           coins: number
+        }[]
+      }
+      complete_daily_coin_challenge_for_user: {
+        Args: { target_date: string; target_score: number; target_user: string }
+        Returns: {
+          awarded: number
+          coins: number
+          score: number
         }[]
       }
       purchase_auction_offer: {
