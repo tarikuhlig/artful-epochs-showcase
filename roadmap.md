@@ -37,4 +37,4 @@
 - [x] Auktionshaus prächtiger gestalten und berühmte Meisterwerke deutlich höher bepreisen
 - [x] Auktionshaus täglich mit 1 Platin-, 2 Gold- und 2 Bronze-Werken rotieren lassen
 - [x] Galerie-Ausstellung, Benutzername und Profilbild umsetzen
-- [ ] Platin-Weltwerk im Auktionshaus oben zentriert hervorheben, danach Gold und Bronze anordnen
+- [x] Platin-Weltwerk im Auktionshaus oben zentriert hervorheben, danach Gold und Bronze anordnen
