@@ -25,6 +25,7 @@ export const Route = createFileRoute("/maler/$slug")({
 
 function PainterPage() {
   const painter = Route.useLoaderData();
+  useTrackDiscovery("painter", painter.slug);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
@@ -49,9 +50,45 @@ function PainterPage() {
         </p>
       </header>
 
-      <h2 className="font-display mt-16 mb-6 text-2xl font-medium md:text-3xl">
-        Werke
+      <dl className="mt-10 grid max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4">
+        {[
+          { label: "Lebensdaten", value: painter.life },
+          { label: "Epoche", value: painter.epoch.name },
+          { label: "Zeitraum", value: painter.epoch.period },
+          {
+            label: "Werke hier",
+            value: `${painter.works.length}`,
+          },
+        ].map((fact) => (
+          <div key={fact.label} className="rounded-md border border-border p-4">
+            <dt className="text-[11px] tracking-widest text-muted-foreground uppercase">
+              {fact.label}
+            </dt>
+            <dd className="mt-1 text-sm font-medium">{fact.value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <h2 className="font-display mt-16 mb-2 text-2xl font-medium md:text-3xl">
+        Werke von {painter.name}
       </h2>
+      <ul className="mb-8 divide-y divide-border rounded-md border border-border">
+        {painter.works.map((work) => (
+          <li key={work.id}>
+            <Link
+              to="/werke/$id"
+              params={{ id: work.id }}
+              className="flex items-center justify-between gap-4 px-4 py-3 text-sm transition-colors hover:bg-accent"
+            >
+              <span className="font-medium">{work.title}</span>
+              <span className="flex items-center gap-3 text-muted-foreground">
+                {work.year}
+                <ArrowRight className="h-4 w-4" />
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {painter.works.map((work) => (
           <Link
