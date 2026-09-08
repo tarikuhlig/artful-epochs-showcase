@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { findWork } from "@/lib/art-data";
+import { useTrackDiscovery } from "@/lib/progress";
 
 export const Route = createFileRoute("/werke/$id")({
   loader: ({ params }) => {
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/werke/$id")({
 
 function WorkPage() {
   const work = Route.useLoaderData();
+  useTrackDiscovery("work", work.id);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">

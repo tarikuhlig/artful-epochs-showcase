@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { findEpoch } from "@/lib/art-data";
+import { useTrackDiscovery } from "@/lib/progress";
 
 export const Route = createFileRoute("/epochen/$epoche")({
   loader: ({ params }) => {
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/epochen/$epoche")({
 
 function EpochPage() {
   const epoch = Route.useLoaderData();
+  useTrackDiscovery("epoch", epoch.slug);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
