@@ -217,3 +217,20 @@
     animation: none;
   }
 }
+
+@keyframes intro-float {
+  0% {
+    transform: translateY(18px) scale(0.94);
+    opacity: 0;
+  }
+  22% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-10px) scale(1.02);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
