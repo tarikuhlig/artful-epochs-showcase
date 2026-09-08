@@ -29,7 +29,7 @@ function Index() {
     <div className="min-h-screen">
       {/* Hero */}
       <section className="mx-auto max-w-5xl px-6 pt-24 pb-16 text-center md:pt-32">
-        <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-border px-4 py-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+        <p className="mb-4 inline-flex items-center gap-2 rounded-md border border-border px-4 py-1.5 text-xs font-medium tracking-wide text-muted-foreground uppercase">
           <Palette className="h-3.5 w-3.5" />
           Kunstgeschichte zum Lernen
         </p>
@@ -46,14 +46,14 @@ function Index() {
         <div className="mt-8 flex items-center justify-center gap-3">
           <a
             href="#epochen"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             Epochen entdecken
             <ArrowRight className="h-4 w-4" />
           </a>
           <Link
             to="/quiz"
-            className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-accent"
+            className="inline-flex items-center gap-2 rounded-md border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-accent"
           >
             Zum Quiz
           </Link>
@@ -70,7 +70,7 @@ function Index() {
                 key={epoch.slug}
                 to="/epochen/$epoche"
                 params={{ epoche: epoch.slug }}
-                className="group overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-lg"
+                className="group overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-lg"
               >
                 <div className="relative aspect-[16/9] overflow-hidden bg-muted">
                   {cover && (

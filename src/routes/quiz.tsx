@@ -101,15 +101,15 @@ function QuizPage() {
         </p>
       </header>
 
-      <div className="mt-8 h-1.5 overflow-hidden rounded-full bg-muted">
+      <div className="mt-8 h-1.5 overflow-hidden rounded-md bg-muted">
         <div
-          className="h-full rounded-full bg-primary transition-all duration-500"
+          className="h-full rounded-md bg-primary transition-all duration-500"
           style={{ width: `${progress}%` }}
         />
       </div>
 
       {done ? (
-        <div className="mt-12 rounded-2xl border border-border bg-card p-10 text-center">
+        <div className="mt-12 rounded-lg border border-border bg-card p-10 text-center">
           <p className="text-sm font-medium tracking-widest text-muted-foreground uppercase">
             Dein Ergebnis
           </p>
@@ -126,14 +126,14 @@ function QuizPage() {
           <div className="mt-8 flex items-center justify-center gap-3">
             <button
               onClick={restart}
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
             >
               <RotateCcw className="h-4 w-4" />
               Nochmal spielen
             </button>
             <Link
               to="/"
-              className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-accent"
+              className="inline-flex items-center gap-2 rounded-md border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-accent"
             >
               Weiterlernen
             </Link>
@@ -141,7 +141,7 @@ function QuizPage() {
         </div>
       ) : (
         <div className="mt-12">
-          <div className="overflow-hidden rounded-2xl border border-border bg-muted">
+          <div className="overflow-hidden rounded-lg border border-border bg-muted">
             <img
               src={question.image}
               alt="Zu erratendes Kunstwerk"
@@ -180,7 +180,7 @@ function QuizPage() {
             <div className="mt-6 text-center">
               <button
                 onClick={next}
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
               >
                 {index + 1 === questions.length ? "Zum Ergebnis" : "Nächste Frage"}
               </button>

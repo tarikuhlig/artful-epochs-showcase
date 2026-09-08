@@ -59,7 +59,7 @@ function PainterPage() {
             params={{ id: work.id }}
             className="group"
           >
-            <div className="aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-muted">
+            <div className="aspect-[4/3] overflow-hidden rounded-lg border border-border bg-muted">
               <img
                 src={work.image}
                 alt={`${work.title} von ${painter.name}`}
