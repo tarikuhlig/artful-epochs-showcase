@@ -25,7 +25,7 @@ function NotFoundComponent() {
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center justify-center rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             Zur Startseite
           </Link>
@@ -57,13 +57,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            className="inline-flex items-center justify-center rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
             Erneut versuchen
           </button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-full border border-input bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
             Zur Startseite
           </a>
@@ -100,7 +100,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap",
       },
     ],
   }),
@@ -141,14 +141,14 @@ function SiteHeader() {
           <Link
             to="/"
             activeOptions={{ exact: true }}
-            className="rounded-full px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            className="rounded-md px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             activeProps={{ className: "bg-accent text-foreground" }}
           >
             Epochen
           </Link>
           <Link
             to="/quiz"
-            className="rounded-full px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            className="rounded-md px-4 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             activeProps={{ className: "bg-accent text-foreground" }}
           >
             Quiz

@@ -43,7 +43,7 @@ function WorkPage() {
       </Link>
 
       <div className="mt-8 grid items-start gap-10 lg:grid-cols-[1.4fr_1fr]">
-        <figure className="overflow-hidden rounded-2xl border border-border bg-muted">
+        <figure className="overflow-hidden rounded-lg border border-border bg-muted">
           <img
             src={work.image}
             alt={`${work.title} von ${work.painter.name}`}
@@ -63,7 +63,7 @@ function WorkPage() {
           <Link
             to="/maler/$slug"
             params={{ slug: work.painter.slug }}
-            className="mt-8 inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-accent"
+            className="mt-8 inline-flex items-center gap-2 rounded-md border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-accent"
           >
             Mehr von {work.painter.name}
           </Link>
