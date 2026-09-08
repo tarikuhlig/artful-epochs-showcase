@@ -11,7 +11,7 @@ export const Route = createFileRoute("/auth")({
       {
         name: "description",
         content:
-          "Melde dich bei Provenance an, um Kunstpfad, Provenance Coins und deine persönliche Sammlung zu speichern.",
+          "Melde dich bei Provenance an, um deine Reise, Provenance Coins und deine persönliche Sammlung zu speichern.",
       },
       { property: "og:title", content: "Anmelden — Fortschritt speichern | Provenance" },
       {
@@ -88,7 +88,7 @@ function AuthPage() {
         {mode === "signin" ? "Willkommen zurück" : "Konto anlegen"}
       </h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        Speichere deinen Kunstpfad, Provenance Coins und deine persönliche Sammlung.
+        Speichere deine Reise, Provenance Coins und deine persönliche Sammlung.
       </p>
 
       <div className="mt-8 grid gap-2">

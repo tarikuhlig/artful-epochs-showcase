@@ -11,9 +11,9 @@ import { artPathQuizzes } from "@/lib/art-path-quiz";
 
 export const Route = createFileRoute("/kunstpfad")({
   head: () => ({ meta: [
-    { title: "Kunstpfad — Kunstgeschichte Schritt für Schritt | Provenance" },
+    { title: "Reise — Kunstgeschichte Schritt für Schritt | Provenance" },
     { name: "description", content: "Eine spielbare Reise durch zwölf Wendepunkte der Kunstgeschichte — mit Werken, Geschichten und Provenance Coins." },
-    { property: "og:title", content: "Der große Kunstpfad | Provenance" },
+    { property: "og:title", content: "Die große Reise | Provenance" },
     { property: "og:description", content: "Kunstgeschichte von der Renaissance bis zur Abstraktion Schritt für Schritt erleben." },
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ]}),
