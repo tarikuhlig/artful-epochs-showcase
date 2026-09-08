@@ -33,3 +33,4 @@
 - [x] Katalog: viele neue Kuenstler + Werke pro Epoche
 - [x] Provenance Coin schwarz-weiß gestalten und die Reise sichtbar von Epoche zu Epoche strukturieren
 - [x] Jede Reise-Epoche mit vier prägenden Künstlerprofilen ausstatten
+- [x] Reise als durchklickbaren Kartenstapel pro Epoche gestalten
