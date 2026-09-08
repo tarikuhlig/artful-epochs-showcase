@@ -79,7 +79,13 @@ function Index() {
       <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden bg-foreground">
         <Tunnel />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_15%,color-mix(in_oklab,var(--foreground)_60%,transparent)_85%)]" />
-        <div className="relative z-10 flex flex-col items-center px-6 text-center">
+        <div
+          className="relative z-10 flex flex-col items-center px-6 py-10 text-center"
+          style={{
+            backgroundImage:
+              "radial-gradient(ellipse at center, color-mix(in oklab, var(--foreground) 88%, transparent) 0%, color-mix(in oklab, var(--foreground) 60%, transparent) 45%, transparent 72%)",
+          }}
+        >
           <img
             src={provenanceLogo}
             alt="Provenance"
