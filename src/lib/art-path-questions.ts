@@ -142,6 +142,16 @@ export function stationQuestions(index: number): ArtQuestion[] {
     }
   }
 
+  const attribution = generated.filter((q) => q.image && !q.compare);
+  const compares = generated.filter((q) => q.compare);
+  const rest = generated.filter((q) => !q.image && !q.compare);
+  const mixed = [
+    attribution[0], compares[0], attribution[1], compares[1],
+    rest[0], attribution[2], rest[1], rest[2], attribution[3],
+  ].filter((q): q is ArtQuestion => Boolean(q));
+  const generatedOrdered = mixed;
+  generated.length = 0;
+  generated.push(...generatedOrdered);
   const all = [...curated, ...generated];
   const ordered: ArtQuestion[] = [];
   // kuratierte und erzeugte Fragen abwechselnd
