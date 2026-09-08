@@ -31,3 +31,4 @@
 - [x] Reise-Karte: stilisierte Übersichtskarte ohne OpenStreetMap-Einblendung
 - [x] Sicherstellen: keine Laufzeit-Credits (keine AI/Cloud-Calls im normalen Seitenbetrieb), nur eigener Katalog
 - [x] Katalog: viele neue Kuenstler + Werke pro Epoche
+- [x] Provenance Coin schwarz-weiß gestalten und die Reise sichtbar von Epoche zu Epoche strukturieren

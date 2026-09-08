@@ -126,8 +126,8 @@
   --border: oklch(0.915 0.006 90);
   --input: oklch(0.915 0.006 90);
   --ring: oklch(0.6 0.03 70);
-  --coin: oklch(0.66 0.095 255);
-  --coin-soft: oklch(0.97 0.025 250);
+  --coin: oklch(0.18 0.005 70);
+  --coin-soft: oklch(0.975 0 0);
   --path-sky: oklch(0.985 0.014 235);
   --path-coral: oklch(0.98 0.018 25);
   --path-leaf: oklch(0.985 0.016 145);
