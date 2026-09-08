@@ -5,13 +5,13 @@ import { epochs, allPainters, allWorks } from "@/lib/art-data";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Ars — Maler, Epochen und ihre Werke entdecken" },
+      { title: "Provenance — Maler, Epochen und ihre Werke entdecken" },
       {
         name: "description",
         content:
           "Lerne die großen Maler der Kunstgeschichte kennen: von der Renaissance über Romantik und Impressionismus bis zur Moderne — mit Werken, Beschreibungen und Quiz.",
       },
-      { property: "og:title", content: "Ars — Maler, Epochen und ihre Werke entdecken" },
+      { property: "og:title", content: "Provenance — Maler, Epochen und ihre Werke entdecken" },
       {
         property: "og:description",
         content:

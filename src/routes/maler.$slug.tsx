@@ -11,15 +11,15 @@ export const Route = createFileRoute("/maler/$slug")({
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.name} — Maler | Ars` },
+          { title: `${loaderData.name} — Maler | Provenance` },
           { name: "description", content: loaderData.bio },
-          { property: "og:title", content: `${loaderData.name} — Maler | Ars` },
+          { property: "og:title", content: `${loaderData.name} — Maler | Provenance` },
           { property: "og:description", content: loaderData.bio },
           { property: "og:type", content: "article" },
           { property: "og:image", content: loaderData.works[0]?.image },
           { name: "twitter:image", content: loaderData.works[0]?.image },
         ].filter((m) => m.content)
-      : [{ title: "Maler nicht gefunden | Ars" }, { name: "robots", content: "noindex" }],
+      : [{ title: "Maler nicht gefunden | Provenance" }, { name: "robots", content: "noindex" }],
   }),
   component: PainterPage,
 });

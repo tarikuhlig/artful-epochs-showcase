@@ -6,13 +6,13 @@ import { allWorks } from "@/lib/art-data";
 export const Route = createFileRoute("/quiz")({
   head: () => ({
     meta: [
-      { title: "Kunst-Quiz — Wer hat dieses Werk gemalt? | Ars" },
+      { title: "Kunst-Quiz — Wer hat dieses Werk gemalt? | Provenance" },
       {
         name: "description",
         content:
           "Teste dein Kunstwissen: Erkenne Meisterwerke und ordne sie dem richtigen Maler zu.",
       },
-      { property: "og:title", content: "Kunst-Quiz — Wer hat dieses Werk gemalt? | Ars" },
+      { property: "og:title", content: "Kunst-Quiz — Wer hat dieses Werk gemalt? | Provenance" },
       {
         property: "og:description",
         content: "Teste dein Kunstwissen mit Meisterwerken der großen Epochen.",

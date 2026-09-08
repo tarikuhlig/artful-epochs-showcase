@@ -11,13 +11,13 @@ export const Route = createFileRoute("/epochen/$epoche")({
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.name} — Epoche | Ars` },
+          { title: `${loaderData.name} — Epoche | Provenance` },
           { name: "description", content: loaderData.description },
-          { property: "og:title", content: `${loaderData.name} — Epoche | Ars` },
+          { property: "og:title", content: `${loaderData.name} — Epoche | Provenance` },
           { property: "og:description", content: loaderData.description },
           { property: "og:type", content: "article" },
         ]
-      : [{ title: "Epoche nicht gefunden | Ars" }, { name: "robots", content: "noindex" }],
+      : [{ title: "Epoche nicht gefunden | Provenance" }, { name: "robots", content: "noindex" }],
   }),
   component: EpochPage,
 });

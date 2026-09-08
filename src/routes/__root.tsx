@@ -78,14 +78,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Ars — Kunstgeschichte lernen" },
+      { title: "Provenance — Kunstgeschichte lernen" },
       {
         name: "description",
         content:
           "Lerne die großen Maler und ihre Werke kennen — geordnet nach Epochen, mit Kurzbeschreibungen und Quiz.",
       },
-      { name: "author", content: "Ars" },
-      { property: "og:title", content: "Ars — Kunstgeschichte lernen" },
+      { name: "author", content: "Provenance" },
+      { property: "og:title", content: "Provenance — Kunstgeschichte lernen" },
       {
         property: "og:description",
         content: "Maler, Epochen und Meisterwerke entdecken — klar und schön geordnet.",
@@ -132,7 +132,7 @@ function SiteHeader() {
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
             <Palette className="h-4 w-4" />
           </span>
-          <span className="font-display text-xl font-medium tracking-tight">Ars</span>
+          <span className="font-display text-xl font-medium tracking-tight">Provenance</span>
         </Link>
         <nav className="flex items-center gap-1 text-sm font-medium">
           <Link
@@ -160,7 +160,7 @@ function SiteFooter() {
   return (
     <footer className="border-t border-border">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 py-8 text-xs text-muted-foreground sm:flex-row">
-        <p>Ars — Kunstgeschichte zum Lernen</p>
+        <p>Provenance — Kunstgeschichte zum Lernen</p>
         <p>Bildnachweis: Wikimedia Commons (gemeinfreie Werke)</p>
       </div>
     </footer>

@@ -12,12 +12,12 @@ export const Route = createFileRoute("/werke/$id")({
     meta: loaderData
       ? [
           {
-            title: `${loaderData.title} (${loaderData.year}) — ${loaderData.painter.name} | Ars`,
+            title: `${loaderData.title} (${loaderData.year}) — ${loaderData.painter.name} | Provenance`,
           },
           { name: "description", content: loaderData.description },
           {
             property: "og:title",
-            content: `${loaderData.title} — ${loaderData.painter.name} | Ars`,
+            content: `${loaderData.title} — ${loaderData.painter.name} | Provenance`,
           },
           { property: "og:description", content: loaderData.description },
           { property: "og:type", content: "article" },
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/werke/$id")({
           { name: "twitter:card", content: "summary_large_image" },
           { name: "twitter:image", content: loaderData.image },
         ]
-      : [{ title: "Werk nicht gefunden | Ars" }, { name: "robots", content: "noindex" }],
+      : [{ title: "Werk nicht gefunden | Provenance" }, { name: "robots", content: "noindex" }],
   }),
   component: WorkPage,
 });
