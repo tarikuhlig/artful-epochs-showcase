@@ -6,7 +6,7 @@ import { cities } from "@/lib/museums";
 import { getVisitInfo } from "@/lib/museum-info";
 import { buildCityTour, formatDuration, journeyForCity } from "@/lib/city-tours";
 import { allWorks, epochData, styles } from "@/lib/art-data";
-import studioBg from "@/assets/atelier-studio.jpg";
+import studioBg from "@/assets/atelier-globe-room.jpg";
 
 const Globe3D = lazy(() => import("@/components/Globe3D").then((m) => ({ default: m.Globe3D })));
 
@@ -88,7 +88,7 @@ function GlobusPage() {
 
         <div className="mt-8 grid items-start gap-8 md:mt-10 lg:grid-cols-5 lg:gap-10">
           <div className="min-w-0 lg:col-span-3">
-            <div className="relative mx-auto w-full max-w-[520px] min-w-0 overflow-hidden rounded-2xl border border-border lg:max-w-none">
+            <div className="relative mx-auto w-full max-w-[620px] min-w-0 overflow-hidden rounded-2xl border border-border bg-muted lg:max-w-none">
               <img
                 src={studioBg}
                 alt=""
@@ -96,10 +96,10 @@ function GlobusPage() {
                 loading="lazy"
                 width={1920}
                 height={1280}
-                className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+                className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
               />
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(28,18,8,0.55)_100%)]" />
-              <div className="relative p-2 sm:p-4">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_58%,transparent_32%,rgba(38,22,10,0.42)_100%)]" />
+              <div className="relative px-1 pt-8 pb-2 sm:px-4 sm:pt-10 sm:pb-4">
               {mounted ? (
                 <Suspense fallback={<GlobePlaceholder />}>
                   <Globe3D markers={markers} selectedId={selected} onSelect={setSelected} />

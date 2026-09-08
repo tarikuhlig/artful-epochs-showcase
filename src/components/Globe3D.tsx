@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Environment, Lightformer } from "@react-three/drei";
 import * as THREE from "three";
 import { geoEquirectangular, geoPath } from "d3-geo";
 import { feature } from "topojson-client";
@@ -15,8 +16,8 @@ export type GlobeMarker = {
 };
 
 const RADIUS = 1;
-const MIN_DIST = 1.55;
-const MAX_DIST = 4.2;
+const MIN_DIST = 2.45;
+const MAX_DIST = 5;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const landFeature = feature(landTopo as any, (landTopo as any).objects.land) as any;
@@ -229,23 +230,14 @@ function Globe({
   });
 
   return (
-    <group ref={group}>
-      <mesh>
-        <sphereGeometry args={[RADIUS, 96, 96]} />
-        <meshStandardMaterial map={texture} roughness={0.95} metalness={0} />
-      </mesh>
+    <group>
+      <group ref={group} rotation-z={-0.12}>
+        <mesh castShadow receiveShadow>
+          <sphereGeometry args={[RADIUS, 96, 96]} />
+          <meshStandardMaterial map={texture} roughness={0.82} metalness={0} />
+        </mesh>
 
-      {/* Messing-Meridianring der alten Globus-Halterung */}
-      <mesh rotation={[0, 0, Math.PI / 2]}>
-        <torusGeometry args={[RADIUS * 1.05, 0.016, 12, 96]} />
-        <meshStandardMaterial color="#b98b3c" metalness={0.9} roughness={0.32} />
-      </mesh>
-      <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[RADIUS * 1.05, 0.012, 12, 96]} />
-        <meshStandardMaterial color="#a9782f" metalness={0.9} roughness={0.38} />
-      </mesh>
-
-      {markers.map((m) => {
+        {markers.map((m, index) => {
         const active = selectedId === m.id || hovered === m.id;
         const normal = latLonToVec3(m.lat, m.lon, 1).normalize();
         const pos = normal.clone().multiplyScalar(RADIUS * 0.995);
@@ -253,21 +245,20 @@ function Globe({
           new THREE.Vector3(0, 1, 0),
           normal,
         );
-        const len = (0.075 + Math.min(m.weight, 8) * 0.004) * (active ? 1.25 : 1);
-        const head = (0.019 + Math.min(m.weight, 8) * 0.0016) * (active ? 1.35 : 1);
+        const len = (0.13 + Math.min(m.weight, 8) * 0.004) * (active ? 1.18 : 1);
+        const head = (0.026 + Math.min(m.weight, 8) * 0.0015) * (active ? 1.28 : 1);
         const pick = (e: { stopPropagation: () => void }) => {
           e.stopPropagation();
           onSelect(m.id);
         };
         return (
           <group key={m.id} position={pos} quaternion={quat}>
-            {/* Nadel */}
+            {/* Lange silberne Schmucknadel */}
             <mesh position={[0, len / 2, 0]}>
-              <cylinderGeometry args={[0.0035, 0.0022, len, 8]} />
-              <meshStandardMaterial color="#d8d2c6" metalness={0.85} roughness={0.3} />
+              <cylinderGeometry args={[0.0042, 0.002, len, 10]} />
+              <meshStandardMaterial color="#d8cfbd" metalness={0.92} roughness={0.22} />
             </mesh>
-            {/* Nadelkopf */}
-            <mesh
+            <group
               position={[0, len + head * 0.7, 0]}
               onPointerOver={(e) => {
                 e.stopPropagation();
@@ -280,15 +271,25 @@ function Globe({
               }}
               onClick={pick}
             >
-              <sphereGeometry args={[head, 18, 18]} />
-              <meshStandardMaterial
-                color={active ? "#0f2ea8" : "#9b1b1b"}
-                emissive={active ? "#0f2ea8" : "#000000"}
-                emissiveIntensity={active ? 0.5 : 0}
-                roughness={0.35}
-                metalness={0.1}
-              />
-            </mesh>
+              <mesh rotation-x={Math.PI / 2}>
+                <cylinderGeometry args={[head * 1.14, head * 0.95, head * 0.42, index % 3 === 0 ? 12 : 24]} />
+                <meshStandardMaterial
+                  color={active ? "#1237c7" : index % 3 === 0 ? "#3199a6" : index % 3 === 1 ? "#c65c37" : "#caa14a"}
+                  emissive={active ? "#1237c7" : "#000000"}
+                  emissiveIntensity={active ? 0.34 : 0}
+                  roughness={0.32}
+                  metalness={index % 3 === 2 ? 0.72 : 0.18}
+                />
+              </mesh>
+              <mesh position={[0, head * 0.26, 0]} rotation={[0, Math.PI / 4, 0]}>
+                <octahedronGeometry args={[head * 0.6, 0]} />
+                <meshStandardMaterial color="#e3c778" metalness={0.95} roughness={0.18} />
+              </mesh>
+              <mesh position={[0, head * 0.42, 0]}>
+                <sphereGeometry args={[head * 0.22, 12, 12]} />
+                <meshStandardMaterial color={active ? "#f7efe0" : "#614222"} metalness={0.65} roughness={0.2} />
+              </mesh>
+            </group>
             {/* größere unsichtbare Trefferfläche für Finger */}
             <mesh visible={false} position={[0, len * 0.8, 0]} onClick={pick}>
               <sphereGeometry args={[Math.max(head * 3, 0.05), 8, 8]} />
@@ -296,7 +297,70 @@ function Globe({
             </mesh>
           </group>
         );
-      })}
+        })}
+      </group>
+
+      <GlobeStand />
+    </group>
+  );
+}
+
+function GlobeStand() {
+  const wood = "#4a2614";
+  const darkWood = "#24120b";
+  const brass = "#9b7136";
+  return (
+    <group>
+      {/* Fester Messingbügel und hölzerner Äquatorring wie beim Referenzglobus */}
+      <mesh rotation={[0, Math.PI / 2, -0.12]} castShadow>
+        <torusGeometry args={[RADIUS * 1.055, 0.025, 14, 128]} />
+        <meshStandardMaterial color={brass} metalness={0.88} roughness={0.3} />
+      </mesh>
+      <mesh rotation={[Math.PI / 2, 0, 0]} castShadow>
+        <torusGeometry args={[1.15, 0.07, 18, 128]} />
+        <meshStandardMaterial color={darkWood} roughness={0.48} metalness={0.08} />
+      </mesh>
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[1.15, 0.018, 10, 128]} />
+        <meshStandardMaterial color={brass} metalness={0.82} roughness={0.28} />
+      </mesh>
+
+      {/* Gedrechselte Stützen */}
+      {[
+        [-0.86, 0.22],
+        [0.86, 0.22],
+        [-0.82, -0.42],
+        [0.82, -0.42],
+      ].map(([x, z], i) => (
+        <group key={i} position={[x, -0.77, z]}>
+          <mesh castShadow>
+            <cylinderGeometry args={[0.072, 0.09, 1.25, 20]} />
+            <meshStandardMaterial color={wood} roughness={0.54} />
+          </mesh>
+          {[-0.42, -0.18, 0.22, 0.45].map((y) => (
+            <mesh key={y} position-y={y} castShadow>
+              <torusGeometry args={[0.09, 0.025, 10, 20]} />
+              <meshStandardMaterial color={darkWood} roughness={0.48} />
+            </mesh>
+          ))}
+        </group>
+      ))}
+
+      {/* Schwerer runder Fuß mit konzentrischen Holzringen */}
+      <mesh position-y={-1.47} castShadow receiveShadow>
+        <cylinderGeometry args={[0.78, 0.86, 0.16, 64]} />
+        <meshStandardMaterial color={wood} roughness={0.52} />
+      </mesh>
+      {[0.22, 0.42, 0.62].map((r) => (
+        <mesh key={r} position-y={-1.382} rotation-x={Math.PI / 2}>
+          <torusGeometry args={[r, 0.011, 8, 64]} />
+          <meshStandardMaterial color={brass} metalness={0.35} roughness={0.5} />
+        </mesh>
+      ))}
+      <mesh position={[0, -1.31, 0]} castShadow>
+        <cylinderGeometry args={[0.13, 0.18, 0.36, 24]} />
+        <meshStandardMaterial color={darkWood} roughness={0.48} />
+      </mesh>
     </group>
   );
 }
@@ -316,8 +380,8 @@ export function Globe3D({
     rotY: 0.3,
     velX: 0,
     velY: 0,
-    dist: 3.2,
-    targetDist: 2.9,
+    dist: 3.75,
+    targetDist: 3.55,
     target: null,
     dragging: false,
     spin: true,
@@ -419,15 +483,24 @@ export function Globe3D({
         onPointerLeave={endDrag}
       >
         <Canvas
-          camera={{ position: [0, 0, 3.2], fov: 42 }}
+          shadows
+          camera={{ position: [0, 0, 3.75], fov: 42 }}
           dpr={[1, 2]}
           gl={{ antialias: true, alpha: true }}
           style={{ touchAction: "none", width: "100%", height: "100%" }}
         >
-          <ambientLight intensity={0.75} color="#ffe9c9" />
-          <directionalLight position={[3, 2.5, 4]} intensity={1.5} color="#ffdca8" />
-          <directionalLight position={[-4, -1, -2]} intensity={0.3} color="#8a6a44" />
+           <ambientLight intensity={0.62} color="#ffe9c9" />
+           <directionalLight position={[3.5, 3.5, 4]} intensity={1.75} color="#ffe1b5" castShadow shadow-mapSize-width={1024} shadow-mapSize-height={1024} />
+           <directionalLight position={[-4, -1, -2]} intensity={0.4} color="#9b784e" />
+           <Environment>
+             <Lightformer intensity={1.6} position={[3, 4, 4]} scale={[4, 5, 1]} />
+             <Lightformer intensity={0.55} color="#b98958" position={[-4, 1, 1]} rotation-y={Math.PI / 2} scale={[4, 3, 1]} />
+           </Environment>
           <Globe markers={markers} selectedId={selectedId} onSelect={onSelect} ctl={ctl} />
+           <mesh position={[0, -1.57, 0]} rotation-x={-Math.PI / 2} receiveShadow>
+             <circleGeometry args={[1.15, 64]} />
+             <shadowMaterial transparent opacity={0.24} />
+           </mesh>
         </Canvas>
       </div>
 
