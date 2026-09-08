@@ -12,6 +12,7 @@ import { stationQuestions, type ArtQuestion } from "@/lib/art-path-questions";
 import { Button } from "@/components/ui/button";
 import { PremiumLock } from "@/components/PremiumLock";
 import { FREE_JOURNEY_STATIONS, isFreeJourneyStation } from "@/lib/premium-access";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 
 export const Route = createFileRoute("/kunstpfad")({
   head: () => ({ meta: [
@@ -71,6 +72,7 @@ function PracticeCard({ quiz, step, imageUrl }: { quiz: ArtQuestion; step: numbe
 
 function ArtPathPage() {
   const { user } = useAuth();
+  const { hasAccess } = usePremiumAccess();
   const navigate = useNavigate();
   const { data: progress = [], refetch } = useArtPathProgress();
   const invalidateFarm = useInvalidateFarm();
@@ -133,7 +135,7 @@ function ArtPathPage() {
             {artPathWithWorks.map((item) => {
               const itemDone = completed.has(item.index);
                const itemUnlocked = itemDone || item.index === next;
-               const free = isFreeJourneyStation(item.index);
+               const free = hasAccess || isFreeJourneyStation(item.index);
               return <li key={item.index} className="flex items-center gap-2">
                  <Button type="button" variant="outline" onClick={() => openStation(item.index)} aria-current={activeStation === item.index ? "step" : undefined} className={`h-9 rounded-full px-3 text-xs font-normal ${itemDone ? "border-foreground bg-foreground text-background hover:bg-foreground/90 hover:text-background" : activeStation === item.index ? "border-foreground bg-background text-foreground" : "border-border bg-muted/50 text-muted-foreground"}`}>
                    {(!free || !itemUnlocked) && <Lock className="h-3 w-3" />}{item.index + 1}. {item.era}
@@ -158,7 +160,7 @@ function ArtPathPage() {
           {Array.from({ length: CARD_COUNT }, (_, index) => <Button key={index} type="button" variant="ghost" size="icon" aria-label={`Karte ${index + 1} öffnen`} onClick={() => setCard(index)} className="h-7 w-7 rounded-full p-0 hover:bg-transparent"><span className={`h-1.5 rounded-full transition-all ${index === card ? "w-6 bg-foreground" : index < card ? "w-3 bg-muted-foreground" : "w-3 bg-border"}`} /></Button>)}
         </div>
 
-         {!isFreeJourneyStation(activeStation) ? <PremiumLock title={`${station.era} wartet auf dich`} description={`Du siehst alle ${artPathWithWorks.length} Epochen der Reise. Die ersten ${FREE_JOURNEY_STATIONS} sind frei; Premium öffnet diese und alle folgenden 20-Karten-Stationen.`} /> : <article className="relative min-h-[570px] overflow-hidden rounded-lg border border-border bg-card shadow-sm sm:min-h-[610px]">
+         {!(hasAccess || isFreeJourneyStation(activeStation)) ? <PremiumLock title={`${station.era} wartet auf dich`} description={`Du siehst alle ${artPathWithWorks.length} Epochen der Reise. Die ersten ${FREE_JOURNEY_STATIONS} sind frei; Premium öffnet diese und alle folgenden 20-Karten-Stationen.`} /> : <article className="relative min-h-[570px] overflow-hidden rounded-lg border border-border bg-card shadow-sm sm:min-h-[610px]">
           {card === 0 && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1.08fr_0.92fr]">
             <div className="relative min-h-64 bg-muted md:min-h-full">{station.work && <img src={station.work.image} alt={station.work.title} className="absolute inset-0 h-full w-full object-cover" />}</div>
             <div className="flex flex-col justify-center p-6 sm:p-9"><BookOpen className="h-6 w-6" /><p className="mt-5 text-[10px] tracking-[0.24em] text-muted-foreground uppercase">{station.years} · {station.place}</p><h3 className="font-display mt-2 text-3xl font-medium sm:text-4xl">{station.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground">{station.lesson}</p></div>
@@ -194,7 +196,7 @@ function ArtPathPage() {
           {card === 19 && quiz && <div className="mx-auto flex min-h-[570px] max-w-2xl flex-col justify-center p-6 sm:min-h-[610px] sm:p-10"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Palette className="h-4 w-4" /> Abschlusskarte</div><h3 className="font-display mt-3 text-3xl font-medium">Epochenfrage</h3><p className="mt-5 text-lg leading-relaxed">{quiz.question}</p><div className="mt-5 grid gap-2">{quiz.options.map((option) => <Button key={option} type="button" variant="outline" onClick={() => { setAnswers((current) => ({ ...current, [station.index]: option })); setFeedback((current) => { const copy = { ...current }; delete copy[station.index]; return copy; }); }} className={`h-auto min-h-12 justify-start whitespace-normal rounded-lg px-4 py-3 text-left font-normal ${selected === option ? "border-foreground bg-coin-soft" : ""}`}>{option}</Button>)}</div>{result === "wrong" && <p className="mt-4 flex items-center gap-2 text-sm text-destructive"><X className="h-4 w-4" />Noch nicht richtig – blättere zurück zum Wendepunkt.</p>}{(result === "correct" || done) && <p className="mt-4 flex items-center gap-2 text-sm"><Check className="h-4 w-4" />{quiz.explanation}</p>}{!done && <Button type="button" disabled={!selected || busy === station.index} onClick={() => finish(station.index, selected)} className="mt-5 h-auto min-h-11 rounded-full px-5 py-2.5">{user ? (busy === station.index ? "Wird geprüft …" : "Antwort prüfen & nächste Epoche öffnen") : "Anmelden & antworten"}</Button>}{done && activeStation < artPathWithWorks.length - 1 && <Button type="button" onClick={() => openStation(activeStation + 1)} className="mt-5 rounded-full">Zur nächsten Epoche <ChevronRight className="h-4 w-4" /></Button>}</div>}
          </article>}
 
-         {isFreeJourneyStation(activeStation) && <div className="mt-5 flex items-center justify-between gap-3">
+         {(hasAccess || isFreeJourneyStation(activeStation)) && <div className="mt-5 flex items-center justify-between gap-3">
           <Button type="button" variant="outline" disabled={card === 0} onClick={() => changeCard(-1)} className="rounded-full font-normal"><ChevronLeft className="h-4 w-4" /> Zurück</Button>
           <p className="hidden text-xs text-muted-foreground sm:block">Karte {card + 1} von {CARD_COUNT}</p>
           <Button type="button" disabled={card === CARD_COUNT - 1} onClick={() => changeCard(1)} className="rounded-full font-normal">Weiter <ChevronRight className="h-4 w-4" /></Button>

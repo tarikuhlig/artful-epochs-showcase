@@ -1,4 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { useQueryClient } from "@tanstack/react-query";
 import { Gem, LockKeyhole, Sparkles } from "lucide-react";
 import { allWorks } from "@/lib/art-data";
 import { useAuctionOffers } from "@/lib/economy";
@@ -6,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { artRank, artRankClasses } from "@/lib/art-rarity";
 import coin from "@/assets/provenance-coin.png";
 import { PremiumLock } from "@/components/PremiumLock";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
+import { purchaseAuctionOffer } from "@/lib/economy.functions";
 
 export const Route = createFileRoute("/_authenticated/auktionshaus")({
   head: () => ({ meta: [
@@ -18,6 +23,11 @@ export const Route = createFileRoute("/_authenticated/auktionshaus")({
 
 function AuctionPage() {
   const { data: offers = [], refetch: refetchOffers } = useAuctionOffers();
+  const { hasAccess } = usePremiumAccess();
+  const purchase = useServerFn(purchaseAuctionOffer);
+  const queryClient = useQueryClient();
+  const [busy, setBusy] = useState<string | null>(null);
+  const [message, setMessage] = useState("");
   const rankedOffers = [...offers].sort((a, b) => b.price - a.price);
   void refetchOffers;
   return <main className="min-h-screen bg-background">
@@ -33,7 +43,8 @@ function AuctionPage() {
 
     <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 md:py-14">
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-5"><div><p className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase">Heutige Auswahl · 1 Platin · 2 Gold · 2 Bronze</p><h2 className="font-display mt-1 text-2xl font-medium">Fünf Lose des Tages</h2></div><p className="flex items-center gap-2 text-sm text-muted-foreground"><Sparkles className="h-4 w-4" /> Wechsel in 24 Stunden</p></div>
-      <div className="mt-8"><PremiumLock title="Auktionshaus für Premium-Sammler" description="Alle fünf Tageslose bleiben sichtbar. Premium öffnet den Erwerb und deine private Ausstellung; dein Coin-Guthaben findest du ausschließlich im Galerie-Dashboard." /></div>
+      {!hasAccess && <div className="mt-8"><PremiumLock title="Auktionshaus für Premium-Sammler" description="Alle fünf Tageslose bleiben sichtbar. Premium öffnet den Erwerb und deine private Ausstellung; dein Coin-Guthaben findest du ausschließlich im Galerie-Dashboard." /></div>}
+      {message && <p role="status" className="mt-6 text-center text-sm text-muted-foreground">{message}</p>}
       <div className="mt-8 grid gap-8 sm:grid-cols-2">{rankedOffers.map((offer, index) => {
         const work = allWorks.find((w) => w.id === offer.work_slug); if (!work) return null;
         const rarity = artRank(offer.price);
@@ -51,7 +62,7 @@ function AuctionPage() {
             <p className={`mt-1 text-sm text-muted-foreground ${isPlatinum ? "sm:text-center" : ""}`}>{work.painter.name} · {work.year}</p>
             <div className="mt-6 flex flex-col gap-4 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between">
               <div><p className="text-[9px] tracking-[0.18em] text-muted-foreground uppercase">Festpreis</p><p className="mt-1 flex items-center gap-2 font-display text-xl font-medium"><img src={coin} alt="" className="h-6 w-6" />{offer.price.toLocaleString("de-DE")}</p></div>
-              <Button type="button" disabled className="h-11 rounded-full px-6"><LockKeyhole /> Premium</Button>
+               <Button type="button" disabled={!hasAccess || busy !== null} onClick={async () => { setBusy(offer.id); setMessage(""); try { await purchase({ data: { offerId: offer.id } }); setMessage(`${work.title} wurde deiner Galerie hinzugefügt.`); await Promise.all([queryClient.invalidateQueries({ queryKey: ["owned_items"] }), queryClient.invalidateQueries({ queryKey: ["user_stats"] })]); } catch (cause) { setMessage(cause instanceof Error ? cause.message : "Der Ankauf war nicht möglich."); } finally { setBusy(null); } }} className="h-11 rounded-full px-6">{hasAccess ? <Gem /> : <LockKeyhole />}{busy === offer.id ? "Wird erworben …" : hasAccess ? "Werk erwerben" : "Premium"}</Button>
             </div>
           </div>
         </article>;

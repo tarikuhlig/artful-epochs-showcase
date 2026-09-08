@@ -14,7 +14,7 @@ export function PremiumLock({ title = "Weiterlernen mit Provenance Premium", des
       <h2 className="font-display mx-auto mt-2 max-w-xl text-2xl font-medium sm:text-3xl">{title}</h2>
       <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">{description}</p>
       <Button asChild className="mt-6 rounded-full px-6"><Link to="/premium">Premium ansehen</Link></Button>
-      <p className="mt-3 text-xs text-muted-foreground">Ab 4,99 € pro Monat bei jährlicher Zahlung</p>
+      <p className="mt-3 text-xs text-muted-foreground">Ab 5,00 € pro Monat bei jährlicher Zahlung</p>
     </section>
   );
 }

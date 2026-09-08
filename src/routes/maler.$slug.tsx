@@ -4,6 +4,7 @@ import { findPainter } from "@/lib/art-data";
 import { useTrackDiscovery } from "@/lib/progress";
 import { isFreePainter } from "@/lib/premium-access";
 import { PremiumLock } from "@/components/PremiumLock";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 
 export const Route = createFileRoute("/maler/$slug")({
   loader: ({ params }) => {
@@ -27,7 +28,8 @@ export const Route = createFileRoute("/maler/$slug")({
 
 function PainterPage() {
   const painter = Route.useLoaderData();
-  const free = isFreePainter(painter.slug);
+  const { hasAccess } = usePremiumAccess();
+  const free = hasAccess || isFreePainter(painter.slug);
   useTrackDiscovery("painter", painter.slug, free);
 
   return (

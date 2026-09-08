@@ -4,6 +4,7 @@ import { findStyle, findWork } from "@/lib/art-data";
 import { useTrackDiscovery } from "@/lib/progress";
 import { isFreeWork } from "@/lib/premium-access";
 import { PremiumLock } from "@/components/PremiumLock";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 
 export const Route = createFileRoute("/werke/$id")({
   loader: ({ params }) => {
@@ -33,7 +34,8 @@ export const Route = createFileRoute("/werke/$id")({
 
 function WorkPage() {
   const work = Route.useLoaderData();
-  const free = isFreeWork(work.id);
+  const { hasAccess } = usePremiumAccess();
+  const free = hasAccess || isFreeWork(work.id);
   useTrackDiscovery("work", work.id, free);
 
   return (

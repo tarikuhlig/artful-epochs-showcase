@@ -4,6 +4,7 @@ import { findEpoch } from "@/lib/art-data";
 import { useTrackDiscovery } from "@/lib/progress";
 import { isFreeEpoch } from "@/lib/premium-access";
 import { PremiumLock } from "@/components/PremiumLock";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 
 export const Route = createFileRoute("/epochen/$epoche")({
   loader: ({ params }) => {
@@ -27,7 +28,8 @@ export const Route = createFileRoute("/epochen/$epoche")({
 
 function EpochPage() {
   const epoch = Route.useLoaderData();
-  const free = isFreeEpoch(epoch.slug);
+  const { hasAccess } = usePremiumAccess();
+  const free = hasAccess || isFreeEpoch(epoch.slug);
   useTrackDiscovery("epoch", epoch.slug, free);
 
   return (
