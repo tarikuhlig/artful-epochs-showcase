@@ -95,7 +95,7 @@ function GlobusPage() {
 
         <div className="mt-8 grid items-start gap-8 md:mt-10 lg:grid-cols-5 lg:gap-10">
           <div className="min-w-0 lg:col-span-3">
-            <div className="relative mx-auto w-full max-w-[620px] min-w-0 overflow-hidden rounded-2xl border border-border bg-muted lg:max-w-none">
+            <div className="relative mx-auto w-full max-w-[620px] min-w-0 overflow-hidden rounded-lg border border-border/70 bg-muted shadow-sm lg:max-w-none">
               <img
                 src={studioBg}
                 alt=""
@@ -103,10 +103,11 @@ function GlobusPage() {
                 loading="lazy"
                 width={1920}
                 height={1280}
-                className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
+                className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[center_58%] saturate-[0.78]"
               />
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_58%,transparent_32%,rgba(38,22,10,0.42)_100%)]" />
-              <div className="relative px-1 pt-8 pb-2 sm:px-4 sm:pt-10 sm:pb-4">
+              <div className="pointer-events-none absolute inset-0 bg-background/10" />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-foreground/15 to-transparent" />
+              <div className="relative px-1 pt-2 pb-0 sm:px-3 sm:pt-4">
               {mounted ? (
                 <Suspense fallback={<GlobePlaceholder />}>
                   <Globe3D
