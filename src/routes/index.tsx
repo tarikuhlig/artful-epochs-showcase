@@ -61,8 +61,8 @@ function Tunnel() {
                 "--tx": pos.tx,
                 "--ty": pos.ty,
                 "--rot": pos.rot,
-                "--dur": `${22 + (i % 5) * 2}s`,
-                "--delay": `${-i * 1.9}s`,
+                "--dur": `${14 + (i % 4) * 2}s`,
+                "--delay": `${-i * 1.25}s`,
               } as React.CSSProperties
             }
           />
@@ -78,7 +78,7 @@ function Index() {
       {/* Hero mit Bilder-Tunnel */}
       <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden bg-foreground">
         <Tunnel />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,color-mix(in_oklab,var(--foreground)_80%,transparent)_80%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_15%,color-mix(in_oklab,var(--foreground)_60%,transparent)_85%)]" />
         <div className="relative z-10 flex flex-col items-center px-6 text-center">
           <img
             src={provenanceLogo}
