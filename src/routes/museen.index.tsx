@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Search, Globe2 } from "lucide-react";
+import { Search, BookOpen } from "lucide-react";
 import { museums } from "@/lib/museums";
 
 export const Route = createFileRoute("/museen/")({
@@ -68,11 +68,12 @@ function MuseenPage() {
           />
         </div>
         <Link
-          to="/globus"
+          to="/museen/$slug"
+          params={{ slug: museums[new Date().getDate() % museums.length]?.slug ?? "louvre-paris" }}
           className="inline-flex items-center gap-2 rounded-full border border-input px-5 py-3 text-sm transition-colors hover:bg-accent"
         >
-          <Globe2 className="h-4 w-4" />
-          Auf dem Globus ansehen
+          <BookOpen className="h-4 w-4" />
+          Museum des Tages lernen
         </Link>
       </div>
 
@@ -88,8 +89,10 @@ function MuseenPage() {
                   key={m.slug}
                   to="/museen/$slug"
                   params={{ slug: m.slug }}
-                  className="group rounded-xl border border-border p-5 transition-colors hover:bg-accent"
+                  className="group overflow-hidden rounded-xl border border-border bg-card transition-colors hover:bg-accent"
                 >
+                  {m.works[0] && <div className="aspect-[16/9] overflow-hidden bg-muted"><img src={m.works[0].image} alt={`Highlight aus ${m.name}`} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></div>}
+                  <div className="p-5">
                   <p className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
                     {m.city}
                   </p>
@@ -98,6 +101,8 @@ function MuseenPage() {
                   <p className="mt-3 text-xs text-muted-foreground">
                     {m.works.length} {m.works.length === 1 ? "Werk" : "Werke"}
                   </p>
+                  <p className="mt-4 inline-flex items-center gap-1 text-sm font-medium">Geschichte & Sammlung lernen <span aria-hidden>→</span></p>
+                  </div>
                 </Link>
               ))}
             </div>

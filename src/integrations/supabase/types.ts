@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      art_path_progress: {
+        Row: {
+          coin_reward: number
+          completed_at: string
+          id: string
+          station_index: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          coin_reward: number
+          completed_at?: string
+          id?: string
+          station_index: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          coin_reward?: number
+          completed_at?: string
+          id?: string
+          station_index?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      auction_offers: {
+        Row: {
+          created_at: string
+          id: string
+          price: number
+          rotation_slot: number
+          updated_at: string
+          work_slug: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          price: number
+          rotation_slot: number
+          updated_at?: string
+          work_slug: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          price?: number
+          rotation_slot?: number
+          updated_at?: string
+          work_slug?: string
+        }
+        Relationships: []
+      }
       discoveries: {
         Row: {
           created_at: string
@@ -55,6 +109,36 @@ export type Database = {
           completed_at?: string
           id?: string
           journey_slug?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      owned_items: {
+        Row: {
+          id: string
+          item_slug: string
+          kind: string
+          purchase_price: number
+          purchased_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          item_slug: string
+          kind?: string
+          purchase_price: number
+          purchased_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          item_slug?: string
+          kind?: string
+          purchase_price?: number
+          purchased_at?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -107,6 +191,7 @@ export type Database = {
       user_stats: {
         Row: {
           best_streak: number
+          coins: number
           created_at: string
           last_harvest_date: string | null
           points: number
@@ -116,6 +201,7 @@ export type Database = {
         }
         Insert: {
           best_streak?: number
+          coins?: number
           created_at?: string
           last_harvest_date?: string | null
           points?: number
@@ -125,6 +211,7 @@ export type Database = {
         }
         Update: {
           best_streak?: number
+          coins?: number
           created_at?: string
           last_harvest_date?: string | null
           points?: number
@@ -139,7 +226,34 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      complete_art_path_station: {
+        Args: { target_station: number }
+        Returns: {
+          awarded: number
+          coins: number
+        }[]
+      }
+      complete_art_path_station_for_user: {
+        Args: { target_station: number; target_user: string }
+        Returns: {
+          awarded: number
+          coins: number
+        }[]
+      }
+      purchase_auction_offer: {
+        Args: { target_offer: string }
+        Returns: {
+          coins: number
+          item_slug: string
+        }[]
+      }
+      purchase_auction_offer_for_user: {
+        Args: { target_offer: string; target_user: string }
+        Returns: {
+          coins: number
+          item_slug: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
