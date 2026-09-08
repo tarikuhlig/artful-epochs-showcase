@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
 import { Check, Crown, Images, Landmark, Route as RouteIcon, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { openPaddleCheckout } from "@/lib/paddle";
 
 export const Route = createFileRoute("/premium")({
+  validateSearch: (search: Record<string, unknown>) => ({ checkout: search.checkout === "success" ? "success" as const : undefined }),
   head: () => ({ meta: [
     { title: "Provenance Premium — alle Kunstwelten freischalten" },
     { name: "description", content: "Alle Epochen, Künstler, Werke, Reisen, Museen und deine private Galerie mit Provenance Premium entdecken." },
@@ -29,6 +30,7 @@ const benefits = [
 
 function PremiumPage() {
   const { user } = useAuth();
+  const search = useSearch({ from: "/premium" });
   const navigate = useNavigate();
   const access = usePremiumAccess();
   const [busy, setBusy] = useState<string | null>(null);
@@ -44,6 +46,7 @@ function PremiumPage() {
   return <main className="min-h-screen bg-background">
     <section className="border-b border-border">
       <div className="mx-auto max-w-6xl px-5 py-14 text-center sm:px-6 md:py-20">
+        {search.checkout === "success" && <p className="mx-auto mb-6 max-w-xl rounded-lg border border-border bg-path-leaf p-4 text-sm">Danke! Deine Zahlung wird bestätigt; Premium schaltet sich gleich automatisch frei.</p>}
         <Crown className="mx-auto h-8 w-8" />
         <p className="mt-5 text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Provenance Premium</p>
         <h1 className="font-display mx-auto mt-3 max-w-3xl text-4xl font-medium sm:text-5xl md:text-6xl">Die ganze Kunstwelt in deiner Hand.</h1>

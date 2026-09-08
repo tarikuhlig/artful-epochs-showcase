@@ -10,6 +10,7 @@ import { useOwnedItems } from "@/lib/economy";
 import { Button } from "@/components/ui/button";
 import { artRank, artRankClasses } from "@/lib/art-rarity";
 import { PremiumLock } from "@/components/PremiumLock";
+import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 
 export const Route = createFileRoute("/_authenticated/sammlung")({
   head: () => ({
@@ -42,6 +43,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 
 function CollectionPage() {
   const { user } = useAuth();
+  const access = usePremiumAccess();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: discoveries = [] } = useDiscoveries();
@@ -183,7 +185,7 @@ function CollectionPage() {
           {avatarUrl ? <img src={avatarUrl} alt={`Profilbild von ${username || name}`} className="h-full w-full object-cover" /> : <UserRound className="h-9 w-9 text-muted-foreground" />}
           <label className="absolute inset-x-0 bottom-0 flex cursor-pointer items-center justify-center bg-foreground/75 py-1.5 text-primary-foreground" title="Profilbild ändern"><ImagePlus className="h-4 w-4" /><input type="file" accept="image/*" className="sr-only" disabled={profileBusy} onChange={(event) => uploadAvatar(event.target.files?.[0])} /></label>
         </div>
-        <div><p className="text-[10px] tracking-[0.22em] text-muted-foreground uppercase">Dein Sammlerprofil</p><h2 className="font-display mt-1 text-2xl font-medium">{username ? `@${username}` : "Wähle deinen Benutzernamen"}</h2><p className="mt-1 text-sm text-muted-foreground">Profilbild und Name machen deine Galerie unverwechselbar.</p></div>
+        <div><p className="text-[10px] tracking-[0.22em] text-muted-foreground uppercase">Dein Sammlerprofil</p><h2 className="font-display mt-1 text-2xl font-medium">{username ? `@${username}` : "Wähle deinen Benutzernamen"}</h2><p className="mt-1 text-sm text-muted-foreground">Profilbild und Name machen deine Galerie unverwechselbar.</p><span className="mt-3 inline-flex rounded-full border border-border px-3 py-1 text-xs">{access.isAdmin ? "Admin · Premium-Testzugang" : access.hasAccess ? `Premium · ${access.subscription?.price_id?.endsWith("yearly") ? "Jahresabo" : "Monatsabo"}` : "Free"}</span></div>
         <div className="w-full md:w-72"><label htmlFor="username" className="text-xs text-muted-foreground">Benutzername</label><div className="mt-1 flex gap-2"><input id="username" value={username} onChange={(event) => setUsername(event.target.value)} maxLength={24} placeholder="kunstfreund" className="min-w-0 flex-1 rounded-full border border-input bg-background px-4 py-2 text-sm outline-none focus:ring-1 focus:ring-ring" /><Button onClick={saveProfile} disabled={profileBusy} className="rounded-full">Speichern</Button></div>{profileMessage && <p role="status" className="mt-2 text-xs text-muted-foreground">{profileMessage}</p>}</div>
       </section>
 
@@ -194,9 +196,9 @@ function CollectionPage() {
         <Stat label="Ankäufe" value={`${owned.length}`} />
       </div>
 
-      <div className="mt-14"><PremiumLock title="Deine private Galerie freischalten" description="Mit Premium kannst du ersteigerte Werke ausstellen, frei anordnen und direkt vergleichen. Profil und bisheriger Fortschritt bleiben erhalten." /></div>
+      {!access.hasAccess && <div className="mt-14"><PremiumLock title="Deine private Galerie freischalten" description="Mit Premium kannst du ersteigerte Werke ausstellen, frei anordnen und direkt vergleichen. Profil und bisheriger Fortschritt bleiben erhalten." /></div>}
 
-      <div className="pointer-events-none select-none opacity-40" aria-hidden="true"><section className="mt-16">
+      <div className={access.hasAccess ? "" : "pointer-events-none select-none opacity-40"} aria-hidden={access.hasAccess ? undefined : "true"}><section className="mt-16">
         <div><p className="text-xs tracking-[0.22em] text-muted-foreground uppercase">Deine Ausstellung</p><h2 className="font-display mt-2 text-3xl font-medium">Lieblingswerke an der Wand</h2><p className="mt-2 text-sm text-muted-foreground">Stelle bis zu drei Ankäufe prominent aus.</p></div>
         {featuredWorks.length ? <div className="mt-7 grid gap-5 sm:grid-cols-3">{featuredWorks.map(({ item, work }) => { const rank = artRank(item.purchase_price); return <Link key={item.id} to="/werke/$id" params={{ id: work.id }} className="group"><div className="bg-muted p-3 shadow-sm"><div className="aspect-[4/3] overflow-hidden border-[7px] border-foreground bg-background"><img src={work.image} alt={work.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" /></div></div><span className={`mt-3 inline-flex border px-2 py-1 text-[9px] tracking-[0.18em] uppercase ${artRankClasses(rank)}`}>{rank}</span><h3 className="font-display mt-2 text-xl font-medium">{work.title}</h3><p className="text-sm text-muted-foreground">{work.painter.name}</p></Link>; })}</div> : <div className="mt-7 border border-dashed border-border p-8 text-center text-sm text-muted-foreground">Wähle unten bei einem gekauften Werk den Stern, um es hier auszustellen.</div>}
       </section>
