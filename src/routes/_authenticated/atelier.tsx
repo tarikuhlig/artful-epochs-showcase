@@ -21,6 +21,7 @@ import {
   workOfTheDay,
 } from "@/lib/farm";
 import coin from "@/assets/provenance-coin.png";
+import { DailyCoinChallenge } from "@/components/DailyCoinChallenge";
 
 export const Route = createFileRoute("/_authenticated/atelier")({
   head: () => ({
@@ -153,6 +154,8 @@ function AtelierPage() {
           </p>
         </div>
       </section>
+
+      <DailyCoinChallenge />
 
       <section className="mt-10 grid gap-4 sm:grid-cols-2">
         <Link to="/kunstpfad" className="flex items-center gap-4 rounded-xl border border-border bg-path-sky p-6 transition-transform hover:-translate-y-0.5"><img src={coin} alt="" width={1024} height={1024} className="h-14 w-14" /><span><span className="font-display block text-xl font-medium">Reise</span><span className="text-sm text-muted-foreground">Fragen lösen, Stationen öffnen und Coins verdienen</span></span></Link>
