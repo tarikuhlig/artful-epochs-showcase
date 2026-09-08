@@ -10,46 +10,32 @@ const TILES = Array.from({ length: 18 }, (_, i) => {
     tx: `${Math.round(Math.cos(angle) * radius)}vw`,
     ty: `${Math.round(Math.sin(angle) * radius)}vh`,
     rot: `${((i * 47) % 24) - 12}deg`,
-    delay: `${-(i * 0.14).toFixed(2)}s`,
-    dur: `${(2.2 + ((i * 7) % 9) / 10).toFixed(2)}s`,
+    delay: `${-(i * 0.13).toFixed(2)}s`,
+    dur: `${(2.1 + ((i * 7) % 9) / 10).toFixed(2)}s`,
     size: 120 + ((i * 29) % 140),
   };
 });
 
-const DURATION = 2600;
-
+/** Kurzes Intro: Logo schwebt, ein Tunnel aus Bildern rauscht vorbei (ca. 3 s). */
 export function IntroTunnel() {
-  const [show, setShow] = useState(false);
-  const [leaving, setLeaving] = useState(false);
+  const [gone, setGone] = useState(false);
 
   useEffect(() => {
-    console.log("intro-effect");
-    if (typeof window === "undefined") return;
-    if (sessionStorage.getItem("provenance-intro") === "done") return;
+    if (sessionStorage.getItem("provenance-intro") === "done") {
+      setGone(true);
+      return;
+    }
     sessionStorage.setItem("provenance-intro", "done");
-    setShow(true);
-    document.body.style.overflow = "hidden";
-    const t1 = setTimeout(() => setLeaving(true), DURATION - 500);
-    const t2 = setTimeout(() => {
-      setShow(false);
-      document.body.style.overflow = "";
-    }, DURATION);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      document.body.style.overflow = "";
-    };
+    const t = setTimeout(() => setGone(true), 3200);
+    return () => clearTimeout(t);
   }, []);
 
-  if (!show) return null;
+  if (gone) return null;
 
   return (
     <div
       aria-hidden
-      onClick={() => setShow(false)}
-      className={`fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-background transition-opacity duration-500 ${
-        leaving ? "opacity-0" : "opacity-100"
-      }`}
+      className="intro-veil fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-background"
       style={{ perspective: "900px" }}
     >
       {TILES.map((t, i) => (
@@ -76,10 +62,7 @@ export function IntroTunnel() {
         alt="Provenance"
         width={1920}
         height={640}
-        className={`relative z-10 w-[min(72vw,620px)] transition-all duration-500 ${
-          leaving ? "scale-95 opacity-0" : "scale-100 opacity-100"
-        }`}
-        style={{ animation: "intro-float 2.6s ease-in-out" }}
+        className="intro-logo relative z-10 w-[min(72vw,620px)]"
       />
     </div>
   );
