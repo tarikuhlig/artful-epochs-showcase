@@ -19,8 +19,41 @@
  */
 
 @theme {
-  --font-display: "Fraunces", Georgia, serif;
+  --font-display: "Archivo", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@keyframes tunnel-fly {
+  0% {
+    transform: translate(-50%, -50%) translate3d(var(--tx), var(--ty), -2600px)
+      rotate(var(--rot));
+    opacity: 0;
+  }
+  14% {
+    opacity: 0.9;
+  }
+  78% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate(-50%, -50%)
+      translate3d(calc(var(--tx) * 3), calc(var(--ty) * 3), 800px)
+      rotate(var(--rot));
+    opacity: 0;
+  }
+}
+
+@utility tunnel-tile {
+  animation: tunnel-fly var(--dur, 18s) linear infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tunnel-tile {
+    animation: none;
+    opacity: 0.25;
+  }
 }
 
 @theme inline {
