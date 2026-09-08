@@ -45,7 +45,7 @@ function Tunnel() {
     <div
       aria-hidden
       className="pointer-events-none absolute inset-0 overflow-hidden"
-      style={{ perspective: "900px", perspectiveOrigin: "50% 50%" }}
+      style={{ perspective: "1100px", perspectiveOrigin: "50% 50%" }}
     >
       {allWorks.map((work, i) => {
         const pos = TUNNEL_POSITIONS[i % TUNNEL_POSITIONS.length]!;
@@ -55,7 +55,7 @@ function Tunnel() {
             src={work.image}
             alt=""
             loading="lazy"
-            className="tunnel-tile absolute top-1/2 left-1/2 w-[clamp(140px,18vw,300px)] rounded-md object-cover shadow-2xl"
+            className="tunnel-tile absolute top-1/2 left-1/2 w-[clamp(190px,24vw,400px)] rounded-md object-cover brightness-110 shadow-2xl"
             style={
               {
                 "--tx": pos.tx,
@@ -78,7 +78,7 @@ function Index() {
       {/* Hero mit Bilder-Tunnel */}
       <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden bg-foreground">
         <Tunnel />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_oklab,var(--foreground)_55%,transparent)_0%,var(--foreground)_72%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,color-mix(in_oklab,var(--foreground)_80%,transparent)_80%)]" />
         <div className="relative z-10 flex flex-col items-center px-6 text-center">
           <img
             src={provenanceLogo}
