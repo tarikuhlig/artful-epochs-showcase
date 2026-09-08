@@ -38,4 +38,4 @@
 - [x] Auktionshaus täglich mit 1 Platin-, 2 Gold- und 2 Bronze-Werken rotieren lassen
 - [x] Galerie-Ausstellung, Benutzername und Profilbild umsetzen
 - [x] Platin-Weltwerk im Auktionshaus oben zentriert hervorheben, danach Gold und Bronze anordnen
-- [ ] Epochen-Reiter chronologisch vom ältesten bis zum neuesten Zeitraum anordnen
+- [x] Epochen-Reiter chronologisch vom ältesten bis zum neuesten Zeitraum anordnen
