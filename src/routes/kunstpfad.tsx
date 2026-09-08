@@ -40,7 +40,6 @@ function ArtPathPage() {
   const selected = answers[activeStation] ?? "";
   const result = feedback[activeStation];
   const done = completed.has(activeStation);
-  const unlocked = done || activeStation === next;
   const cardCount = 8;
 
   function openStation(index: number) {
@@ -106,7 +105,7 @@ function ArtPathPage() {
         </div>
 
         <div className="mb-4 flex justify-center gap-1.5" aria-label={`Karte ${card + 1} von ${cardCount}`}>
-          {Array.from({ length: cardCount }, (_, index) => <button key={index} type="button" aria-label={`Karte ${index + 1} öffnen`} onClick={() => setCard(index)} className={`h-1.5 rounded-full transition-all ${index === card ? "w-8 bg-foreground" : index < card ? "w-4 bg-muted-foreground" : "w-4 bg-border"}`} />)}
+          {Array.from({ length: cardCount }, (_, index) => <Button key={index} type="button" variant="ghost" size="icon" aria-label={`Karte ${index + 1} öffnen`} onClick={() => setCard(index)} className="h-7 w-8 rounded-full p-0 hover:bg-transparent"><span className={`h-1.5 rounded-full transition-all ${index === card ? "w-8 bg-foreground" : index < card ? "w-4 bg-muted-foreground" : "w-4 bg-border"}`} /></Button>)}
         </div>
 
         <article className="relative min-h-[570px] overflow-hidden rounded-lg border border-border bg-card shadow-sm sm:min-h-[610px]">
