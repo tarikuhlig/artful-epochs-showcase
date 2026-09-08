@@ -25,3 +25,4 @@
 - [x] Alle 12 Reise-Stationen mit echten Epochen, Künstlern, mehreren Werken und Reiseerlebnissen ausbauen
 - [x] Reise-Stationen um echte Werkbilder, Ortskarten und Künstlerbiografien ergänzen
 - [x] Private Galerie per Ziehen sortierbar machen und Werkvergleich ergänzen
+- [x] Dashboard in „Mein Atelier“ integrieren und Startseite als farbige Kunstentdeckung mit Tagestipps neu gestalten

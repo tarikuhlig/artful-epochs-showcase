@@ -134,7 +134,7 @@ const NAV: {
   label: string;
   exact?: boolean;
 }[] = [
-  { to: "/", label: "Dashboard", exact: true },
+  { to: "/", label: "Entdecken", exact: true },
   { to: "/kunstpfad", label: "Reise" },
   { to: "/epochen", label: "Epochen" },
   { to: "/museen", label: "Museen" },
