@@ -84,6 +84,11 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
+  --color-coin: var(--coin);
+  --color-coin-soft: var(--coin-soft);
+  --color-path-sky: var(--path-sky);
+  --color-path-coral: var(--path-coral);
+  --color-path-leaf: var(--path-leaf);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -120,6 +125,11 @@
   --border: oklch(0.915 0.006 90);
   --input: oklch(0.915 0.006 90);
   --ring: oklch(0.6 0.03 70);
+  --coin: oklch(0.58 0.105 79);
+  --coin-soft: oklch(0.96 0.035 88);
+  --path-sky: oklch(0.965 0.035 225);
+  --path-coral: oklch(0.94 0.055 25);
+  --path-leaf: oklch(0.95 0.045 145);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);

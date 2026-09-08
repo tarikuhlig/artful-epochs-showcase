@@ -8,6 +8,7 @@ export const POINTS_PER_HARVEST = 25;
 
 export type UserStats = {
   points: number;
+  coins: number;
   streak: number;
   best_streak: number;
   last_harvest_date: string | null;
@@ -57,10 +58,10 @@ export function useUserStats() {
     queryFn: async (): Promise<UserStats> => {
       const { data, error } = await supabase
         .from("user_stats")
-        .select("points, streak, best_streak, last_harvest_date")
+        .select("points, coins, streak, best_streak, last_harvest_date")
         .maybeSingle();
       if (error) throw error;
-      return data ?? { points: 0, streak: 0, best_streak: 0, last_harvest_date: null };
+      return data ?? { points: 0, coins: 120, streak: 0, best_streak: 0, last_harvest_date: null };
     },
   });
 }
@@ -95,6 +96,7 @@ export async function harvestToday(userId: string, stats: UserStats) {
   const next = {
     user_id: userId,
     points: stats.points + POINTS_PER_HARVEST + bonus,
+    coins: stats.coins,
     streak,
     best_streak: Math.max(stats.best_streak, streak),
     last_harvest_date: today,

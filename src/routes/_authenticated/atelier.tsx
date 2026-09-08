@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Flame, Sparkles, Trophy } from "lucide-react";
+import { Coins, Flame, Sparkles, Trophy } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useDiscoveries } from "@/lib/progress";
 import { allWorks } from "@/lib/art-data";
@@ -16,6 +16,7 @@ import {
   useUserStats,
   workOfTheDay,
 } from "@/lib/farm";
+import coin from "@/assets/provenance-coin.png";
 
 export const Route = createFileRoute("/_authenticated/atelier")({
   head: () => ({
@@ -81,13 +82,14 @@ function AtelierPage() {
         </p>
       </div>
 
-      <div className="mt-10 grid gap-4 sm:grid-cols-3">
+      <div className="mt-10 grid gap-4 sm:grid-cols-4">
         <Stat icon={<Sparkles className="h-4 w-4" />} label="Punkte" value={totalPoints} />
         <Stat
           icon={<Flame className="h-4 w-4" />}
           label="Serie"
           value={`${stats?.streak ?? 0} Tage`}
         />
+        <Stat icon={<Coins className="h-4 w-4" />} label="Provenance Coins" value={stats?.coins ?? 0} />
         <Stat
           icon={<Trophy className="h-4 w-4" />}
           label="Beste Serie"
@@ -130,6 +132,11 @@ function AtelierPage() {
             Jeder Tag in Folge erhöht deinen Bonus – bis zu 60 Punkte pro Ernte.
           </p>
         </div>
+      </section>
+
+      <section className="mt-10 grid gap-4 sm:grid-cols-2">
+        <Link to="/kunstpfad" className="flex items-center gap-4 rounded-xl border border-border bg-path-sky p-6 transition-transform hover:-translate-y-0.5"><img src={coin} alt="" width={1024} height={1024} className="h-14 w-14" /><span><span className="font-display block text-xl font-medium">Kunstpfad</span><span className="text-sm text-muted-foreground">Stationen lösen und Coins verdienen</span></span></Link>
+        <Link to="/auktionshaus" className="flex items-center gap-4 rounded-xl border border-border bg-coin-soft p-6 transition-transform hover:-translate-y-0.5"><Coins className="h-10 w-10 text-coin" /><span><span className="font-display block text-xl font-medium">Auktionshaus</span><span className="text-sm text-muted-foreground">Wechselnde Werke zum Festpreis</span></span></Link>
       </section>
 
       <section className="mt-16">

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, Lightformer } from "@react-three/drei";
+import { Environment, Lightformer, Line } from "@react-three/drei";
 import * as THREE from "three";
 import { geoEquirectangular, geoPath } from "d3-geo";
 import { feature } from "topojson-client";
@@ -170,12 +170,14 @@ function Globe({
   onSelect,
   ctl,
   compact,
+  routeMode,
 }: {
   markers: GlobeMarker[];
   selectedId?: string | null | undefined;
   onSelect: (id: string) => void;
   ctl: React.RefObject<Ctl>;
   compact: boolean;
+  routeMode: boolean;
 }) {
   const group = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState<string | null>(null);
@@ -246,6 +248,13 @@ function Globe({
           <meshStandardMaterial map={texture} roughness={0.82} metalness={0} />
         </mesh>
 
+        {routeMode && markers.slice(0, -1).map((marker, index) => {
+          const next = markers[index + 1];
+          if (!next) return null;
+          const points = [latLonToVec3(marker.lat, marker.lon, 1.018), latLonToVec3(next.lat, next.lon, 1.018)];
+          return <Line key={`route-${marker.id}`} points={points} color="#9b3128" lineWidth={compact ? 1 : 1.5} transparent opacity={0.8} />;
+        })}
+
         {markers.map((m, index) => {
         const active = selectedId === m.id || hovered === m.id;
         const normal = latLonToVec3(m.lat, m.lon, 1).normalize();
@@ -284,7 +293,7 @@ function Globe({
               <mesh rotation-x={Math.PI / 2}>
                 <cylinderGeometry args={[head, head * 0.9, head * 0.34, 20]} />
                 <meshStandardMaterial
-                  color={active ? "#1237c7" : index % 4 === 0 ? "#315f62" : "#755039"}
+                  color={active ? "#1237c7" : routeMode ? "#9b3128" : index % 4 === 0 ? "#315f62" : "#755039"}
                   emissive={active ? "#1237c7" : "#000000"}
                   emissiveIntensity={active ? 0.2 : 0}
                   roughness={0.38}
@@ -358,10 +367,12 @@ export function Globe3D({
   markers,
   selectedId,
   onSelect,
+  routeMode = false,
 }: {
   markers: GlobeMarker[];
   selectedId?: string | null | undefined;
   onSelect: (id: string) => void;
+  routeMode?: boolean;
 }) {
   const wrap = useRef<HTMLDivElement>(null);
   const [compact, setCompact] = useState(false);
@@ -498,7 +509,7 @@ export function Globe3D({
              <Lightformer intensity={1.35} position={[3, 4, 4]} scale={[4, 5, 1]} />
              <Lightformer intensity={0.42} color="#ad8662" position={[-4, 1, 1]} rotation-y={Math.PI / 2} scale={[4, 3, 1]} />
            </Environment>
-          <Globe markers={markers} selectedId={selectedId} onSelect={onSelect} ctl={ctl} compact={compact} />
+          <Globe markers={markers} selectedId={selectedId} onSelect={onSelect} ctl={ctl} compact={compact} routeMode={routeMode} />
            <mesh position={[0, -1.57, 0]} rotation-x={-Math.PI / 2} receiveShadow>
              <circleGeometry args={[1.05, 64]} />
                <shadowMaterial transparent opacity={compact ? 0.14 : 0.24} />

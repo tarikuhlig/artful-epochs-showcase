@@ -128,15 +128,15 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 const NAV: {
-  to: "/" | "/epochen" | "/globus" | "/museen" | "/reisen" | "/quiz";
+  to: "/" | "/kunstpfad" | "/epochen" | "/globus" | "/museen" | "/quiz";
   label: string;
   exact?: boolean;
 }[] = [
   { to: "/", label: "Dashboard", exact: true },
+  { to: "/kunstpfad", label: "Kunstpfad" },
   { to: "/epochen", label: "Epochen" },
   { to: "/globus", label: "Globus" },
   { to: "/museen", label: "Museen" },
-  { to: "/reisen", label: "Kunstreisen" },
   { to: "/quiz", label: "Quiz" },
 ];
 

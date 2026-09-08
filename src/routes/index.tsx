@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
-import { ArrowRight, Compass, Flame, Globe2, Layers, Sparkles, Trophy } from "lucide-react";
+import { ArrowRight, BookOpen, Coins, Flame, Globe2, Landmark, Layers, Sparkles, Trophy } from "lucide-react";
 import { IntroTunnel } from "@/components/IntroTunnel";
 import { TitleGate } from "@/components/TitleGate";
 import { epochs, allPainters, allWorks } from "@/lib/art-data";
 import { journeys } from "@/lib/journeys";
-import { cities, museums } from "@/lib/museums";
+import { museums } from "@/lib/museums";
 import { useAuth } from "@/hooks/useAuth";
 import { useDiscoveries, useQuizResults } from "@/lib/progress";
 import {
@@ -16,6 +16,7 @@ import {
   useUserStats,
   workOfTheDay,
 } from "@/lib/farm";
+import { artPathWithWorks } from "@/lib/art-path";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -66,6 +67,7 @@ function Dashboard() {
   const totalPoints = (stats?.points ?? 0) + list.length * POINTS_PER_DISCOVERY;
   const lvl = levelFor(totalPoints);
   const work = workOfTheDay();
+  const dailyHighlights = Array.from({ length: 3 }, (_, offset) => allWorks[(allWorks.indexOf(work) + offset * 19) % allWorks.length]).filter(Boolean);
   const bestQuiz = (quiz ?? []).reduce(
     (best, q) => (q.total && q.score / q.total > best ? q.score / q.total : best),
     0,
@@ -80,7 +82,7 @@ function Dashboard() {
       {stage === "title" && <TitleGate onDone={() => setStage("intro")} />}
       {stage === "intro" && <IntroTunnel onDone={finishIntro} />}
 
-      <section className="border-b border-border bg-card">
+      <section className="border-b border-border bg-path-sky">
         <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
           <p className="font-display text-[11px] tracking-[0.35em] text-muted-foreground uppercase">
             Dashboard
@@ -120,12 +122,13 @@ function Dashboard() {
             </div>
           )}
 
-          <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-5">
             <Stat
               icon={<Trophy className="h-4 w-4" />}
               label="Punkte"
               value={user ? totalPoints : "—"}
             />
+            <Stat icon={<Coins className="h-4 w-4" />} label="Coins" value={user ? stats?.coins ?? 0 : "—"} />
             <Stat
               icon={<Flame className="h-4 w-4" />}
               label="Serie"
@@ -182,31 +185,11 @@ function Dashboard() {
             </div>
           </div>
 
-          <Link
-            to="/werke/$id"
-            params={{ id: work.id }}
-            className="group overflow-hidden rounded-xl border border-border bg-card"
-          >
-            <div className="aspect-[4/3] overflow-hidden bg-muted">
-              <img
-                src={work.image}
-                alt={work.title}
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
-            <div className="p-6">
-              <p className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
-                Werk des Tages
-              </p>
-              <h3 className="font-display mt-2 text-lg font-medium">{work.title}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {typeof work.painter === "string" ? work.painter : work.painter.name}{" "}
-                {work.year ? `· ${work.year}` : ""}
-              </p>
-            </div>
-          </Link>
+          <div className="rounded-xl border border-border bg-path-coral p-6"><BookOpen className="h-5 w-5" /><p className="mt-6 text-[10px] tracking-[0.3em] text-muted-foreground uppercase">Tipp des Tages</p><h3 className="font-display mt-2 text-xl font-medium">Schau zuerst auf das Licht</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">Woher kommt es? Was hebt es hervor? Diese zwei Fragen entschlüsseln Komposition und Stimmung oft schneller als der Titel.</p></div>
         </div>
       </section>
+
+      <section className="border-t border-border bg-card"><div className="mx-auto max-w-6xl px-6 py-14"><div className="flex items-end justify-between gap-4"><div><p className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase">Heute entdecken</p><h2 className="font-display mt-2 text-3xl font-medium">Drei Bilder, drei Blickwinkel</h2></div><Link to="/kunstpfad" className="hidden items-center gap-2 text-sm sm:inline-flex">Kunstpfad öffnen <ArrowRight className="h-4 w-4" /></Link></div><div className="mt-7 grid gap-4 sm:grid-cols-3">{dailyHighlights.map((item, index) => item && <Link key={item.id} to="/werke/$id" params={{ id: item.id }} className="group"><div className="aspect-[4/3] overflow-hidden rounded-lg bg-muted"><img src={item.image} alt={item.title} loading={index === 0 ? "eager" : "lazy"} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></div><p className="mt-3 text-[10px] tracking-[0.22em] text-muted-foreground uppercase">{index === 0 ? "Bild des Tages" : index === 1 ? "Technik entdecken" : "Im Museum sehen"}</p><h3 className="font-display mt-1 text-lg font-medium">{item.title}</h3><p className="text-sm text-muted-foreground">{item.painter.name} · {item.year}</p></Link>)}</div></div></section>
 
       {/* Wege in die Sammlung */}
       <section className="border-y border-border bg-card">
@@ -218,16 +201,16 @@ function Dashboard() {
             text={`${epochs.length} Kapitel der Malerei, von der Gotik bis zur Moderne.`}
           />
           <StartCard
-            to="/globus"
+            to="/kunstpfad"
             icon={<Globe2 className="h-5 w-5" />}
-            title="Globus & Museen"
-            text={`${cities.length} Städte, ${museums.length} Häuser — dreh den Globus.`}
+            title="Großer Kunstpfad"
+            text={`${artPathWithWorks.length} Stationen, Schritt für Schritt — mit Provenance Coins.`}
           />
           <StartCard
-            to="/reisen"
-            icon={<Compass className="h-5 w-5" />}
-            title="Kunstreisen"
-            text={`${journeys.length} geführte Touren durch Städte und Strömungen.`}
+            to="/museen"
+            icon={<Landmark className="h-5 w-5" />}
+            title="Museen lernen"
+            text={`${museums.length} Häuser, ihre Geschichten und wichtigsten Werke.`}
           />
           <StartCard
             to="/quiz"
@@ -309,7 +292,7 @@ function StartCard({
   title,
   text,
 }: {
-  to: "/epochen" | "/globus" | "/reisen" | "/quiz";
+  to: "/epochen" | "/kunstpfad" | "/museen" | "/quiz";
   icon: React.ReactNode;
   title: string;
   text: string;
