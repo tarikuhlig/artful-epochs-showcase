@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Check } from "lucide-react";
+import { ArrowLeft, Check, Compass, Lightbulb, Swords, Users } from "lucide-react";
 import { findJourney } from "@/lib/journeys";
 import { findWork } from "@/lib/art-data";
 import { useAuth } from "@/hooks/useAuth";
@@ -67,6 +67,17 @@ function JourneyPage() {
       </h1>
       <p className="mt-2 text-lg text-muted-foreground">{journey.subtitle}</p>
       <p className="mt-6 text-base leading-relaxed">{journey.intro}</p>
+
+      <section className="mt-10 border-y border-border py-8">
+        <p className="text-[11px] tracking-[0.25em] text-muted-foreground uppercase">Die Geschichte hinter der Reise</p>
+        <p className="mt-4 leading-relaxed text-muted-foreground">{journey.story.context}</p>
+        <div className="mt-7 grid gap-5 sm:grid-cols-2">
+          <StoryBlock icon={<Users className="h-4 w-4" />} title="Künstler" text={journey.story.artists.join(" · ")} />
+          <StoryBlock icon={<Swords className="h-4 w-4" />} title="Kämpfe & Spannungen" text={journey.story.conflict} />
+          <StoryBlock icon={<Lightbulb className="h-4 w-4" />} title="Entdeckungen" text={journey.story.discovery} />
+          <StoryBlock icon={<Compass className="h-4 w-4" />} title="Was bleibt" text={journey.story.legacy} />
+        </div>
+      </section>
 
       <ol className="mt-14 space-y-12">
         {journey.stops.map((stop, i) => {
@@ -138,6 +149,15 @@ function JourneyPage() {
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+function StoryBlock({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
+  return (
+    <div className="rounded-xl border border-border bg-card p-5">
+      <h2 className="flex items-center gap-2 text-sm font-medium">{icon}{title}</h2>
+      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p>
     </div>
   );
 }
