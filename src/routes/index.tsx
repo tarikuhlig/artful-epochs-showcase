@@ -40,6 +40,13 @@ const TUNNEL_POSITIONS = [
   { tx: "26vw", ty: "-10vh", rot: "4deg" },
 ];
 
+const TUNNEL_STEP = Math.max(1, Math.floor(allWorks.length / TUNNEL_POSITIONS.length));
+const TUNNEL_WORKS = allWorks
+  .filter((_, i) => i % TUNNEL_STEP === 0)
+  .slice(0, TUNNEL_POSITIONS.length);
+
+
+
 function Tunnel() {
   return (
     <div
@@ -47,7 +54,7 @@ function Tunnel() {
       className="pointer-events-none absolute inset-0 overflow-hidden"
       style={{ perspective: "1100px", perspectiveOrigin: "50% 50%" }}
     >
-      {allWorks.map((work, i) => {
+      {TUNNEL_WORKS.map((work, i) => {
         const pos = TUNNEL_POSITIONS[i % TUNNEL_POSITIONS.length]!;
         return (
           <img
@@ -97,13 +104,19 @@ function Index() {
             {epochs.length} Epochen · {allPainters.length} Maler · {allWorks.length} Werke
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href="#epochen"
+            <Link
+              to="/katalog"
               className="font-display inline-flex items-center gap-2 rounded-full bg-foreground px-7 py-3.5 text-xs font-normal tracking-[0.18em] text-background uppercase transition-transform hover:-translate-y-0.5"
             >
-              Epochen entdecken
+              Katalog durchsuchen
               <ArrowRight className="h-4 w-4" />
-            </a>
+            </Link>
+            <Link
+              to="/reisen"
+              className="font-display inline-flex items-center gap-2 rounded-full border border-foreground/25 px-7 py-3.5 text-xs font-normal tracking-[0.18em] text-foreground uppercase transition-colors hover:bg-foreground/5"
+            >
+              Kunstreisen
+            </Link>
             <Link
               to="/quiz"
               className="font-display inline-flex items-center gap-2 rounded-full border border-foreground/25 px-7 py-3.5 text-xs font-normal tracking-[0.18em] text-foreground uppercase transition-colors hover:bg-foreground/5"
