@@ -81,15 +81,23 @@ function HomePage() {
 
       <section className="mx-auto max-w-6xl px-6 py-14">
         <div className="grid gap-4 md:grid-cols-[1.35fr_0.65fr]">
-          <div className="rounded-xl bg-path-leaf p-7 sm:p-9">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background"><Brush className="h-5 w-5" /></div>
-            <p className="mt-8 text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Blickschule des Tages</p>
-            <h2 className="font-display mt-2 text-3xl font-medium">{tip?.title}</h2>
-            <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">{tip?.text}</p>
+          <div className="grid overflow-hidden rounded-xl bg-path-leaf sm:grid-cols-[0.78fr_1.22fr]">
+            <div className="aspect-[4/3] min-h-56 overflow-hidden sm:aspect-auto">
+              <img src={discoveries[1]?.image} alt={discoveries[1]?.title ?? "Detail eines Kunstwerks"} loading="lazy" className="h-full w-full object-cover" />
+            </div>
+            <div className="p-7 sm:p-9">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background"><Brush className="h-5 w-5" /></div>
+              <p className="mt-8 text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Blickschule des Tages</p>
+              <h2 className="font-display mt-2 text-3xl font-medium">{tip?.title}</h2>
+              <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">{tip?.text}</p>
+            </div>
           </div>
-          <Link to={user ? "/atelier" : "/auth"} className="group flex flex-col justify-between rounded-xl bg-coin-soft p-7 sm:p-9">
-            <div className="flex items-start justify-between"><img src={coin} alt="Provenance Coin" className="h-14 w-14" /><ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" /></div>
-            <div className="mt-10"><p className="text-[10px] tracking-[0.28em] text-coin uppercase">Dein persönlicher Bereich</p><h2 className="font-display mt-2 text-2xl font-medium">Mein Atelier</h2><p className="mt-2 text-sm text-muted-foreground">Fortschritt, Coins und Sammlung an einem Ort.</p></div>
+          <Link to={user ? "/atelier" : "/auth"} className="group relative min-h-80 overflow-hidden rounded-xl bg-muted">
+            <img src={discoveries[2]?.image} alt="Kunstwerk aus deinem Atelier" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+            <div className="absolute inset-x-0 bottom-0 m-3 rounded-lg bg-background/92 p-5 backdrop-blur-sm">
+              <div className="flex items-start justify-between"><img src={coin} alt="Provenance Coin" className="h-11 w-11" /><ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" /></div>
+              <p className="mt-5 text-[10px] tracking-[0.24em] text-coin uppercase">Dein persönlicher Bereich</p><h2 className="font-display mt-1 text-2xl font-medium">Mein Atelier</h2><p className="mt-1 text-sm text-muted-foreground">Fortschritt, Coins und Sammlung.</p>
+            </div>
           </Link>
         </div>
       </section>
@@ -99,10 +107,10 @@ function HomePage() {
           <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Wähle deinen Einstieg</p>
           <h2 className="font-display mt-2 text-3xl font-medium">Was möchtest du heute entdecken?</h2>
           <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <ExploreCard to="/kunstpfad" icon={<Map />} title="Reise" text={`${artPathWithWorks.length} Epochen Schritt für Schritt`} tint="bg-path-sky" />
-            <ExploreCard to="/epochen" icon={<Layers />} title="Epochen" text={`${epochs.length} Kapitel der Kunstgeschichte`} tint="bg-path-leaf" />
-            <ExploreCard to="/museen" icon={<Landmark />} title="Museen" text={`${museums.length} Häuser weltweit`} tint="bg-coin-soft" />
-            <ExploreCard to="/auktionshaus" icon={<Coins />} title="Auktionshaus" text="Werke für deine Galerie finden" tint="bg-path-coral" />
+            <ExploreCard to="/kunstpfad" image={allWorks[(workIndex + 101) % allWorks.length]?.image} icon={<Map />} title="Reise" text={`${artPathWithWorks.length} Epochen Schritt für Schritt`} tint="bg-path-sky" />
+            <ExploreCard to="/epochen" image={allWorks[(workIndex + 157) % allWorks.length]?.image} icon={<Layers />} title="Epochen" text={`${epochs.length} Kapitel der Kunstgeschichte`} tint="bg-path-leaf" />
+            <ExploreCard to="/museen" image={allWorks[(workIndex + 223) % allWorks.length]?.image} icon={<Landmark />} title="Museen" text={`${museums.length} Häuser weltweit`} tint="bg-coin-soft" />
+            <ExploreCard to="/auktionshaus" image={allWorks[(workIndex + 311) % allWorks.length]?.image} icon={<Coins />} title="Auktionshaus" text="Werke für deine Galerie finden" tint="bg-path-coral" />
           </div>
         </div>
       </section>
@@ -115,6 +123,6 @@ function HomePage() {
   );
 }
 
-function ExploreCard({ to, icon, title, text, tint }: { to: "/kunstpfad" | "/epochen" | "/museen" | "/auktionshaus"; icon: React.ReactNode; title: string; text: string; tint: string }) {
-  return <Link to={to} className={`group min-h-48 rounded-xl p-6 ${tint}`}><span className="flex h-10 w-10 items-center justify-center rounded-full bg-background [&_svg]:h-5 [&_svg]:w-5">{icon}</span><div className="mt-10"><span className="font-display flex items-center justify-between text-xl font-medium">{title}<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span><span className="mt-2 block text-sm text-muted-foreground">{text}</span></div></Link>;
+function ExploreCard({ to, image, icon, title, text, tint }: { to: "/kunstpfad" | "/epochen" | "/museen" | "/auktionshaus"; image: string | undefined; icon: React.ReactNode; title: string; text: string; tint: string }) {
+  return <Link to={to} className={`group overflow-hidden rounded-xl ${tint}`}><div className="aspect-[4/3] overflow-hidden bg-muted"><img src={image} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" /></div><div className="p-5"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-background [&_svg]:h-4 [&_svg]:w-4">{icon}</span><span className="font-display mt-5 flex items-center justify-between text-xl font-medium">{title}<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span><span className="mt-2 block text-sm text-muted-foreground">{text}</span></div></Link>;
 }
