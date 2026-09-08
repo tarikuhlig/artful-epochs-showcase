@@ -23,6 +23,7 @@ export function IntroTunnel() {
   const [leaving, setLeaving] = useState(false);
 
   useEffect(() => {
+    console.log("intro-effect");
     if (typeof window === "undefined") return;
     if (sessionStorage.getItem("provenance-intro") === "done") return;
     sessionStorage.setItem("provenance-intro", "done");
