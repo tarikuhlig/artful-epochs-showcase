@@ -62,10 +62,25 @@ export function TitleGate({ onDone }: { onDone: () => void }) {
       redirect_uri: window.location.origin,
     });
     if (result.error) {
-      setError("Anmeldung nicht möglich. Bitte versuch es erneut.");
+      const msg = result.error.message ?? "";
+      console.error("[auth] OAuth fehlgeschlagen", provider, msg);
+      setError(
+        msg.includes("Popup was blocked")
+          ? "Dein Browser hat das Anmeldefenster blockiert. Erlaube Pop-ups oder melde dich mit E-Mail an."
+          : msg.includes("cancelled")
+            ? "Die Anmeldung wurde abgebrochen."
+            : msg.includes("timed out")
+              ? "Die Anmeldung hat zu lange gedauert. Bitte versuch es noch einmal."
+              : "Anmeldung nicht möglich. Bitte versuch es erneut oder nutze E-Mail und Passwort.",
+      );
       return;
     }
     if (result.redirected) return;
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) {
+      setError("Anmeldung nicht abgeschlossen. Bitte versuch es noch einmal.");
+      return;
+    }
     onDone();
   }
 
