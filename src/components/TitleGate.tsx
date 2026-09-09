@@ -37,12 +37,19 @@ export function TitleGate({ onDone }: { onDone: () => void }) {
       }
       onDone();
     } catch (err) {
+      const raw = err instanceof Error ? err.message : "";
+      const map: Record<string, string> = {
+        "Invalid login credentials": "E-Mail oder Passwort stimmt nicht.",
+        "User already registered": "Für diese E-Mail gibt es schon ein Konto — melde dich einfach an.",
+        "Email not confirmed": "Bitte bestätige zuerst den Link in deiner E-Mail.",
+      };
       setError(
-        err instanceof Error
-          ? err.message === "Invalid login credentials"
-            ? "E-Mail oder Passwort stimmt nicht."
-            : err.message
-          : "Etwas ist schiefgelaufen.",
+        map[raw] ??
+          (raw.toLowerCase().includes("password")
+            ? "Das Passwort passt nicht — mindestens 6 Zeichen, bitte erneut versuchen."
+            : raw.toLowerCase().includes("email")
+              ? "Diese E-Mail-Adresse wird nicht akzeptiert."
+              : "Anmeldung gerade nicht möglich. Bitte versuch es noch einmal."),
       );
     } finally {
       setBusy(false);
