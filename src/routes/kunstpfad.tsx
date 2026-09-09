@@ -10,6 +10,7 @@ import coin from "@/assets/provenance-coin.png";
 import { stationFinalQuestion, stationQuestions, type ArtQuestion } from "@/lib/art-path-questions";
 import { Button } from "@/components/ui/button";
 import { PremiumLock } from "@/components/PremiumLock";
+import { LicenseNotice } from "@/components/LicenseNotice";
 import { FREE_JOURNEY_STATIONS, isFreeJourneyStation } from "@/lib/premium-access";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 
@@ -78,6 +79,7 @@ function ArtPathPage() {
   const invalidateFarm = useInvalidateFarm();
   const [busy, setBusy] = useState<number | null>(null);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [feedback, setFeedback] = useState<Record<number, "correct" | "wrong">>({});
   const [activeStation, setActiveStation] = useState(0);
@@ -95,6 +97,7 @@ function ArtPathPage() {
     setActiveStation(index);
     setCard(0);
     setError("");
+    setNotice("");
   }
 
   function changeCard(direction: -1 | 1) {
@@ -110,8 +113,12 @@ function ArtPathPage() {
     }
     setBusy(index); setError("");
     try {
-      await completePathStation({ data: { station: index, answer } });
+      const result = await completePathStation({ data: { station: index, answer } });
       setFeedback((current) => ({ ...current, [index]: "correct" }));
+      const gained = (result as { unlocked?: number } | null)?.unlocked ?? 0;
+      setNotice(gained > 0
+        ? `Station geschafft — ${gained} studierte Werke wurden deiner Sammlung hinzugefügt.`
+        : "Station geschafft — die nächste Epoche ist offen.");
       await refetch(); invalidateFarm();
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Die Station konnte nicht abgeschlossen werden.");
@@ -151,6 +158,7 @@ function ArtPathPage() {
 
     <section className="mx-auto max-w-4xl px-5 py-10 sm:px-6 md:py-14">
       {error && <p className="mb-6 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">{error}</p>}
+      {notice && <p role="status" className="mb-6 rounded-lg border border-border bg-path-leaf p-4 text-sm">{notice}</p>}
       {station && <>
         <div className="mb-4 flex items-center justify-between gap-3">
           <div><p className="text-xs text-muted-foreground">Station {station.index + 1} von {artPathWithWorks.length} · {station.years}</p><h2 className="font-display text-xl font-medium sm:text-2xl">{station.era}</h2></div>
@@ -206,6 +214,7 @@ function ArtPathPage() {
           <Button type="button" disabled={card === CARD_COUNT - 1} onClick={() => changeCard(1)} className="rounded-full font-normal">Weiter <ChevronRight className="h-4 w-4" /></Button>
         </div>}
       </>}
+      <LicenseNotice context="Die Reise zeigt ausschließlich Werke, deren Schutzfrist abgelaufen ist." />
     </section>
   </div>;
 }

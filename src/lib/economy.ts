@@ -21,7 +21,7 @@ export function useOwnedItems() {
     queryKey: ["owned_items", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const { data, error } = await supabase.from("owned_items").select("id, item_slug, purchase_price, purchased_at").order("purchased_at", { ascending: false });
+      const { data, error } = await supabase.from("owned_items").select("id, item_slug, kind, purchase_price, purchased_at").order("purchased_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
     },

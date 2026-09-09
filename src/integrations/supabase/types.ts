@@ -402,6 +402,10 @@ export type Database = {
           score: number
         }[]
       }
+      grant_studied_artworks_for_user: {
+        Args: { target_user: string; work_slugs: string[] }
+        Returns: number
+      }
       has_active_subscription: {
         Args: { check_env?: string; user_uuid: string }
         Returns: boolean

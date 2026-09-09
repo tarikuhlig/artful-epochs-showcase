@@ -25,7 +25,20 @@ export const completePathStation = createServerFn({ method: "POST" })
       target_station: data.station,
     });
     if (error) throw new Error(error.message);
-    return result?.[0] ?? null;
+
+    // Belohnung fürs Lernen: die auf dieser Station studierten Werke wandern in die Sammlung.
+    // Werke, die im Auktionshaus angeboten werden, bleiben exklusiv und werden übersprungen.
+    const { artPathWithWorks } = await import("@/lib/art-path");
+    const slugs = (artPathWithWorks[data.station]?.works ?? []).map((work) => work.id);
+    let unlocked = 0;
+    if (slugs.length > 0) {
+      const { data: granted, error: grantError } = await supabaseAdmin.rpc("grant_studied_artworks_for_user", {
+        target_user: context.userId,
+        work_slugs: slugs,
+      });
+      if (!grantError) unlocked = granted ?? 0;
+    }
+    return { ...(result?.[0] ?? {}), unlocked };
   });
 
 export const purchaseAuctionOffer = createServerFn({ method: "POST" })

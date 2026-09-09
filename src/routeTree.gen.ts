@@ -16,6 +16,7 @@ import { Route as KatalogRouteImport } from './routes/katalog'
 import { Route as KuenstlerDesTagesRouteImport } from './routes/kuenstler-des-tages'
 import { Route as KunstpfadRouteImport } from './routes/kunstpfad'
 import { Route as PremiumRouteImport } from './routes/premium'
+import { Route as StudierenRouteImport } from './routes/studieren'
 import { Route as AuthenticatedAtelierRouteImport } from './routes/_authenticated/atelier'
 import { Route as AuthenticatedAuktionshausRouteImport } from './routes/_authenticated/auktionshaus'
 import { Route as AuthenticatedEinstellungenRouteImport } from './routes/_authenticated/einstellungen'
@@ -65,6 +66,11 @@ const KunstpfadRoute = KunstpfadRouteImport.update({
 const PremiumRoute = PremiumRouteImport.update({
   id: '/premium',
   path: '/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudierenRoute = StudierenRouteImport.update({
+  id: '/studieren',
+  path: '/studieren',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAtelierRoute = AuthenticatedAtelierRouteImport.update({
@@ -158,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/kuenstler-des-tages': typeof KuenstlerDesTagesRoute
   '/kunstpfad': typeof KunstpfadRoute
   '/premium': typeof PremiumRoute
+  '/studieren': typeof StudierenRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/auktionshaus': typeof AuthenticatedAuktionshausRoute
   '/einstellungen': typeof AuthenticatedEinstellungenRoute
@@ -182,6 +189,7 @@ export interface FileRoutesByTo {
   '/kuenstler-des-tages': typeof KuenstlerDesTagesRoute
   '/kunstpfad': typeof KunstpfadRoute
   '/premium': typeof PremiumRoute
+  '/studieren': typeof StudierenRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/auktionshaus': typeof AuthenticatedAuktionshausRoute
   '/einstellungen': typeof AuthenticatedEinstellungenRoute
@@ -208,6 +216,7 @@ export interface FileRoutesById {
   '/kuenstler-des-tages': typeof KuenstlerDesTagesRoute
   '/kunstpfad': typeof KunstpfadRoute
   '/premium': typeof PremiumRoute
+  '/studieren': typeof StudierenRoute
   '/_authenticated/atelier': typeof AuthenticatedAtelierRoute
   '/_authenticated/auktionshaus': typeof AuthenticatedAuktionshausRoute
   '/_authenticated/einstellungen': typeof AuthenticatedEinstellungenRoute
@@ -234,6 +243,7 @@ export interface FileRouteTypes {
     | '/kuenstler-des-tages'
     | '/kunstpfad'
     | '/premium'
+    | '/studieren'
     | '/atelier'
     | '/auktionshaus'
     | '/einstellungen'
@@ -258,6 +268,7 @@ export interface FileRouteTypes {
     | '/kuenstler-des-tages'
     | '/kunstpfad'
     | '/premium'
+    | '/studieren'
     | '/atelier'
     | '/auktionshaus'
     | '/einstellungen'
@@ -283,6 +294,7 @@ export interface FileRouteTypes {
     | '/kuenstler-des-tages'
     | '/kunstpfad'
     | '/premium'
+    | '/studieren'
     | '/_authenticated/atelier'
     | '/_authenticated/auktionshaus'
     | '/_authenticated/einstellungen'
@@ -309,6 +321,7 @@ export interface RootRouteChildren {
   KuenstlerDesTagesRoute: typeof KuenstlerDesTagesRoute
   KunstpfadRoute: typeof KunstpfadRoute
   PremiumRoute: typeof PremiumRoute
+  StudierenRoute: typeof StudierenRoute
   EpochenEpocheRoute: typeof EpochenEpocheRoute
   MalerSlugRoute: typeof MalerSlugRoute
   ModerneSlugRoute: typeof ModerneSlugRoute
@@ -372,6 +385,13 @@ declare module '@tanstack/react-router' {
       path: '/premium'
       fullPath: '/premium'
       preLoaderRoute: typeof PremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studieren': {
+      id: '/studieren'
+      path: '/studieren'
+      fullPath: '/studieren'
+      preLoaderRoute: typeof StudierenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/atelier': {
@@ -514,6 +534,7 @@ const rootRouteChildren: RootRouteChildren = {
   KuenstlerDesTagesRoute: KuenstlerDesTagesRoute,
   KunstpfadRoute: KunstpfadRoute,
   PremiumRoute: PremiumRoute,
+  StudierenRoute: StudierenRoute,
   EpochenEpocheRoute: EpochenEpocheRoute,
   MalerSlugRoute: MalerSlugRoute,
   ModerneSlugRoute: ModerneSlugRoute,
