@@ -8,7 +8,9 @@ import { allPainters, allWorks } from "@/lib/art-data";
 import { journeys } from "@/lib/journeys";
 import { museums } from "@/lib/museums";
 import { artPathWithWorks } from "@/lib/art-path";
-import { useArtPathProgress, useOwnedItems } from "@/lib/economy";
+import { useArtPathProgress, useAuctionTotals, useCardQuizRounds, useDailyLessons, useOwnedItems, useStudyRewards, useStudyTotals } from "@/lib/economy";
+import { DAILY_DAILY_MAX, STUDY_CARDS_PER_DAY, STUDY_DAILY_MAX } from "@/lib/coin-economy";
+import { DailyLesson } from "@/components/DailyLesson";
 import {
   POINTS_PER_DISCOVERY,
   harvestToday,

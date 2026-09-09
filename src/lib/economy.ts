@@ -119,8 +119,8 @@ export function useAuctionTotals() {
     queryFn: async () => {
       const { data, error } = await supabase.from("auction_offers").select("work_slug, price");
       if (error) throw error;
-      const rows = data ?? [];
-      return { count: rows.length, total: rows.reduce((sum, row) => sum + row.price, 0), slugs: rows.map((row) => row.work_slug) };
+      const offers = data ?? [];
+      return { count: offers.length, total: offers.reduce((sum, row) => sum + row.price, 0), offers };
     },
   });
 }
