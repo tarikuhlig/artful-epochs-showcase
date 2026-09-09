@@ -68,6 +68,39 @@ export type Database = {
         }
         Relationships: []
       }
+      card_quiz_rounds: {
+        Row: {
+          coin_reward: number
+          created_at: string
+          id: string
+          round_date: string
+          round_index: number
+          score: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          coin_reward: number
+          created_at?: string
+          id?: string
+          round_date?: string
+          round_index: number
+          score: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          coin_reward?: number
+          created_at?: string
+          id?: string
+          round_date?: string
+          round_index?: number
+          score?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       daily_coin_challenges: {
         Row: {
           challenge_date: string
@@ -346,6 +379,19 @@ export type Database = {
         Returns: {
           awarded: number
           coins: number
+        }[]
+      }
+      complete_card_quiz_round_for_user: {
+        Args: {
+          target_date: string
+          target_round: number
+          target_score: number
+          target_user: string
+        }
+        Returns: {
+          awarded: number
+          coins: number
+          rounds_today: number
         }[]
       }
       complete_daily_coin_challenge_for_user: {

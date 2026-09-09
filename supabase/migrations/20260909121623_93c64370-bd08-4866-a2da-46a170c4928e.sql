@@ -1,0 +1,2 @@
+REVOKE EXECUTE ON FUNCTION public.complete_card_quiz_round_for_user(uuid, date, integer, integer) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.complete_card_quiz_round_for_user(uuid, date, integer, integer) TO service_role;
