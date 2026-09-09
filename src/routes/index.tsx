@@ -135,6 +135,14 @@ function HomePage() {
             <ExploreCard to="/museen" image={allWorks[(workIndex + 223) % allWorks.length]?.image} icon={<Landmark />} title="Museen" text={`${museums.length} Häuser weltweit`} />
             <ExploreCard to="/auktionshaus" image={allWorks[(workIndex + 311) % allWorks.length]?.image} icon={<Coins />} title="Auktionshaus" text="Werke für deine Galerie finden" />
           </div>
+          <Link to="/moderne" className="group mt-4 flex items-center justify-between gap-4 rounded-xl border border-border bg-background p-5 hover:border-pastel-tip/60">
+            <span>
+              <span className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Noch geschützt</span>
+              <span className="font-display mt-1 block text-xl font-medium">Moderne &amp; Gegenwart</span>
+              <span className="mt-1 block text-sm text-muted-foreground">Rothko, Picasso, Kahlo, Warhol — lernen ohne Abbildung, mit Weg zum Museum.</span>
+            </span>
+            <ArrowRight className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-1" />
+          </Link>
         </div>
       </section>
 
