@@ -118,11 +118,11 @@ function HomePage() {
               <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">{tip?.text}</p>
             </div>
           </div>
-          <Link to={user ? "/atelier" : "/auth"} className="group relative min-h-80 overflow-hidden rounded-xl bg-muted">
-            <img src={discoveries[2]?.image} alt="Kunstwerk aus deiner Galerie" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+          <Link to={user ? "/profil" : "/auth"} className="group relative min-h-80 overflow-hidden rounded-xl bg-muted">
+            <img src={discoveries[2]?.image} alt="Kunstwerk aus deiner Sammlung" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
             <div className="absolute inset-x-0 bottom-0 m-3 rounded-lg bg-background/92 p-5 backdrop-blur-sm">
               <div className="flex items-start justify-between"><img src={coin} alt="Provenance Coin" className="h-11 w-11" /><ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" /></div>
-              <p className="mt-5 text-[10px] tracking-[0.24em] text-coin uppercase">Dein persönlicher Bereich</p><h2 className="font-display mt-1 text-2xl font-medium">Meine Galerie</h2><p className="mt-1 text-sm text-muted-foreground">Fortschritt, Coins und deine Ausstellung.</p>
+              <p className="mt-5 text-[10px] tracking-[0.24em] text-coin uppercase">Dein persönlicher Bereich</p><h2 className="font-display mt-1 text-2xl font-medium">Mein Profil</h2><p className="mt-1 text-sm text-muted-foreground">Level, Coins, Fortschritt und Galerie.</p>
             </div>
           </Link>
         </div>

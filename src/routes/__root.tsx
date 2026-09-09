@@ -192,11 +192,11 @@ function SiteHeader() {
           {user ? (
             <div className="ml-2 flex items-center gap-1">
               <Link
-                to="/atelier"
+                to="/profil"
                 className="inline-flex items-center rounded-full border border-input bg-background px-4 py-2 text-foreground transition-colors hover:bg-accent"
                 activeProps={{ className: "bg-accent" }}
               >
-                Galerie
+                Profil
               </Link>
               <Link
                 to="/einstellungen"

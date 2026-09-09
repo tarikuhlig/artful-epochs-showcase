@@ -4,7 +4,7 @@ import {
   Compass,
   Map,
   GraduationCap,
-  Images,
+  UserRound,
   MoreHorizontal,
   LogIn,
   X,
@@ -89,10 +89,10 @@ export function MobileTabBar() {
             Studieren
           </Link>
           {user ? (
-            <Link to="/atelier" className={itemClass} activeProps={activeClass}>
-              <Images className="h-5 w-5" />
-              Galerie
-            </Link>
+          <Link to="/profil" className={itemClass} activeProps={activeClass}>
+            <UserRound className="h-5 w-5" />
+            Profil
+          </Link>
           ) : (
             <Link to="/auth" className={itemClass} activeProps={activeClass}>
               <LogIn className="h-5 w-5" />
