@@ -185,7 +185,7 @@ function ArtPathPage() {
     return explainTerms([
       source.place, source.lesson, source.turningPoint, source.experience.story, source.experience.mission,
       source.history, source.pigments, source.supports, source.tools, source.brushes, source.technique,
-      ...source.artistLens, ...source.mnemonics,
+      ...source.artistLens, ...source.mnemonics.map((m) => m.text),
     ], new Set(), 20);
   }, [activeStation]);
   /** Zwei Begriffe je Lernkarte, danach je einer als Zugabe nach den Fragen. */
