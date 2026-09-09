@@ -40,6 +40,7 @@ const STUDY_CARDS = 12;
 type CardItem =
   | { type: "study"; study: number }
   | { type: "question"; quiz: ArtQuestion; step: number }
+  | { type: "game" }
   | { type: "transfer" }
   | { type: "summary" }
   | { type: "final" };
