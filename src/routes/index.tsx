@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowRight, Brush, Coins, Landmark, Layers, Map, Palette, Sparkles } from "lucide-react";
 import { IntroTunnel } from "@/components/IntroTunnel";
+import { PremiumUpsell } from "@/components/PremiumUpsell";
 import { TitleGate } from "@/components/TitleGate";
 import { Button } from "@/components/ui/button";
 import { epochs, allWorks } from "@/lib/art-data";
@@ -136,6 +137,8 @@ function HomePage() {
           </div>
         </div>
       </section>
+
+      <section className="mx-auto max-w-6xl px-6 pt-14"><PremiumUpsell /></section>
 
       <section className="mx-auto max-w-6xl px-6 py-16">
         <div className="flex items-end justify-between gap-4"><div><p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Heute entdecken</p><h2 className="font-display mt-2 text-3xl font-medium">Drei Werke, drei Perspektiven</h2></div><Sparkles className="hidden h-6 w-6 text-coin sm:block" /></div>

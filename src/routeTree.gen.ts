@@ -18,6 +18,7 @@ import { Route as KunstpfadRouteImport } from './routes/kunstpfad'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as AuthenticatedAtelierRouteImport } from './routes/_authenticated/atelier'
 import { Route as AuthenticatedAuktionshausRouteImport } from './routes/_authenticated/auktionshaus'
+import { Route as AuthenticatedEinstellungenRouteImport } from './routes/_authenticated/einstellungen'
 import { Route as AuthenticatedSammlungRouteImport } from './routes/_authenticated/sammlung'
 import { Route as EpochenIndexRouteImport } from './routes/epochen.index'
 import { Route as EpochenEpocheRouteImport } from './routes/epochen.$epoche'
@@ -73,6 +74,12 @@ const AuthenticatedAuktionshausRoute =
   AuthenticatedAuktionshausRouteImport.update({
     id: '/auktionshaus',
     path: '/auktionshaus',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedEinstellungenRoute =
+  AuthenticatedEinstellungenRouteImport.update({
+    id: '/einstellungen',
+    path: '/einstellungen',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedSammlungRoute = AuthenticatedSammlungRouteImport.update({
@@ -141,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/premium': typeof PremiumRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/auktionshaus': typeof AuthenticatedAuktionshausRoute
+  '/einstellungen': typeof AuthenticatedEinstellungenRoute
   '/sammlung': typeof AuthenticatedSammlungRoute
   '/epochen/$epoche': typeof EpochenEpocheRoute
   '/maler/$slug': typeof MalerSlugRoute
@@ -162,6 +170,7 @@ export interface FileRoutesByTo {
   '/premium': typeof PremiumRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/auktionshaus': typeof AuthenticatedAuktionshausRoute
+  '/einstellungen': typeof AuthenticatedEinstellungenRoute
   '/sammlung': typeof AuthenticatedSammlungRoute
   '/epochen/$epoche': typeof EpochenEpocheRoute
   '/maler/$slug': typeof MalerSlugRoute
@@ -185,6 +194,7 @@ export interface FileRoutesById {
   '/premium': typeof PremiumRoute
   '/_authenticated/atelier': typeof AuthenticatedAtelierRoute
   '/_authenticated/auktionshaus': typeof AuthenticatedAuktionshausRoute
+  '/_authenticated/einstellungen': typeof AuthenticatedEinstellungenRoute
   '/_authenticated/sammlung': typeof AuthenticatedSammlungRoute
   '/epochen/$epoche': typeof EpochenEpocheRoute
   '/maler/$slug': typeof MalerSlugRoute
@@ -208,6 +218,7 @@ export interface FileRouteTypes {
     | '/premium'
     | '/atelier'
     | '/auktionshaus'
+    | '/einstellungen'
     | '/sammlung'
     | '/epochen/$epoche'
     | '/maler/$slug'
@@ -229,6 +240,7 @@ export interface FileRouteTypes {
     | '/premium'
     | '/atelier'
     | '/auktionshaus'
+    | '/einstellungen'
     | '/sammlung'
     | '/epochen/$epoche'
     | '/maler/$slug'
@@ -251,6 +263,7 @@ export interface FileRouteTypes {
     | '/premium'
     | '/_authenticated/atelier'
     | '/_authenticated/auktionshaus'
+    | '/_authenticated/einstellungen'
     | '/_authenticated/sammlung'
     | '/epochen/$epoche'
     | '/maler/$slug'
@@ -349,6 +362,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAuktionshausRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/einstellungen': {
+      id: '/_authenticated/einstellungen'
+      path: '/einstellungen'
+      fullPath: '/einstellungen'
+      preLoaderRoute: typeof AuthenticatedEinstellungenRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/sammlung': {
       id: '/_authenticated/sammlung'
       path: '/sammlung'
@@ -432,12 +452,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAtelierRoute: typeof AuthenticatedAtelierRoute
   AuthenticatedAuktionshausRoute: typeof AuthenticatedAuktionshausRoute
+  AuthenticatedEinstellungenRoute: typeof AuthenticatedEinstellungenRoute
   AuthenticatedSammlungRoute: typeof AuthenticatedSammlungRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAtelierRoute: AuthenticatedAtelierRoute,
   AuthenticatedAuktionshausRoute: AuthenticatedAuktionshausRoute,
+  AuthenticatedEinstellungenRoute: AuthenticatedEinstellungenRoute,
   AuthenticatedSammlungRoute: AuthenticatedSammlungRoute,
 }
 
