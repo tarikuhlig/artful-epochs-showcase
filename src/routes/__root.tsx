@@ -224,7 +224,7 @@ function SiteHeader() {
 function SiteFooter() {
   return (
     <footer className="border-t border-border">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 py-8 text-xs text-muted-foreground sm:flex-row">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 pt-8 pb-[calc(6rem+env(safe-area-inset-bottom))] text-xs text-muted-foreground sm:flex-row md:pb-8">
         <p>Provenance — Kunstgeschichte zum Lernen</p>
         <p>Bildnachweis: Wikimedia Commons (gemeinfreie Werke)</p>
       </div>
