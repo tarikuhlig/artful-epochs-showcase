@@ -175,9 +175,24 @@ function HomePage() {
       <section className="mx-auto max-w-6xl px-6 pt-14"><PremiumUpsell /></section>
 
       <section className="mx-auto max-w-6xl px-6 py-16">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Die Maler</p>
+            <h2 className="font-display mt-2 text-3xl font-medium">Lebensweg, Stil und Hauptwerke</h2>
+            <p className="mt-2 max-w-xl text-sm text-muted-foreground">Eine Karte für jeden Maler — tippe darauf und lerne seine Geschichte kennen.</p>
+          </div>
+          <Link to="/maler" className="font-display inline-flex items-center gap-2 text-base">Alle {allPainters.length} Maler <ArrowRight className="h-4 w-4" /></Link>
+        </div>
+        <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {featuredPainters.map((painter) => <PainterCard key={painter.slug} painter={painter} />)}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 pb-16">
         <div className="flex items-end justify-between gap-4"><div><p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Heute entdecken</p><h2 className="font-display mt-2 text-3xl font-medium">Drei Werke, drei Perspektiven</h2></div><Sparkles className="hidden h-6 w-6 text-coin sm:block" /></div>
         <div className="mt-7 grid gap-6 sm:grid-cols-3">{discoveries.map((item, index) => item && <Link key={item.id} to="/werke/$id" params={{ id: item.id }} className="group"><div className="aspect-[4/3] overflow-hidden rounded-lg bg-muted"><img src={item.image} alt={item.title} loading={index ? "lazy" : "eager"} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></div><p className="mt-3 text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{index === 0 ? "Meisterwerk" : index === 1 ? "Neue Technik" : "Anderer Blick"}</p><h3 className="font-display mt-1 text-lg font-medium">{item.title}</h3><p className="text-sm text-muted-foreground">{item.painter.name} · {item.year}</p></Link>)}</div>
       </section>
+
     </div>
   );
 }
