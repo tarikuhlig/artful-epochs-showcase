@@ -223,9 +223,11 @@ export function MagnifierImage({
         className={`relative rounded-lg bg-muted ${active ? "cursor-none touch-none select-none" : ""} ${frameClassName}`}
         onPointerDown={pointerDown}
         onPointerMove={pointerMove}
+        onPointerEnter={enter}
         onPointerUp={release}
-        onPointerCancel={release}
-        onPointerLeave={release}
+        onPointerCancel={leave}
+        onPointerLeave={leave}
+
       >
         <img
           ref={image}
