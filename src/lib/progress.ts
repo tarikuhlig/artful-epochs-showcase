@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { emitCollected } from "@/lib/collection-events";
+
 
 export type DiscoveryKind = "painter" | "work" | "epoch" | "museum";
 
@@ -49,16 +51,19 @@ export function useTrackDiscovery(kind: DiscoveryKind, slug: string, enabled = t
     let cancelled = false;
     void supabase
       .from("discoveries")
-      .upsert({ user_id: userId, kind, slug }, { onConflict: "user_id,kind,slug" })
-      .then(() => {
-        if (!cancelled) {
-          void queryClient.invalidateQueries({ queryKey: ["discoveries", userId] });
-        }
+      .upsert({ user_id: userId, kind, slug }, { onConflict: "user_id,kind,slug", ignoreDuplicates: true })
+      .select("id")
+      .then(({ data }) => {
+        if (cancelled) return;
+        // Nur wenn wirklich eine neue Zeile entstand, ist es ein neuer Sammlungseintrag.
+        if (data && data.length > 0) emitCollected({ kind, slug });
+        void queryClient.invalidateQueries({ queryKey: ["discoveries", userId] });
       });
     return () => {
       cancelled = true;
     };
   }, [userId, kind, slug, enabled, queryClient]);
+
 }
 
 export async function saveQuizResult(userId: string, score: number, total: number) {

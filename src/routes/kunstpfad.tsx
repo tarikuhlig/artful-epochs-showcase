@@ -13,6 +13,7 @@ import { useInvalidateFarm } from "@/lib/farm";
 import coin from "@/assets/provenance-coin.png";
 import { questionKindLabel, repeatVariant, stationFinalQuestion, stationQuestions, stationSummary, stationTransferQuestion, type ArtQuestion } from "@/lib/art-path-questions";
 import { explainTerms, type GlossaryEntry } from "@/lib/art-path-glossary";
+import { pigmentSwatch } from "@/lib/pigment-colors";
 import { Button } from "@/components/ui/button";
 import { MagnifierImage } from "@/components/MagnifierImage";
 import { PremiumLock } from "@/components/PremiumLock";
@@ -434,7 +435,32 @@ function ArtPathPage() {
 
           {study === 2 && <div className="flex min-h-[570px] flex-col justify-center overflow-y-auto p-6 sm:min-h-[610px] sm:p-10"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><ScrollText className="h-4 w-4" /> Zeit & Wendepunkt</div><h3 className="font-display mt-3 text-3xl font-medium">Was die Welt verändert</h3><p className="mt-5 max-w-2xl leading-relaxed text-muted-foreground">{station.history}</p><p className="mt-6 max-w-2xl border-l-2 border-foreground pl-5 leading-relaxed">{station.turningPoint}</p><div className="max-w-2xl"><TermNotes entries={termsForStudy(2)} /></div></div>}
 
-          {study === 3 && <div className="min-h-[570px] overflow-y-auto p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Palette className="h-4 w-4" /> Farben & Pigmente</div><h3 className="font-display mt-3 text-3xl font-medium">Woraus Bilder gemacht sind</h3><div className="mt-6 flex flex-wrap gap-2">{station.palette.map((color) => <span key={color} className="rounded-full border border-border bg-background px-3 py-1.5 text-xs">{color}</span>)}</div><div className="mt-7 grid gap-x-8 gap-y-6 md:grid-cols-2">{[{ label: "Pigmente & Bindemittel", value: station.pigments }, { label: "Bildträger", value: station.supports }].map((item) => <section key={item.label} className="border-t border-border pt-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">{item.label}</p><p className="mt-2 text-sm leading-relaxed">{item.value}</p></section>)}</div><TermNotes entries={termsForStudy(3)} /></div>}
+          {study === 3 && <div className="min-h-[570px] overflow-y-auto p-6 sm:min-h-[610px] sm:p-9">
+            <div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Palette className="h-4 w-4" /> Farben & Pigmente</div>
+            <h3 className="font-display mt-3 text-3xl font-medium">Woraus Bilder gemacht sind</h3>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">Diese Farben liegen auf der Palette dieser Epoche. Jede hat ihren eigenen Ursprung — Stein, Erde, Pflanze, Tier oder Labor — und genau das prägt, wie die Bilder wirken.</p>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {station.palette.map((color) => {
+                const swatch = pigmentSwatch(color);
+                return <div key={color} className="flex items-start gap-3 rounded-xl border border-border p-3">
+                  <span aria-hidden className="mt-0.5 h-10 w-10 shrink-0 rounded-lg border border-border shadow-inner" style={{ backgroundColor: swatch.hex }} />
+                  <span className="min-w-0">
+                    <span className="block text-sm font-medium">{color}</span>
+                    <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">{swatch.note}</span>
+                  </span>
+                </div>;
+              })}
+            </div>
+            <div className="mt-7 grid gap-x-8 gap-y-6 md:grid-cols-2">
+              {[{ label: "Pigmente & Bindemittel", value: station.pigments }, { label: "Bildträger", value: station.supports }, { label: "Maltechnik", value: station.technique }, { label: "Farbe im Werk", value: `${station.work?.title ?? "Das Schlüsselwerk"} zeigt diese Palette in der Praxis: ${station.artistLens[0] ?? station.lesson}` }].map((item) => <section key={item.label} className="border-t border-border pt-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">{item.label}</p><p className="mt-2 text-sm leading-relaxed">{item.value}</p></section>)}
+            </div>
+            {station.work && <figure className="mt-7 overflow-hidden rounded-xl border border-border">
+              <img src={station.work.image} alt={`Farben in ${station.work.title}`} loading="lazy" className="max-h-72 w-full bg-muted object-contain p-2" />
+              <figcaption className="border-t border-border p-3 text-xs text-muted-foreground">{station.work.title} · {station.work.painter.name} — achte auf die Farbflächen, die aus den Pigmenten oben entstehen.</figcaption>
+            </figure>}
+            <TermNotes entries={termsForStudy(3)} />
+          </div>}
+
 
           {study === 4 && <div className="min-h-[570px] overflow-y-auto p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Brush className="h-4 w-4" /> Werkzeug & Technik</div><h3 className="font-display mt-3 text-3xl font-medium">Pinsel, Griffel, Presse</h3><div className="mt-7 grid gap-x-8 gap-y-6 md:grid-cols-2">{[{ label: "Pinsel", value: station.brushes }, { label: "Werkzeuge", value: station.tools }, { label: "Technik", value: station.technique }].map((item) => <section key={item.label} className="border-t border-border pt-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">{item.label}</p><p className="mt-2 text-sm leading-relaxed">{item.value}</p></section>)}</div><TermNotes entries={termsForStudy(4)} /><p className="mt-7 rounded-lg bg-muted p-5 text-sm leading-relaxed"><span className="font-medium">Übung:</span> {station.experience.mission}</p></div>}
 

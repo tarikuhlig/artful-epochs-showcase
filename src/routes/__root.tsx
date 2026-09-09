@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 import { Settings } from "lucide-react";
 import { MobileTabBar } from "@/components/MobileTabBar";
 import { AppTour } from "@/components/AppTour";
+import { CollectionPopups } from "@/components/CollectionPopups";
 import { ProfileSetup } from "@/components/ProfileSetup";
 import { BackButton } from "@/components/BackButton";
 
@@ -149,7 +150,7 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 const NAV: {
-  to: "/" | "/kunstpfad" | "/auktionshaus" | "/atelier";
+  to: "/" | "/kunstpfad" | "/auktionshaus" | "/sammlung";
   label: string;
   exact?: boolean;
   authOnly?: boolean;
@@ -157,8 +158,9 @@ const NAV: {
   { to: "/", label: "Entdecken", exact: true },
   { to: "/kunstpfad", label: "Reise" },
   { to: "/auktionshaus", label: "Auktionshaus" },
-  { to: "/atelier", label: "Galerie", authOnly: true },
+  { to: "/sammlung", label: "Galerie", authOnly: true },
 ];
+
 
 
 
@@ -269,6 +271,8 @@ function RootComponent() {
       <MobileTabBar />
       <ProfileSetup />
       <AppTour />
+      <CollectionPopups />
+
     </QueryClientProvider>
   );
 }

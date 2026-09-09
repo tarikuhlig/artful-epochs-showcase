@@ -34,7 +34,7 @@ export function UnlockDialog({ unlock, onClose }: { unlock: UnlockInfo | null; o
         )}
 
         <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:justify-center">
-          <Button asChild className="rounded-full px-6"><Link to="/atelier" onClick={onClose}>Zur Galerie</Link></Button>
+          <Button asChild className="rounded-full px-6"><Link to="/sammlung" onClick={onClose}>Zur Galerie</Link></Button>
           <Button type="button" variant="outline" className="rounded-full px-6" onClick={onClose}>Weiter</Button>
         </div>
       </DialogContent>

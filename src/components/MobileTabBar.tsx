@@ -93,7 +93,7 @@ export function MobileTabBar() {
             Auktion
           </Link>
           {user ? (
-          <Link to="/atelier" className={itemClass} activeProps={activeClass}>
+          <Link to="/sammlung" className={itemClass} activeProps={activeClass}>
             <Images className="h-5 w-5" />
             Galerie
           </Link>
