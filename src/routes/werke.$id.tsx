@@ -37,7 +37,7 @@ function WorkPage() {
   const work = Route.useLoaderData();
   const { hasAccess } = usePremiumAccess();
   const free = hasAccess || isFreeWork(work.id);
-  useTrackDiscovery("work", work.id, free);
+  useTrackDiscovery("work", work.id, { enabled: free });
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
