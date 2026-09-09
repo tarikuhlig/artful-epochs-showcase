@@ -583,6 +583,8 @@ function ArtPathPage() {
 
           {entry?.type === "question" && <PracticeCard key={`${station.index}-${entry.quiz.id}`} quiz={entry.quiz} step={entry.step} total={questionTotal} imageUrl={station.works[entry.step % Math.max(1, station.works.length)]?.image ?? station.work?.image} term={questionTerm(entry.step)} onResult={(correct) => recordAnswer(entry.quiz, correct)} />}
 
+          {entry?.type === "game" && <StationGame key={`${station.index}-game`} works={station.works} seed={station.index + 1} era={station.era} />}
+
           {entry?.type === "transfer" && transfer && <PracticeCard key={`${station.index}-transfer`} quiz={transfer} step={0} total={0} onResult={(correct) => recordAnswer(transfer, correct)} />}
 
           {entry?.type === "summary" && summary && <div className="min-h-[570px] p-6 sm:min-h-[610px] sm:p-9">
