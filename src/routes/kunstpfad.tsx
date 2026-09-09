@@ -21,7 +21,8 @@ import { PremiumLock } from "@/components/PremiumLock";
 import { LicenseNotice } from "@/components/LicenseNotice";
 import { FREE_JOURNEY_STATIONS, isFreeJourneyStation } from "@/lib/premium-access";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
-import { UnlockDialog, type UnlockInfo } from "@/components/UnlockDialog";
+import { allWorks } from "@/lib/art-data";
+import { emitCollected } from "@/lib/collection-events";
 
 export const Route = createFileRoute("/kunstpfad")({
   head: () => ({ meta: [
