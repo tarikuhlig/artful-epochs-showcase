@@ -254,12 +254,17 @@ function RootComponent() {
       <PaymentTestModeBanner />
       <SiteHeader />
       <PremiumBanner />
+      {/* Ruhige Leiste oben auf dem Handy — verdeckt keine Inhalte mehr. */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-x-0 top-0 z-[55] h-[calc(env(safe-area-inset-top)+3.25rem)] bg-background/85 backdrop-blur-md md:hidden"
+      />
       <BackButton />
       {/* Coin-Stand jederzeit sichtbar — auf dem Handy oben rechts. */}
-      <div className="fixed top-[calc(env(safe-area-inset-top)+0.5rem)] right-3 z-[65] md:hidden">
-        <CoinBadge className="bg-background/95 shadow-sm backdrop-blur" />
+      <div className="fixed top-[calc(env(safe-area-inset-top)+0.6rem)] right-3 z-[65] md:hidden">
+        <CoinBadge className="h-9 bg-background/95 px-3 shadow-sm backdrop-blur" />
       </div>
-      <main>
+      <main className="pt-[calc(env(safe-area-inset-top)+3.25rem)] md:pt-0">
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
       </main>
