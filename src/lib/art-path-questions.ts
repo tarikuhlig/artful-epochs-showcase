@@ -1,13 +1,37 @@
 import { artPathWithWorks } from "@/lib/art-path";
+import { allWorks, epochs } from "@/lib/art-data";
+
+/** Fragetypen des Lernzyklus: Fakten, Verständnis, Bilderkennung, Vergleich, Transfer. */
+export type QuestionKind = "fakt" | "verstaendnis" | "bild" | "vergleich" | "transfer";
 
 export type ArtQuestion = {
+  /** Stabiler Schlüssel je Station — nötig für Wiederholungen nach falschen Antworten. */
+  id: string;
+  kind: QuestionKind;
   question: string;
   options: string[];
   answer: string;
+  /** Rückmeldung bei richtiger Antwort. */
   explanation: string;
+  /** Erklärende Rückmeldung bei falscher oder unsicherer Antwort. */
+  hint?: string;
+  /** Thema, das bei Fehlern zum Wiederholen vorgemerkt wird. */
+  topic?: string;
   image?: string;
   compare?: { src: string; label: string; caption: string }[];
 };
+
+const KIND_LABEL: Record<QuestionKind, string> = {
+  fakt: "Faktenwissen",
+  verstaendnis: "Verständnis",
+  bild: "Bilderkennung",
+  vergleich: "Vergleich",
+  transfer: "Transfer",
+};
+
+export function questionKindLabel(kind: QuestionKind): string {
+  return KIND_LABEL[kind];
+}
 
 function yearNumber(year: string): number {
   const match = year.match(/\d{3,4}/);
