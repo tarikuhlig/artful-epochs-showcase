@@ -7,8 +7,10 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, useState, type ReactNode } from "react";
-import { Menu, Settings, X } from "lucide-react";
+import { useEffect, type ReactNode } from "react";
+import { Settings } from "lucide-react";
+import { MobileTabBar } from "@/components/MobileTabBar";
+import { AppTour } from "@/components/AppTour";
 
 import appCss from "../styles.css?url";
 import provenanceLogo from "../assets/provenance-logo.png";
