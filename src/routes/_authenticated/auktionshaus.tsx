@@ -86,5 +86,7 @@ function AuctionPage() {
 
       <LicenseNotice context="Im Auktionshaus werden nur gemeinfreie Werke gehandelt." />
     </div>
+    <UnlockDialog unlock={unlock} onClose={() => setUnlock(null)} />
   </main>;
+
 }
