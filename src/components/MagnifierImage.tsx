@@ -170,7 +170,7 @@ export function MagnifierImage({
       const start = pinchStart.current;
       setFactor(
         Math.min(
-          ceiling(),
+          MAX_ZOOM,
           Math.max(MIN_ZOOM, (start.zoom * dist) / (start.dist || dist)),
         ),
       );
@@ -205,7 +205,7 @@ export function MagnifierImage({
 
   function step(delta: number) {
     setFactor((current) =>
-      Math.min(ceiling(), Math.max(MIN_ZOOM, Math.round((current + delta) * 10) / 10)),
+      Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, Math.round((current + delta) * 10) / 10)),
     );
   }
 
@@ -231,7 +231,7 @@ export function MagnifierImage({
               w: event.currentTarget.naturalWidth,
               h: event.currentTarget.naturalHeight,
             };
-            setFactor((current) => Math.min(ceiling(), Math.max(MIN_ZOOM, current)));
+            setFactor((current) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, current)));
           }}
           className="h-full max-h-[70vh] w-full rounded-lg object-contain"
         />
