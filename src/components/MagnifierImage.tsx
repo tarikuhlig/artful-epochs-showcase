@@ -22,7 +22,7 @@ export function MagnifierImage({
   const [active, setActive] = useState(false);
   const [visible, setVisible] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0, bgX: 0, bgY: 0 });
-  const [isTouch, setIsTouch] = useState(false);
+  const [, setIsTouch] = useState(false);
 
   const lensSize = 160;
   const half = lensSize / 2;
