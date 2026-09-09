@@ -161,7 +161,14 @@ function AtelierPage() {
         </div>
       </section>
 
-      {access.hasAccess ? <DailyCoinChallenge /> : <div className="mt-10 space-y-6"><PremiumLock title="Tägliche Coin-Challenge freischalten" description="Mit Premium löst du täglich drei Kunstfragen, verdienst bis zu 60 Coins und kannst sie im Auktionshaus für deine Galerie einsetzen." /><PremiumUpsell /></div>}
+      <LearningProgress />
+
+      <div className="mt-10 grid gap-6 lg:grid-cols-2">
+        <DailyLesson kind="work" />
+        <DailyLesson kind="artist" />
+      </div>
+
+      {access.hasAccess ? <div className="mt-10"><DailyCoinChallenge /></div> : <div className="mt-10 space-y-6"><PremiumLock title="Tägliche Coin-Challenge freischalten" description="Mit Premium löst du täglich drei Kunstfragen, verdienst bis zu 50 Coins und kannst sie im Auktionshaus für deine Galerie einsetzen." /><PremiumUpsell /></div>}
 
       <div className="mt-10"><CardQuiz /></div>
 
