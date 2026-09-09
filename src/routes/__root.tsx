@@ -250,11 +250,13 @@ function RootComponent() {
       <PaymentTestModeBanner />
       <SiteHeader />
       <PremiumBanner />
-      <main>
+      <main className="pb-24 md:pb-0">
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
       </main>
       <SiteFooter />
+      <MobileTabBar />
+      <AppTour />
     </QueryClientProvider>
   );
 }
