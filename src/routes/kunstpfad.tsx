@@ -96,6 +96,7 @@ function ArtPathPage() {
     setActiveStation(index);
     setCard(0);
     setError("");
+    setNotice("");
   }
 
   function changeCard(direction: -1 | 1) {
@@ -156,6 +157,7 @@ function ArtPathPage() {
 
     <section className="mx-auto max-w-4xl px-5 py-10 sm:px-6 md:py-14">
       {error && <p className="mb-6 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">{error}</p>}
+      {notice && <p role="status" className="mb-6 rounded-lg border border-border bg-path-leaf p-4 text-sm">{notice}</p>}
       {station && <>
         <div className="mb-4 flex items-center justify-between gap-3">
           <div><p className="text-xs text-muted-foreground">Station {station.index + 1} von {artPathWithWorks.length} · {station.years}</p><h2 className="font-display text-xl font-medium sm:text-2xl">{station.era}</h2></div>
