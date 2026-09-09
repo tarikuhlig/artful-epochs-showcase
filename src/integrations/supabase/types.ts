@@ -374,6 +374,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_artworks: {
+        Row: {
+          artist: string | null
+          created_at: string
+          id: string
+          image_path: string
+          location: string | null
+          note: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          artist?: string | null
+          created_at?: string
+          id?: string
+          image_path: string
+          location?: string | null
+          note?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          artist?: string | null
+          created_at?: string
+          id?: string
+          image_path?: string
+          location?: string | null
+          note?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
