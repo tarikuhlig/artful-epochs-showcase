@@ -330,7 +330,7 @@ function ArtPathPage() {
           </div>}
 
           {study === 1 && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1fr_1fr]">
-            <div className="flex flex-col justify-center p-6 sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Compass className="h-4 w-4" /> Ankunft</div><h3 className="font-display mt-3 text-3xl font-medium">{station.experience.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground">{station.experience.story}</p><p className="mt-6 text-sm text-muted-foreground">Reiseziel: <span className="text-foreground">{station.place}</span> · {station.years}</p></div>
+            <div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Compass className="h-4 w-4" /> Ankunft</div><h3 className="font-display mt-3 text-3xl font-medium">{station.experience.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground">{station.experience.story}</p><TermNotes entries={termsForStudy(1)} /></div>
             <div className="flex min-h-56 items-center justify-center bg-muted p-4 md:min-h-full">{station.works[1] && <MagnifierImage src={station.works[1]!.image} alt={station.works[1]!.title} className="w-full" />}</div>
           </div>}
 
