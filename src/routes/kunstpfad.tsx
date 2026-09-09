@@ -110,8 +110,12 @@ function ArtPathPage() {
     }
     setBusy(index); setError("");
     try {
-      await completePathStation({ data: { station: index, answer } });
+      const result = await completePathStation({ data: { station: index, answer } });
       setFeedback((current) => ({ ...current, [index]: "correct" }));
+      const gained = (result as { unlocked?: number } | null)?.unlocked ?? 0;
+      setError(gained > 0
+        ? `Station geschafft — ${gained} studierte Werke wurden deiner Sammlung hinzugefügt.`
+        : "Station geschafft — die nächste Epoche ist offen.");
       await refetch(); invalidateFarm();
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Die Station konnte nicht abgeschlossen werden.");
