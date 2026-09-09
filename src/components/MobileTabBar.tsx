@@ -3,12 +3,13 @@ import { Link, useRouter } from "@tanstack/react-router";
 import {
   Compass,
   Map,
-  GraduationCap,
-  UserRound,
+  Gavel,
+  Images,
   MoreHorizontal,
   LogIn,
   X,
 } from "lucide-react";
+
 import { useAuth } from "@/hooks/useAuth";
 
 const MORE: { to: "/studieren" | "/epochen" | "/museen" | "/kuenstler-des-tages" | "/moderne" | "/premium" | "/profil" | "/einstellungen"; label: string; authOnly?: boolean }[] = [
