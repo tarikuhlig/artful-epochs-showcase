@@ -7,8 +7,10 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, useState, type ReactNode } from "react";
-import { Menu, Settings, X } from "lucide-react";
+import { useEffect, type ReactNode } from "react";
+import { Settings } from "lucide-react";
+import { MobileTabBar } from "@/components/MobileTabBar";
+import { AppTour } from "@/components/AppTour";
 
 import appCss from "../styles.css?url";
 import provenanceLogo from "../assets/provenance-logo.png";
@@ -159,12 +161,6 @@ const NAV: {
 
 function SiteHeader() {
   const { user } = useAuth();
-  const [open, setOpen] = useState(false);
-  const router = useRouter();
-
-  useEffect(() => {
-    return router.subscribe("onResolved", () => setOpen(false));
-  }, [router]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/85 pt-[env(safe-area-inset-top)] backdrop-blur-md">
@@ -219,41 +215,7 @@ function SiteHeader() {
           )}
         </nav>
 
-        <button
-          type="button"
-          onClick={() => setOpen((o) => !o)}
-          aria-label={open ? "Menü schließen" : "Menü öffnen"}
-          aria-expanded={open}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-input text-foreground transition-colors hover:bg-accent md:hidden"
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
       </div>
-
-      {open && (
-        <nav className="max-h-[calc(100dvh-3.5rem)] overflow-y-auto border-t border-border bg-background px-4 pt-2 pb-[calc(1rem+env(safe-area-inset-bottom))] text-base md:hidden">
-          {NAV.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              activeOptions={{ exact: item.exact ?? false }}
-              onClick={() => setOpen(false)}
-              className="block rounded-xl px-4 py-3 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              activeProps={{ className: "bg-accent text-foreground" }}
-            >
-              {item.label}
-            </Link>
-          ))}
-          {user ? (
-            <>
-              <Link to="/atelier" onClick={() => setOpen(false)} className="mt-2 block rounded-full bg-primary px-4 py-3 text-center text-primary-foreground">Galerie</Link>
-              <Link to="/einstellungen" onClick={() => setOpen(false)} className="mt-2 block rounded-full border border-input px-4 py-3 text-center">Einstellungen</Link>
-            </>
-          ) : (
-            <Link to="/auth" onClick={() => setOpen(false)} className="mt-2 block rounded-full bg-primary px-4 py-3 text-center text-primary-foreground">Anmelden</Link>
-          )}
-        </nav>
-      )}
     </header>
   );
 }
@@ -262,7 +224,7 @@ function SiteHeader() {
 function SiteFooter() {
   return (
     <footer className="border-t border-border">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 py-8 text-xs text-muted-foreground sm:flex-row">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 pt-8 pb-[calc(6rem+env(safe-area-inset-bottom))] text-xs text-muted-foreground sm:flex-row md:pb-8">
         <p>Provenance — Kunstgeschichte zum Lernen</p>
         <p>Bildnachweis: Wikimedia Commons (gemeinfreie Werke)</p>
       </div>
@@ -293,6 +255,8 @@ function RootComponent() {
         <Outlet />
       </main>
       <SiteFooter />
+      <MobileTabBar />
+      <AppTour />
     </QueryClientProvider>
   );
 }

@@ -251,6 +251,26 @@ function SettingsPage() {
       {!access.hasAccess && <div className="mt-6"><PremiumUpsell compact /></div>}
 
       <section className="mt-6 rounded-2xl border border-border p-6 sm:p-8">
+        <h2 className="font-display text-2xl font-medium">Einführung</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Die kurze Führung durch Provenance noch einmal ansehen.
+        </p>
+        <Button
+          variant="outline"
+          className="mt-5 rounded-full px-6"
+          onClick={async () => {
+            if (!user) return;
+            reset();
+            await supabase.from("profiles").update({ tour_completed_at: null }).eq("id", user.id);
+            await queryClient.invalidateQueries({ queryKey: ["app-tour", user.id] });
+            setMessage("Die Einführung startet gleich.");
+          }}
+        >
+          Einführung erneut ansehen
+        </Button>
+      </section>
+
+      <section className="mt-6 rounded-2xl border border-border p-6 sm:p-8">
         <h2 className="font-display text-2xl font-medium">Abmelden</h2>
         <p className="mt-2 text-sm text-muted-foreground">Dein Fortschritt bleibt in deinem Konto gespeichert.</p>
         <Button onClick={logout} variant="outline" className="mt-5 rounded-full px-6"><LogOut /> Abmelden</Button>
