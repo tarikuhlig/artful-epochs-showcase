@@ -23,6 +23,7 @@ import { FREE_JOURNEY_STATIONS, isFreeJourneyStation } from "@/lib/premium-acces
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { allWorks } from "@/lib/art-data";
 import { emitCollected } from "@/lib/collection-events";
+import { StationGame } from "@/components/StationGame";
 
 export const Route = createFileRoute("/kunstpfad")({
   head: () => ({ meta: [
@@ -40,6 +41,7 @@ const STUDY_CARDS = 12;
 type CardItem =
   | { type: "study"; study: number }
   | { type: "question"; quiz: ArtQuestion; step: number }
+  | { type: "game" }
   | { type: "transfer" }
   | { type: "summary" }
   | { type: "final" };
@@ -64,6 +66,7 @@ function buildSequence(practice: ArtQuestion[], repeatIds: string[], transfer: A
     const original = practice.find((item) => item.id === id);
     if (original) items.push({ type: "question", quiz: repeatVariant(original, position + 1), step: ++step });
   });
+  items.push({ type: "game" });
   if (transfer) items.push({ type: "transfer" });
   items.push({ type: "summary" });
   items.push({ type: "final" });
@@ -479,7 +482,7 @@ function ArtPathPage() {
         <div className="mb-2 flex flex-wrap justify-center gap-1.5" aria-label={`Karte ${card + 1} von ${sequence.length}`}>
           {sequence.map((item, index) => <Button key={`${item.type}-${index}`} type="button" variant="ghost" size="icon" aria-label={`Karte ${index + 1} öffnen`} onClick={() => setCard(index)} className="h-7 w-7 rounded-full p-0 hover:bg-transparent"><span className={`h-1.5 rounded-full transition-all ${index === card ? "w-6 bg-foreground" : index < card ? "w-3 bg-muted-foreground" : item.type === "study" ? "w-3 bg-border" : "w-1.5 bg-border"}`} /></Button>)}
         </div>
-        <p className="mb-4 text-center text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{entry?.type === "study" ? "Lernen" : entry?.type === "question" ? "Abrufen" : entry?.type === "transfer" ? "Anwenden" : entry?.type === "summary" ? "Bilanz" : "Abschluss"}</p>
+        <p className="mb-4 text-center text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{entry?.type === "study" ? "Lernen" : entry?.type === "question" ? "Abrufen" : entry?.type === "game" ? "Spielen" : entry?.type === "transfer" ? "Anwenden" : entry?.type === "summary" ? "Bilanz" : "Abschluss"}</p>
 
         {!unlocked ? <PremiumLock title={`${station.era} wartet auf dich`} description={`Du siehst alle ${artPathWithWorks.length} Stationen der Reise. Die ersten ${FREE_JOURNEY_STATIONS} sind frei; Premium öffnet diese und alle folgenden Lernstationen.`} /> : <article className="relative min-h-[570px] rounded-lg border border-border bg-card shadow-sm sm:min-h-[610px]">
           {study === 0 && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1.08fr_0.92fr]">
@@ -579,6 +582,8 @@ function ArtPathPage() {
           {study === 11 && <div className="min-h-[570px] p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Eye className="h-4 w-4" /> Bilder einprägen</div><h3 className="font-display mt-3 text-3xl font-medium">Vier Werke, vier Namen</h3><p className="mt-3 text-sm text-muted-foreground">Präge dir Bild und Maler ein — gleich musst du zuordnen.</p><div className="mt-6 grid grid-cols-2 gap-4">{station.works.slice(0, 4).map((stationWork) => <figure key={stationWork.id} className="min-w-0"><div className="aspect-[4/3] overflow-hidden rounded-md bg-muted p-1.5"><img src={stationWork.image} alt={stationWork.title} loading="lazy" className="h-full w-full object-contain" /></div><figcaption className="mt-2 text-xs leading-snug"><span className="font-medium">{stationWork.painter.name}</span><br /><span className="text-muted-foreground">{stationWork.title} · {stationWork.year}</span></figcaption></figure>)}</div></div>}
 
           {entry?.type === "question" && <PracticeCard key={`${station.index}-${entry.quiz.id}`} quiz={entry.quiz} step={entry.step} total={questionTotal} imageUrl={station.works[entry.step % Math.max(1, station.works.length)]?.image ?? station.work?.image} term={questionTerm(entry.step)} onResult={(correct) => recordAnswer(entry.quiz, correct)} />}
+
+          {entry?.type === "game" && <StationGame key={`${station.index}-game`} works={station.works} seed={station.index + 1} era={station.era} />}
 
           {entry?.type === "transfer" && transfer && <PracticeCard key={`${station.index}-transfer`} quiz={transfer} step={0} total={0} onResult={(correct) => recordAnswer(transfer, correct)} />}
 
