@@ -2,51 +2,47 @@ import { useRef, useState } from "react";
 import { Search, SearchX } from "lucide-react";
 
 /**
- * Bild mit Lupe: Der Zeiger (oder Finger) bewegt eine runde Lupe über dem Werk.
- * Auf Touch-Geräten wird die Lupe versetzt über dem Finger angezeigt, damit der
- * Daumen das vergrößerte Detail nicht verdeckt. Der Ein-/Aus-Schalter steht
- * außerhalb des Bildes, damit das Werk unverdeckt bleibt.
+ * Bild mit Lupe. Das Werk bleibt immer vollständig sichtbar (object-contain).
+ * Der Lupenkreis darf über den Bildrand hinausragen und schwebt auf Touch-Geräten
+ * deutlich über dem Finger, damit der Daumen das Detail nicht verdeckt.
  */
 export function MagnifierImage({
   src,
   alt,
   zoom = 4.5,
   className = "",
+  frameClassName = "",
 }: {
   src: string;
   alt: string;
   zoom?: number;
   className?: string;
+  frameClassName?: string;
 }) {
   const frame = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
   const [visible, setVisible] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0, bgX: 0, bgY: 0 });
 
-  const lensSize = 160;
+  const lensSize = 200;
   const half = lensSize / 2;
 
   function move(clientX: number, clientY: number, pointerType: string) {
     const box = frame.current?.getBoundingClientRect();
     if (!box) return;
 
-    const isTouchPointer = pointerType === "touch" || pointerType === "pen";
+    const touch = pointerType === "touch" || pointerType === "pen";
 
-    // Der betrachtete Punkt: über die ganze Bildfläche erreichbar, von Rand zu Rand.
+    // Betrachteter Punkt: über die ganze Bildfläche von Rand zu Rand erreichbar.
     const pointX = Math.max(0, Math.min(clientX - box.left, box.width));
     const pointY = Math.max(0, Math.min(clientY - box.top, box.height));
 
-    // Auf Touch-Geräten schwebt die Linse über dem Finger, damit der Daumen
-    // das Detail nicht verdeckt — der betrachtete Punkt bleibt unverändert.
-    const offsetY = isTouchPointer ? -120 : 0;
-    const offsetX = isTouchPointer ? -10 : 0;
-
-    const x = Math.max(half, Math.min(pointX + offsetX, box.width - half));
-    const y = Math.max(half, Math.min(pointY + offsetY, box.height - half));
+    // Die Linse selbst darf aus dem Bild herausragen — sie wird nicht begrenzt.
+    const offsetY = touch ? -150 : 0;
 
     setPos({
-      x,
-      y,
+      x: pointX,
+      y: pointY + offsetY,
       bgX: (pointX / box.width) * 100,
       bgY: (pointY / box.height) * 100,
     });
@@ -54,12 +50,10 @@ export function MagnifierImage({
   }
 
   return (
-    <div className={`${className}`}>
+    <div className={`relative ${className}`}>
       <div
         ref={frame}
-        className={`relative overflow-hidden rounded-lg bg-muted ${
-          active ? "cursor-none touch-none" : ""
-        }`}
+        className={`relative rounded-lg bg-muted ${active ? "cursor-none touch-none select-none" : ""} ${frameClassName}`}
         onPointerMove={(event) =>
           active && move(event.clientX, event.clientY, event.pointerType)
         }
@@ -68,13 +62,18 @@ export function MagnifierImage({
           event.preventDefault();
           move(event.clientX, event.clientY, event.pointerType);
         }}
+        onPointerUp={() => setVisible(false)}
         onPointerLeave={() => setVisible(false)}
       >
-        <img src={src} alt={alt} className="h-auto w-full object-contain" />
+        <img
+          src={src}
+          alt={alt}
+          className="h-full max-h-[70vh] w-full rounded-lg object-contain"
+        />
         {active && visible && (
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute rounded-full border-2 border-background shadow-[0_10px_40px_rgba(0,0,0,0.25)]"
+            className="pointer-events-none absolute z-30 rounded-full border-2 border-background shadow-[0_12px_44px_rgba(0,0,0,0.3)]"
             style={{
               width: lensSize,
               height: lensSize,
@@ -84,6 +83,7 @@ export function MagnifierImage({
               backgroundRepeat: "no-repeat",
               backgroundSize: `${zoom * 100}% ${zoom * 100}%`,
               backgroundPosition: `${pos.bgX}% ${pos.bgY}%`,
+              backgroundColor: "hsl(var(--muted))",
             }}
           />
         )}
@@ -97,14 +97,10 @@ export function MagnifierImage({
             setVisible(false);
           }}
           aria-pressed={active}
-          className="inline-flex shrink-0 items-center gap-2 rounded-full border border-border bg-background px-3.5 py-2 text-xs font-medium shadow-sm transition-colors hover:bg-accent"
+          aria-label={active ? "Lupe ausschalten" : "Lupe einschalten"}
+          className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-border bg-background shadow-sm transition-colors hover:bg-accent"
         >
-          {active ? (
-            <SearchX className="h-4 w-4" />
-          ) : (
-            <Search className="h-4 w-4" />
-          )}
-          {active ? "Lupe aus" : "Lupe"}
+          {active ? <SearchX className="h-5 w-5" /> : <Search className="h-5 w-5" />}
         </button>
       </div>
     </div>
