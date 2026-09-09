@@ -79,13 +79,6 @@ export function MagnifierImage({
   }, []);
 
 
-  /** Höchster Zoom, der die echte Auflösung nicht überschreitet. */
-  const ceiling = useCallback(() => {
-    const c = content();
-    if (!c) return MAX_ZOOM;
-    const limit = natural.current.w / c.width;
-    return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, limit));
-  }, [content]);
 
   const paint = useCallback(() => {
     raf.current = null;
@@ -142,12 +135,12 @@ export function MagnifierImage({
       const dy =
         event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 100 : 1);
       setFactor((current) =>
-        Math.min(ceiling(), Math.max(MIN_ZOOM, current * Math.exp(-dy * 0.0015))),
+        Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, current * Math.exp(-dy * 0.0015))),
       );
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
-  }, [active, ceiling]);
+  }, [active]);
 
   function pointerDown(event: React.PointerEvent) {
     if (!active) return;
@@ -177,7 +170,7 @@ export function MagnifierImage({
       const start = pinchStart.current;
       setFactor(
         Math.min(
-          ceiling(),
+          MAX_ZOOM,
           Math.max(MIN_ZOOM, (start.zoom * dist) / (start.dist || dist)),
         ),
       );
@@ -212,7 +205,7 @@ export function MagnifierImage({
 
   function step(delta: number) {
     setFactor((current) =>
-      Math.min(ceiling(), Math.max(MIN_ZOOM, Math.round((current + delta) * 10) / 10)),
+      Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, Math.round((current + delta) * 10) / 10)),
     );
   }
 
@@ -238,7 +231,7 @@ export function MagnifierImage({
               w: event.currentTarget.naturalWidth,
               h: event.currentTarget.naturalHeight,
             };
-            setFactor((current) => Math.min(ceiling(), Math.max(MIN_ZOOM, current)));
+            setFactor((current) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, current)));
           }}
           className="h-full max-h-[70vh] w-full rounded-lg object-contain"
         />
