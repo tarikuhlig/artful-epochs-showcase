@@ -55,7 +55,7 @@ function WorkPage() {
           <MagnifierImage
             src={work.image}
             alt={`${work.title} von ${work.painter.name}`}
-            className="overflow-hidden rounded-lg border border-border"
+            frameClassName="border border-border"
           />
         </figure>
         <div className="lg:sticky lg:top-8">
