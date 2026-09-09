@@ -62,6 +62,7 @@ export function cardQuizRound(dateISO: string, round: number): CardQuizCard[] {
   });
 }
 
+/** Teil des Lern-Budgets (35 %): max. 20 Coins je Runde, 100 pro Tag. */
 export function cardQuizReward(score: number): number {
-  return score * 5 + (score === CARD_QUIZ_CARDS ? 20 : 0);
+  return score * 2 + (score === CARD_QUIZ_CARDS ? 4 : 0);
 }

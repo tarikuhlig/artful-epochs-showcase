@@ -1,6 +1,11 @@
 import { allPainters, allWorks, type Work } from "@/lib/art-data";
 import { painterOfTheDay, worksOfPainter } from "@/lib/daily-artist";
-import { workOfTheDay } from "@/lib/farm";
+
+/** Identisch zu `workOfTheDay` in farm.ts — hier lokal, damit auch der Server ohne Browser-Client rechnen kann. */
+function workOfDay(dateISO: string): Work {
+  const value = [...dateISO].reduce((acc, char) => acc * 31 + char.charCodeAt(0), 7);
+  return allWorks[Math.abs(value) % allWorks.length]!;
+}
 
 export type LessonKind = "work" | "artist";
 
@@ -51,7 +56,7 @@ function firstSentence(text: string) {
 
 /** Tageswerk: Lernstoff plus zwei Fragen, die genau diesen Stoff abfragen. */
 export function workLesson(dateISO: string): DailyLesson {
-  const work: Work = workOfTheDay(dateISO);
+  const work: Work = workOfDay(dateISO);
   const study = [
     { label: "Wer und wann", text: `„${work.title}“ wurde von ${work.painter.name} (${work.painter.life}) geschaffen und entstand ${work.year}. Der Künstler gehört zur Epoche ${work.epoch.name} (${work.epoch.period}).` },
     { label: "Technik und Ort", text: `Ausgeführt als ${work.technique}. Heute ist das Werk ${work.museum ? `zu sehen in: ${work.museum}` : "in Privatbesitz bzw. der Standort ist nicht gesichert"}.` },
