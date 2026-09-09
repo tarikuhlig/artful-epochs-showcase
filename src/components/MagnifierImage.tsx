@@ -192,8 +192,23 @@ export function MagnifierImage({
   function release(event: React.PointerEvent) {
     pointers.current.delete(event.pointerId);
     if (pointers.current.size < 2) pinchStart.current = null;
+    // Mit der Maus bleibt die Lupe beim Loslassen sichtbar, sie folgt weiter dem Zeiger.
+    if (event.pointerType === "mouse") return;
     if (pointers.current.size === 0) setVisible(false);
   }
+
+  function leave(event: React.PointerEvent) {
+    pointers.current.delete(event.pointerId);
+    pinchStart.current = null;
+    setVisible(false);
+  }
+
+  function enter(event: React.PointerEvent) {
+    if (!active || event.pointerType !== "mouse") return;
+    setVisible(true);
+    schedule(event.clientX, event.clientY, false);
+  }
+
 
   function step(delta: number) {
     setFactor((current) =>
