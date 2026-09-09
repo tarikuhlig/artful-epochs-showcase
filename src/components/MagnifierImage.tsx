@@ -22,7 +22,6 @@ export function MagnifierImage({
   const [active, setActive] = useState(false);
   const [visible, setVisible] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0, bgX: 0, bgY: 0 });
-  const [, setIsTouch] = useState(false);
 
   const lensSize = 160;
   const half = lensSize / 2;
@@ -32,7 +31,6 @@ export function MagnifierImage({
     if (!box) return;
 
     const isTouchPointer = pointerType === "touch" || pointerType === "pen";
-    setIsTouch(isTouchPointer);
 
     // Der betrachtete Punkt: über die ganze Bildfläche erreichbar, von Rand zu Rand.
     const pointX = Math.max(0, Math.min(clientX - box.left, box.width));
