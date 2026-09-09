@@ -124,3 +124,21 @@ export function useAuctionTotals() {
     },
   });
 }
+
+/** Alle bisher gewerteten Studierkarten (über alle Tage). */
+export function useStudyTotals() {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["study_rewards_total", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("study_rewards").select("cards_rewarded, coins_awarded");
+      if (error) throw error;
+      const rows = data ?? [];
+      return {
+        cards: rows.reduce((sum, row) => sum + row.cards_rewarded, 0),
+        coins: rows.reduce((sum, row) => sum + row.coins_awarded, 0),
+      };
+    },
+  });
+}
