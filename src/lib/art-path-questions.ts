@@ -115,7 +115,7 @@ export function stationQuestions(index: number): ArtQuestion[] {
       options: shuffle([artist.name, ...wrong], seed),
       answer: artist.name,
       explanation: `${work.title} (${work.year}) malte ${artist.name} (${artist.life}). Achte auf: ${short(work.technique, 110)}`,
-      hint: `${artist.name} (${artist.life}) erkennst du an: ${short(station.artistLens[position] ?? station.technique, 150)}`,
+      hint: `${artist.name} (${artist.life}): ${short(station.artistLens[position] ?? station.technique, 150)}`,
       topic: `Werke von ${artist.name} erkennen`,
       image: work.image,
     };
@@ -134,7 +134,7 @@ export function stationQuestions(index: number): ArtQuestion[] {
       options: shuffle([techniqueAnswer, short(others[0]!.technique, 130), short(others[1]!.technique, 130)], index + 21),
       answer: techniqueAnswer,
       explanation: station.technique,
-      hint: `In ${station.era} arbeitet man so: ${short(station.technique, 160)}`,
+      hint: `Frag dich: Welches Bindemittel und welcher Bildträger sind in ${station.years} überhaupt verfügbar?`,
       topic: "Technik der Epoche",
       ...(station.work?.image ? { image: station.work.image } : {}),
     });
@@ -170,7 +170,7 @@ export function stationQuestions(index: number): ArtQuestion[] {
       options: shuffle([answer, short(others[0]!.mnemonics[1] ?? others[0]!.turningPoint), short(others[1]!.mnemonics[1] ?? others[1]!.turningPoint)], index + 31),
       answer,
       explanation: station.mnemonics[1],
-      hint: `Die anderen Sätze gehören zu späteren oder früheren Epochen. Merke dir: ${short(station.mnemonics[1], 150)}`,
+      hint: `Die anderen Sätze gehören zu anderen Epochen — prüfe, ob Ort und Jahreszahl zu ${station.place} (${station.years}) passen.`,
       topic: "Merksätze der Epoche",
     });
   }
@@ -185,7 +185,7 @@ export function stationQuestions(index: number): ArtQuestion[] {
       options: shuffle([answer, short(others[0]!.brushes, 130), short(others[1]!.brushes, 130)], index + 41),
       answer,
       explanation: `${station.brushes} Werkzeuge: ${station.tools}`,
-      hint: `Werkzeug verrät die Technik: ${short(station.tools, 150)}`,
+      hint: "Werkzeug verrät die Technik: feine Haarpinsel für Lasuren, Borsten für pastose Spuren, Stichel und Presse für Druckgrafik.",
       topic: "Werkzeug und Material",
     });
   }
@@ -267,7 +267,7 @@ export function stationQuestions(index: number): ArtQuestion[] {
       options: shuffle([answer, short(others[0]!.mnemonics[2] ?? others[0]!.lesson), short(others[1]!.mnemonics[2] ?? others[1]!.lesson)], index + 71),
       answer,
       explanation: station.mnemonics[2],
-      hint: `Prüfe, ob die Aussage zu ${station.years} passt. Richtig ist: ${short(station.mnemonics[2], 150)}`,
+      hint: `Prüfe jede Aussage gegen das, was in ${station.years} technisch und gesellschaftlich möglich war.`,
       topic: "Merksätze der Epoche",
     });
   }

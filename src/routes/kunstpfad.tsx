@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useInvalidateFarm } from "@/lib/farm";
 import coin from "@/assets/provenance-coin.png";
 import { questionKindLabel, repeatVariant, stationFinalQuestion, stationQuestions, stationSummary, stationTransferQuestion, type ArtQuestion } from "@/lib/art-path-questions";
+import { explainTerms, type GlossaryEntry } from "@/lib/art-path-glossary";
 import { Button } from "@/components/ui/button";
 import { MagnifierImage } from "@/components/MagnifierImage";
 import { PremiumLock } from "@/components/PremiumLock";
@@ -61,7 +62,26 @@ function buildSequence(practice: ArtQuestion[], repeatIds: string[], transfer: A
   return items;
 }
 
-function PracticeCard({ quiz, step, total, imageUrl, onResult }: { quiz: ArtQuestion; step: number; total: number; imageUrl?: string | undefined; onResult: (correct: boolean) => void }) {
+/** Zeigt, dass zwei Rückmeldungen dasselbe sagen — dann wird nur eine angezeigt. */
+function saysTheSame(a: string, b: string): boolean {
+  const normalize = (text: string) => text.toLowerCase().replace(/[^\p{L}\p{N} ]/gu, "").trim();
+  const one = normalize(a);
+  const two = normalize(b);
+  if (!one || !two) return true;
+  const shorter = one.length <= two.length ? one : two;
+  const longer = one.length <= two.length ? two : one;
+  return longer.includes(shorter.slice(0, Math.min(50, shorter.length)));
+}
+
+function TermNotes({ entries }: { entries: GlossaryEntry[] }) {
+  if (entries.length === 0) return null;
+  return <div className="mt-6 grid gap-3 border-t border-border pt-4">
+    <p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">Kurz erklärt</p>
+    {entries.map((item) => <p key={item.term} className="text-sm leading-relaxed"><span className="font-medium">{item.term}</span> <span className="text-muted-foreground">— {item.text}</span></p>)}
+  </div>;
+}
+
+function PracticeCard({ quiz, step, total, imageUrl, term, onResult }: { quiz: ArtQuestion; step: number; total: number; imageUrl?: string | undefined; term?: GlossaryEntry | undefined; onResult: (correct: boolean) => void }) {
   const [picked, setPicked] = useState("");
   const [unsure, setUnsure] = useState(false);
   const correct = picked === quiz.answer;
@@ -82,16 +102,21 @@ function PracticeCard({ quiz, step, total, imageUrl, onResult }: { quiz: ArtQues
     </div>
   );
 
+  /** Nach der Antwort: genau eine Erklärung — plus ein Begriff, der neu dazukommt. */
+  const lead = correct ? quiz.explanation : (quiz.hint ?? quiz.explanation);
+  const extra = !correct && quiz.hint && !saysTheSame(quiz.hint, quiz.explanation) ? quiz.explanation : "";
+
   const feedback = picked
     ? <div className="animate-in fade-in mt-5 rounded-lg border border-border p-4 text-sm leading-relaxed duration-500">
-        <p className="flex items-start gap-2">{correct ? <Check className="mt-0.5 h-4 w-4 shrink-0" /> : <X className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />}<span>{correct ? quiz.explanation : (quiz.hint ?? quiz.explanation)}</span></p>
-        {!correct && <p className="mt-2 text-muted-foreground">{quiz.explanation}</p>}
-        {(!correct || unsure) && <p className="mt-2 text-xs text-muted-foreground">Diese Frage kommt später noch einmal in anderer Form.</p>}
+        <p className="flex items-start gap-2">{correct ? <Check className="mt-0.5 h-4 w-4 shrink-0" /> : <X className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />}<span>{lead}</span></p>
+        {extra && <p className="mt-2 text-muted-foreground">{extra}</p>}
+        {term && <p className="mt-3 border-t border-border pt-3"><span className="font-medium">{term.term}</span> <span className="text-muted-foreground">— {term.text}</span></p>}
       </div>
     : <Button type="button" variant="ghost" onClick={() => setUnsure((value) => !value)} className={`mt-4 w-fit rounded-full px-3 text-xs font-normal ${unsure ? "bg-muted" : ""}`}>{unsure ? "Als unsicher markiert" : "Ich bin unsicher"}</Button>;
 
-  const hint = <p className="mt-6 text-xs text-muted-foreground">{total > 0 ? `Frage ${step} von ${total} — erst die Abschlussfrage schaltet die nächste Station frei.` : "Transferfrage — sie entscheidet, ob die Station als beherrscht gilt."}</p>;
+  const hint = <p className="mt-6 text-xs text-muted-foreground">{total > 0 ? `Frage ${step} von ${total}` : "Transferfrage — sie entscheidet, ob die Station als beherrscht gilt."}</p>;
   const label = <div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{quiz.kind === "transfer" ? <Sparkles className="h-4 w-4" /> : quiz.compare ? <Images className="h-4 w-4" /> : <HelpCircle className="h-4 w-4" />} {questionKindLabel(quiz.kind)}</div>;
+
 
   if (quiz.compare) {
     return <div className="flex min-h-[570px] flex-col justify-center p-6 sm:min-h-[610px] sm:p-9">
@@ -149,6 +174,24 @@ function ArtPathPage() {
   const selected = answers[activeStation] ?? "";
   const result = feedback[activeStation];
   const done = completed.has(activeStation);
+
+  /**
+   * Begriffe dieser Station — jeder wird genau einmal erklärt und der Reihe nach
+   * auf die Karten verteilt, damit jeder Klick neuen Inhalt bringt.
+   */
+  const stationTerms = useMemo(() => {
+    const source = artPathWithWorks[activeStation];
+    if (!source) return [] as GlossaryEntry[];
+    return explainTerms([
+      source.place, source.lesson, source.turningPoint, source.experience.story, source.experience.mission,
+      source.history, source.pigments, source.supports, source.tools, source.brushes, source.technique,
+      ...source.artistLens, ...source.mnemonics,
+    ], new Set(), 20);
+  }, [activeStation]);
+  /** Zwei Begriffe je Lernkarte, danach je einer als Zugabe nach den Fragen. */
+  const termsForStudy = (slot: number) => stationTerms.slice(slot * 2, slot * 2 + 2);
+  const questionTerm = (step: number) => stationTerms[12 + ((step - 1) % Math.max(1, stationTerms.length - 12))];
+
 
   const stationResults = results[activeStation] ?? {};
   const repeatIds = repeats[activeStation] ?? [];
@@ -283,21 +326,21 @@ function ArtPathPage() {
         {!unlocked ? <PremiumLock title={`${station.era} wartet auf dich`} description={`Du siehst alle ${artPathWithWorks.length} Stationen der Reise. Die ersten ${FREE_JOURNEY_STATIONS} sind frei; Premium öffnet diese und alle folgenden Lernstationen.`} /> : <article className="relative min-h-[570px] rounded-lg border border-border bg-card shadow-sm sm:min-h-[610px]">
           {study === 0 && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1.08fr_0.92fr]">
             <div className="flex min-h-64 items-center justify-center bg-muted p-4 md:min-h-full">{station.work && <MagnifierImage src={station.work.image} alt={station.work.title} className="w-full" />}</div>
-            <div className="flex flex-col justify-center p-6 sm:p-9"><BookOpen className="h-6 w-6" /><p className="mt-5 text-[10px] tracking-[0.24em] text-muted-foreground uppercase">{station.years} · {station.place}</p><h3 className="font-display mt-2 text-3xl font-medium sm:text-4xl">{station.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground">{station.lesson}</p></div>
+            <div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9"><BookOpen className="h-6 w-6" /><p className="mt-5 text-[10px] tracking-[0.24em] text-muted-foreground uppercase">{station.years} · {station.place}</p><h3 className="font-display mt-2 text-3xl font-medium sm:text-4xl">{station.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground">{station.lesson}</p><TermNotes entries={termsForStudy(0)} /></div>
           </div>}
 
           {study === 1 && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1fr_1fr]">
-            <div className="flex flex-col justify-center p-6 sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Compass className="h-4 w-4" /> Ankunft</div><h3 className="font-display mt-3 text-3xl font-medium">{station.experience.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground">{station.experience.story}</p><p className="mt-6 text-sm text-muted-foreground">Reiseziel: <span className="text-foreground">{station.place}</span> · {station.years}</p></div>
+            <div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Compass className="h-4 w-4" /> Ankunft</div><h3 className="font-display mt-3 text-3xl font-medium">{station.experience.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground">{station.experience.story}</p><TermNotes entries={termsForStudy(1)} /></div>
             <div className="flex min-h-56 items-center justify-center bg-muted p-4 md:min-h-full">{station.works[1] && <MagnifierImage src={station.works[1]!.image} alt={station.works[1]!.title} className="w-full" />}</div>
           </div>}
 
-          {study === 2 && <div className="flex min-h-[570px] flex-col justify-center p-6 sm:min-h-[610px] sm:p-10"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><ScrollText className="h-4 w-4" /> Zeit & Wendepunkt</div><h3 className="font-display mt-3 text-3xl font-medium">Was die Welt verändert</h3><p className="mt-5 max-w-2xl leading-relaxed text-muted-foreground">{station.history}</p><p className="mt-6 max-w-2xl border-l-2 border-foreground pl-5 leading-relaxed">{station.turningPoint}</p><div className="mt-8 grid gap-3 sm:grid-cols-3">{[{ label: "Zeitraum", value: station.years }, { label: "Ort", value: station.place }, { label: "Epoche", value: station.era }].map((fact) => <div key={fact.label} className="rounded-lg border border-border p-4"><p className="text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{fact.label}</p><p className="mt-1 text-sm">{fact.value}</p></div>)}</div></div>}
+          {study === 2 && <div className="flex min-h-[570px] flex-col justify-center overflow-y-auto p-6 sm:min-h-[610px] sm:p-10"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><ScrollText className="h-4 w-4" /> Zeit & Wendepunkt</div><h3 className="font-display mt-3 text-3xl font-medium">Was die Welt verändert</h3><p className="mt-5 max-w-2xl leading-relaxed text-muted-foreground">{station.history}</p><p className="mt-6 max-w-2xl border-l-2 border-foreground pl-5 leading-relaxed">{station.turningPoint}</p><div className="max-w-2xl"><TermNotes entries={termsForStudy(2)} /></div></div>}
 
-          {study === 3 && <div className="min-h-[570px] p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Palette className="h-4 w-4" /> Farben & Pigmente</div><h3 className="font-display mt-3 text-3xl font-medium">Woraus Bilder gemacht sind</h3><div className="mt-6 flex flex-wrap gap-2">{station.palette.map((color) => <span key={color} className="rounded-full border border-border bg-background px-3 py-1.5 text-xs">{color}</span>)}</div><div className="mt-7 grid gap-x-8 gap-y-6 md:grid-cols-2">{[{ label: "Pigmente & Bindemittel", value: station.pigments }, { label: "Bildträger", value: station.supports }].map((item) => <section key={item.label} className="border-t border-border pt-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">{item.label}</p><p className="mt-2 text-sm leading-relaxed">{item.value}</p></section>)}</div><div className="mt-7 grid grid-cols-3 gap-3">{station.works.slice(0, 3).map((stationWork) => <Link key={stationWork.id} to="/werke/$id" params={{ id: stationWork.id }} className="group min-w-0"><div className="aspect-[4/3] overflow-hidden rounded-md bg-muted p-1.5"><img src={stationWork.image} alt={stationWork.title} loading="lazy" className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.03]" /></div><p className="mt-2 truncate text-xs">{stationWork.title}</p></Link>)}</div></div>}
+          {study === 3 && <div className="min-h-[570px] overflow-y-auto p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Palette className="h-4 w-4" /> Farben & Pigmente</div><h3 className="font-display mt-3 text-3xl font-medium">Woraus Bilder gemacht sind</h3><div className="mt-6 flex flex-wrap gap-2">{station.palette.map((color) => <span key={color} className="rounded-full border border-border bg-background px-3 py-1.5 text-xs">{color}</span>)}</div><div className="mt-7 grid gap-x-8 gap-y-6 md:grid-cols-2">{[{ label: "Pigmente & Bindemittel", value: station.pigments }, { label: "Bildträger", value: station.supports }].map((item) => <section key={item.label} className="border-t border-border pt-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">{item.label}</p><p className="mt-2 text-sm leading-relaxed">{item.value}</p></section>)}</div><TermNotes entries={termsForStudy(3)} /></div>}
 
-          {study === 4 && <div className="min-h-[570px] p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Brush className="h-4 w-4" /> Werkzeug & Technik</div><h3 className="font-display mt-3 text-3xl font-medium">Pinsel, Griffel, Presse</h3><div className="mt-7 grid gap-x-8 gap-y-6 md:grid-cols-2">{[{ label: "Pinsel", value: station.brushes }, { label: "Werkzeuge", value: station.tools }, { label: "Technik", value: station.technique }, { label: "Bildträger", value: station.supports }].map((item) => <section key={item.label} className="border-t border-border pt-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">{item.label}</p><p className="mt-2 text-sm leading-relaxed">{item.value}</p></section>)}</div><p className="mt-7 rounded-lg bg-muted p-5 text-sm leading-relaxed"><span className="font-medium">Übung:</span> {station.experience.mission}</p></div>}
+          {study === 4 && <div className="min-h-[570px] overflow-y-auto p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Brush className="h-4 w-4" /> Werkzeug & Technik</div><h3 className="font-display mt-3 text-3xl font-medium">Pinsel, Griffel, Presse</h3><div className="mt-7 grid gap-x-8 gap-y-6 md:grid-cols-2">{[{ label: "Pinsel", value: station.brushes }, { label: "Werkzeuge", value: station.tools }, { label: "Technik", value: station.technique }].map((item) => <section key={item.label} className="border-t border-border pt-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">{item.label}</p><p className="mt-2 text-sm leading-relaxed">{item.value}</p></section>)}</div><TermNotes entries={termsForStudy(4)} /><p className="mt-7 rounded-lg bg-muted p-5 text-sm leading-relaxed"><span className="font-medium">Übung:</span> {station.experience.mission}</p></div>}
 
-          {study === 5 && <div className="flex min-h-[570px] flex-col justify-center p-6 sm:min-h-[610px] sm:p-10"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Lightbulb className="h-4 w-4" /> Merkkarte</div><h3 className="font-display mt-3 text-3xl font-medium">Drei Sätze, die sitzen müssen</h3><p className="mt-3 text-sm text-muted-foreground">Genau diese Sätze werden später abgefragt.</p><ul className="mt-7 grid gap-4">{station.mnemonics.map((tip, tipIndex) => <li key={tip} className="flex gap-4 rounded-lg bg-path-leaf p-5"><span className="font-display text-2xl font-medium">{tipIndex + 1}</span><p className="leading-relaxed">{tip.replace(/^Merke:\s*/, "")}</p></li>)}</ul></div>}
+          {study === 5 && <div className="flex min-h-[570px] flex-col justify-center overflow-y-auto p-6 sm:min-h-[610px] sm:p-10"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Lightbulb className="h-4 w-4" /> Merkkarte</div><h3 className="font-display mt-3 text-3xl font-medium">Drei Sätze, die sitzen müssen</h3><ul className="mt-7 grid gap-4">{station.mnemonics.map((tip, tipIndex) => <li key={tip} className="flex gap-4 rounded-lg bg-path-leaf p-5"><span className="font-display text-2xl font-medium">{tipIndex + 1}</span><p className="leading-relaxed">{tip.replace(/^Merke:\s*/, "")}</p></li>)}</ul><TermNotes entries={termsForStudy(5)} /></div>}
 
           {study >= 6 && study <= 9 && (() => {
             const artist = station.artistProfiles[study - 6];
@@ -311,9 +354,9 @@ function ArtPathPage() {
             <div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Landmark className="h-4 w-4" /> Werk im Detail</div><h3 className="font-display mt-3 text-2xl font-medium sm:text-3xl">{detailWork.title}</h3><p className="mt-1 text-sm text-muted-foreground">{detailWork.painter.name} · {detailWork.year}</p><p className="mt-5 text-sm leading-relaxed text-muted-foreground">{detailWork.description}</p><p className="mt-4 text-sm leading-relaxed"><span className="font-medium">Bedeutung:</span> {detailWork.significance}</p><Button asChild variant="outline" className="mt-6 w-fit rounded-full font-normal"><Link to="/werke/$id" params={{ id: detailWork.id }}>Ganze Werkseite öffnen</Link></Button></div>
           </div>}
 
-          {study === 11 && <div className="min-h-[570px] p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Eye className="h-4 w-4" /> Bilder einprägen</div><h3 className="font-display mt-3 text-3xl font-medium">Vier Werke, vier Namen</h3><p className="mt-3 text-sm text-muted-foreground">Präge dir Bild und Maler ein — gleich musst du zuordnen.</p><div className="mt-6 grid grid-cols-2 gap-4">{station.works.slice(0, 4).map((stationWork) => <figure key={stationWork.id} className="min-w-0"><div className="aspect-[4/3] overflow-hidden rounded-md bg-muted p-1.5"><img src={stationWork.image} alt={stationWork.title} loading="lazy" className="h-full w-full object-contain" /></div><figcaption className="mt-2 text-xs leading-snug"><span className="font-medium">{stationWork.painter.name}</span><br /><span className="text-muted-foreground">{stationWork.title} · {stationWork.year}</span></figcaption></figure>)}</div><p className="mt-6 rounded-lg bg-path-leaf p-4 text-sm leading-relaxed">{station.mnemonics[0]?.replace(/^Merke:\s*/, "")}</p></div>}
+          {study === 11 && <div className="min-h-[570px] p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Eye className="h-4 w-4" /> Bilder einprägen</div><h3 className="font-display mt-3 text-3xl font-medium">Vier Werke, vier Namen</h3><p className="mt-3 text-sm text-muted-foreground">Präge dir Bild und Maler ein — gleich musst du zuordnen.</p><div className="mt-6 grid grid-cols-2 gap-4">{station.works.slice(0, 4).map((stationWork) => <figure key={stationWork.id} className="min-w-0"><div className="aspect-[4/3] overflow-hidden rounded-md bg-muted p-1.5"><img src={stationWork.image} alt={stationWork.title} loading="lazy" className="h-full w-full object-contain" /></div><figcaption className="mt-2 text-xs leading-snug"><span className="font-medium">{stationWork.painter.name}</span><br /><span className="text-muted-foreground">{stationWork.title} · {stationWork.year}</span></figcaption></figure>)}</div></div>}
 
-          {entry?.type === "question" && <PracticeCard key={`${station.index}-${entry.quiz.id}`} quiz={entry.quiz} step={entry.step} total={questionTotal} imageUrl={station.works[entry.step % Math.max(1, station.works.length)]?.image ?? station.work?.image} onResult={(correct) => recordAnswer(entry.quiz, correct)} />}
+          {entry?.type === "question" && <PracticeCard key={`${station.index}-${entry.quiz.id}`} quiz={entry.quiz} step={entry.step} total={questionTotal} imageUrl={station.works[entry.step % Math.max(1, station.works.length)]?.image ?? station.work?.image} term={questionTerm(entry.step)} onResult={(correct) => recordAnswer(entry.quiz, correct)} />}
 
           {entry?.type === "transfer" && transfer && <PracticeCard key={`${station.index}-transfer`} quiz={transfer} step={0} total={0} onResult={(correct) => recordAnswer(transfer, correct)} />}
 
