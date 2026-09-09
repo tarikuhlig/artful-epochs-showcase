@@ -13,6 +13,7 @@ import { useInvalidateFarm } from "@/lib/farm";
 import coin from "@/assets/provenance-coin.png";
 import { questionKindLabel, repeatVariant, stationFinalQuestion, stationQuestions, stationSummary, stationTransferQuestion, type ArtQuestion } from "@/lib/art-path-questions";
 import { explainTerms, type GlossaryEntry } from "@/lib/art-path-glossary";
+import { pigmentSwatch } from "@/lib/pigment-colors";
 import { Button } from "@/components/ui/button";
 import { MagnifierImage } from "@/components/MagnifierImage";
 import { PremiumLock } from "@/components/PremiumLock";

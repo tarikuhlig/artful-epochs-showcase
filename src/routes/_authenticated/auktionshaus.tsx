@@ -12,7 +12,7 @@ import { PremiumLock } from "@/components/PremiumLock";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { purchaseAuctionOffer } from "@/lib/economy.functions";
 import { LicenseNotice } from "@/components/LicenseNotice";
-import { UnlockDialog, type UnlockInfo } from "@/components/UnlockDialog";
+import { emitCollected } from "@/lib/collection-events";
 
 
 export const Route = createFileRoute("/_authenticated/auktionshaus")({
@@ -31,7 +31,6 @@ function AuctionPage() {
   const queryClient = useQueryClient();
   const [busy, setBusy] = useState<string | null>(null);
   const [message, setMessage] = useState("");
-  const [unlock, setUnlock] = useState<UnlockInfo | null>(null);
 
   const rankedOffers = [...offers].sort((a, b) => b.price - a.price);
   void refetchOffers;
@@ -79,14 +78,13 @@ function AuctionPage() {
                 <span className="text-[9px] font-semibold tracking-wider text-muted-foreground uppercase">Coins</span>
               </span>
             </div>
-            <Button type="button" disabled={!hasAccess || busy !== null} onClick={async () => { setBusy(offer.id); setMessage(""); try { await purchase({ data: { offerId: offer.id } }); setMessage(`${work.title} wurde deiner Galerie hinzugefügt.`); setUnlock({ title: work.title, subtitle: `${work.painter.name} · ${work.year}`, image: work.image }); await Promise.all([queryClient.invalidateQueries({ queryKey: ["owned_items"] }), queryClient.invalidateQueries({ queryKey: ["user_stats"] })]); } catch (cause) { setMessage(cause instanceof Error ? cause.message : "Der Ankauf war nicht möglich."); } finally { setBusy(null); } }} className="h-11 rounded-full px-6 text-[12px] font-medium tracking-wide">{hasAccess ? <Gem /> : <LockKeyhole />}{busy === offer.id ? "Wird erworben …" : hasAccess ? "Werk erwerben" : "Premium"}</Button>
+            <Button type="button" disabled={!hasAccess || busy !== null} onClick={async () => { setBusy(offer.id); setMessage(""); try { await purchase({ data: { offerId: offer.id } }); setMessage(`${work.title} wurde deiner Galerie hinzugefügt.`); emitCollected({ kind: "work", slug: work.id }); emitCollected({ kind: "painter", slug: work.painter.slug }); await Promise.all([queryClient.invalidateQueries({ queryKey: ["owned_items"] }), queryClient.invalidateQueries({ queryKey: ["user_stats"] })]); } catch (cause) { setMessage(cause instanceof Error ? cause.message : "Der Ankauf war nicht möglich."); } finally { setBusy(null); } }} className="h-11 rounded-full px-6 text-[12px] font-medium tracking-wide">{hasAccess ? <Gem /> : <LockKeyhole />}{busy === offer.id ? "Wird erworben …" : hasAccess ? "Werk erwerben" : "Premium"}</Button>
           </div>
         </article>;
       })}</div>
 
       <LicenseNotice context="Im Auktionshaus werden nur gemeinfreie Werke gehandelt." />
     </div>
-    <UnlockDialog unlock={unlock} onClose={() => setUnlock(null)} />
   </main>;
 
 }
