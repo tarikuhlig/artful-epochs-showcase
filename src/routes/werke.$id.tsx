@@ -5,6 +5,7 @@ import { useTrackDiscovery } from "@/lib/progress";
 import { isFreeWork } from "@/lib/premium-access";
 import { PremiumLock } from "@/components/PremiumLock";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
+import { MagnifierImage } from "@/components/MagnifierImage";
 
 export const Route = createFileRoute("/werke/$id")({
   loader: ({ params }) => {
