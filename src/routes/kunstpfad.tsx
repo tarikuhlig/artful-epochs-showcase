@@ -261,11 +261,11 @@ function ArtPathPage() {
       {error && <p className="mb-6 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">{error}</p>}
       {notice && <p role="status" className="mb-6 rounded-lg border border-border bg-path-leaf p-4 text-sm">{notice}</p>}
       {station && <>
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div><p className="text-xs text-muted-foreground">Station {station.index + 1} von {artPathWithWorks.length} · {station.years}</p><h2 className="font-display text-xl font-medium sm:text-2xl">{station.era}</h2></div>
-          <div className="flex items-center gap-2">
+        <div className="mb-4 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+          <div className="min-w-0"><p className="text-xs text-muted-foreground">Station {station.index + 1} von {artPathWithWorks.length} · {station.years}</p><h2 className="font-display text-xl font-medium sm:text-2xl">{station.era}</h2></div>
+          <div className="flex shrink-0 flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-2">
             <span className="rounded-full border border-border px-3 py-1 text-[11px] tracking-wide">{masteryLabel}</span>
-            <span className="flex items-center gap-1 text-sm"><Coins className="h-4 w-4" /> +{station.coinReward}</span>
+            <span className="flex items-center gap-1 text-sm"><Coins className="h-4 w-4 shrink-0" /> +{station.coinReward}</span>
           </div>
         </div>
 

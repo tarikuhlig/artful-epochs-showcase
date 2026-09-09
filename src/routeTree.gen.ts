@@ -16,6 +16,7 @@ import { Route as KatalogRouteImport } from './routes/katalog'
 import { Route as KuenstlerDesTagesRouteImport } from './routes/kuenstler-des-tages'
 import { Route as KunstpfadRouteImport } from './routes/kunstpfad'
 import { Route as PremiumRouteImport } from './routes/premium'
+import { Route as RechteRouteImport } from './routes/rechte'
 import { Route as StudierenRouteImport } from './routes/studieren'
 import { Route as AuthenticatedAtelierRouteImport } from './routes/_authenticated/atelier'
 import { Route as AuthenticatedAuktionshausRouteImport } from './routes/_authenticated/auktionshaus'
@@ -67,6 +68,11 @@ const KunstpfadRoute = KunstpfadRouteImport.update({
 const PremiumRoute = PremiumRouteImport.update({
   id: '/premium',
   path: '/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RechteRoute = RechteRouteImport.update({
+  id: '/rechte',
+  path: '/rechte',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StudierenRoute = StudierenRouteImport.update({
@@ -170,6 +176,7 @@ export interface FileRoutesByFullPath {
   '/kuenstler-des-tages': typeof KuenstlerDesTagesRoute
   '/kunstpfad': typeof KunstpfadRoute
   '/premium': typeof PremiumRoute
+  '/rechte': typeof RechteRoute
   '/studieren': typeof StudierenRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/auktionshaus': typeof AuthenticatedAuktionshausRoute
@@ -196,6 +203,7 @@ export interface FileRoutesByTo {
   '/kuenstler-des-tages': typeof KuenstlerDesTagesRoute
   '/kunstpfad': typeof KunstpfadRoute
   '/premium': typeof PremiumRoute
+  '/rechte': typeof RechteRoute
   '/studieren': typeof StudierenRoute
   '/atelier': typeof AuthenticatedAtelierRoute
   '/auktionshaus': typeof AuthenticatedAuktionshausRoute
@@ -224,6 +232,7 @@ export interface FileRoutesById {
   '/kuenstler-des-tages': typeof KuenstlerDesTagesRoute
   '/kunstpfad': typeof KunstpfadRoute
   '/premium': typeof PremiumRoute
+  '/rechte': typeof RechteRoute
   '/studieren': typeof StudierenRoute
   '/_authenticated/atelier': typeof AuthenticatedAtelierRoute
   '/_authenticated/auktionshaus': typeof AuthenticatedAuktionshausRoute
@@ -252,6 +261,7 @@ export interface FileRouteTypes {
     | '/kuenstler-des-tages'
     | '/kunstpfad'
     | '/premium'
+    | '/rechte'
     | '/studieren'
     | '/atelier'
     | '/auktionshaus'
@@ -278,6 +288,7 @@ export interface FileRouteTypes {
     | '/kuenstler-des-tages'
     | '/kunstpfad'
     | '/premium'
+    | '/rechte'
     | '/studieren'
     | '/atelier'
     | '/auktionshaus'
@@ -305,6 +316,7 @@ export interface FileRouteTypes {
     | '/kuenstler-des-tages'
     | '/kunstpfad'
     | '/premium'
+    | '/rechte'
     | '/studieren'
     | '/_authenticated/atelier'
     | '/_authenticated/auktionshaus'
@@ -333,6 +345,7 @@ export interface RootRouteChildren {
   KuenstlerDesTagesRoute: typeof KuenstlerDesTagesRoute
   KunstpfadRoute: typeof KunstpfadRoute
   PremiumRoute: typeof PremiumRoute
+  RechteRoute: typeof RechteRoute
   StudierenRoute: typeof StudierenRoute
   EpochenEpocheRoute: typeof EpochenEpocheRoute
   MalerSlugRoute: typeof MalerSlugRoute
@@ -397,6 +410,13 @@ declare module '@tanstack/react-router' {
       path: '/premium'
       fullPath: '/premium'
       preLoaderRoute: typeof PremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rechte': {
+      id: '/rechte'
+      path: '/rechte'
+      fullPath: '/rechte'
+      preLoaderRoute: typeof RechteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/studieren': {
@@ -555,6 +575,7 @@ const rootRouteChildren: RootRouteChildren = {
   KuenstlerDesTagesRoute: KuenstlerDesTagesRoute,
   KunstpfadRoute: KunstpfadRoute,
   PremiumRoute: PremiumRoute,
+  RechteRoute: RechteRoute,
   StudierenRoute: StudierenRoute,
   EpochenEpocheRoute: EpochenEpocheRoute,
   MalerSlugRoute: MalerSlugRoute,

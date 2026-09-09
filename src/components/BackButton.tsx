@@ -16,7 +16,7 @@ export function BackButton() {
         if (typeof window !== "undefined" && window.history.length > 1) router.history.back();
         else void router.navigate({ to: "/" });
       }}
-      className="fixed top-[calc(env(safe-area-inset-top)+0.75rem)] left-3 z-[60] inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background/90 text-foreground shadow-sm backdrop-blur-md transition-colors hover:bg-accent md:top-[calc(env(safe-area-inset-top)+4.75rem)] md:left-5"
+      className="fixed top-[calc(env(safe-area-inset-top)+0.55rem)] left-3 z-[66] inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/95 text-foreground shadow-sm backdrop-blur-md transition-colors hover:bg-accent md:top-[calc(env(safe-area-inset-top)+4.75rem)] md:left-5 md:h-11 md:w-11"
     >
       <ArrowLeft className="h-5 w-5" />
     </button>

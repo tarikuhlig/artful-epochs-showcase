@@ -230,7 +230,9 @@ function SiteFooter() {
     <footer className="border-t border-border">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 pt-8 pb-[calc(6rem+env(safe-area-inset-bottom))] text-xs text-muted-foreground sm:flex-row md:pb-8">
         <p>Provenance — Kunstgeschichte zum Lernen</p>
-        <p>Bildnachweis: Wikimedia Commons (gemeinfreie Werke)</p>
+        <Link to="/rechte" className="underline underline-offset-2 hover:text-foreground">
+          Bildnachweis &amp; Rechte
+        </Link>
       </div>
     </footer>
   );
@@ -251,13 +253,20 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {/* Platz für die feste Leiste oben auf dem Handy */}
+      <div aria-hidden className="h-[calc(env(safe-area-inset-top)+3.25rem)] md:hidden" />
       <PaymentTestModeBanner />
       <SiteHeader />
       <PremiumBanner />
+      {/* Ruhige Leiste oben auf dem Handy — verdeckt keine Inhalte mehr. */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-x-0 top-0 z-[55] h-[calc(env(safe-area-inset-top)+3.25rem)] bg-background/85 backdrop-blur-md md:hidden"
+      />
       <BackButton />
       {/* Coin-Stand jederzeit sichtbar — auf dem Handy oben rechts. */}
-      <div className="fixed top-[calc(env(safe-area-inset-top)+0.5rem)] right-3 z-[65] md:hidden">
-        <CoinBadge className="bg-background/95 shadow-sm backdrop-blur" />
+      <div className="fixed top-[calc(env(safe-area-inset-top)+0.6rem)] right-3 z-[65] md:hidden">
+        <CoinBadge className="h-9 bg-background/95 px-3 shadow-sm backdrop-blur" />
       </div>
       <main>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
