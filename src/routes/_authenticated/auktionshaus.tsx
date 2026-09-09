@@ -12,6 +12,8 @@ import { PremiumLock } from "@/components/PremiumLock";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { purchaseAuctionOffer } from "@/lib/economy.functions";
 import { LicenseNotice } from "@/components/LicenseNotice";
+import { UnlockDialog, type UnlockInfo } from "@/components/UnlockDialog";
+
 
 export const Route = createFileRoute("/_authenticated/auktionshaus")({
   head: () => ({ meta: [
@@ -28,7 +30,7 @@ function AuctionPage() {
   const purchase = useServerFn(purchaseAuctionOffer);
   const queryClient = useQueryClient();
   const [busy, setBusy] = useState<string | null>(null);
-  const [message, setMessage] = useState("");
+  const [unlock, setUnlock] = useState<UnlockInfo | null>(null);
   const rankedOffers = [...offers].sort((a, b) => b.price - a.price);
   void refetchOffers;
   return <main className="min-h-screen bg-background">
