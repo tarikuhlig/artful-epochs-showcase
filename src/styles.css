@@ -223,6 +223,38 @@
   [role="button"] {
     touch-action: manipulation;
   }
+
+  /* Lange Titel und Links brechen sauber statt die Seite breiter zu machen */
+  h1,
+  h2,
+  h3,
+  p,
+  a,
+  li {
+    overflow-wrap: anywhere;
+  }
+
+  /* Flüssiges Scrollen in Overlays und Karten-Flows */
+  [data-scroll-area],
+  .overflow-y-auto,
+  .overflow-auto {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Auf dem Handy jedes Tippziel angenehm groß */
+  @media (max-width: 767px) {
+    button,
+    a[role="button"],
+    [role="button"] {
+      min-height: 44px;
+    }
+
+    nav[aria-label="Hauptmenü"] a,
+    nav[aria-label="Hauptmenü"] button {
+      min-height: 52px;
+    }
+  }
 }
 
 
