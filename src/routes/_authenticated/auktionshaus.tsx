@@ -46,28 +46,40 @@ function AuctionPage() {
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-5"><div><p className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase">Heutige Auswahl · 1 Platin · 2 Gold · 2 Bronze</p><h2 className="font-display mt-1 text-2xl font-medium">Fünf Lose des Tages</h2></div><p className="flex items-center gap-2 text-sm text-muted-foreground"><Sparkles className="h-4 w-4" /> Wechsel in 24 Stunden</p></div>
       {!hasAccess && <div className="mt-8"><PremiumLock title="Auktionshaus für Premium-Sammler" description="Alle fünf Tageslose bleiben sichtbar. Premium öffnet den Erwerb und deine private Ausstellung; dein Coin-Guthaben findest du ausschließlich im Galerie-Dashboard." /></div>}
       {message && <p role="status" className="mt-6 text-center text-sm text-muted-foreground">{message}</p>}
-      <div className="mt-8 grid gap-8 sm:grid-cols-2">{rankedOffers.map((offer, index) => {
+      <div className="mt-8 grid gap-6 sm:grid-cols-2">{rankedOffers.map((offer, index) => {
         const work = allWorks.find((w) => w.id === offer.work_slug); if (!work) return null;
         const rarity = artRank(offer.price);
         const isPlatinum = rarity === "Platin";
-        return <article key={offer.id} className={`group border bg-card p-3 shadow-sm sm:p-4 ${isPlatinum ? "w-full border-foreground sm:col-span-2 sm:mx-auto sm:max-w-3xl" : "border-border"}`}>
-          <div className="relative bg-muted p-3 sm:p-5">
-            <Link to="/werke/$id" params={{ id: work.id }} className={`block overflow-hidden bg-background shadow-md ${isPlatinum ? "aspect-[16/9]" : "aspect-[4/3]"}`}>
-              <img src={work.image} alt={`${work.title} von ${work.painter.name}`} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]" />
-            </Link>
-            <span className={`absolute left-5 top-5 border px-3 py-1.5 text-[9px] tracking-[0.2em] uppercase backdrop-blur-sm sm:left-7 sm:top-7 ${artRankClasses(rarity)}`}>{rarity}{rarity === "Platin" ? " · Weltberühmt" : ""}</span>
+        return <article key={offer.id} className={`flex flex-col gap-4 rounded-[2rem] border border-border bg-card p-4 shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-shadow hover:shadow-[0_16px_44px_rgba(0,0,0,0.07)] ${isPlatinum ? "w-full sm:col-span-2 sm:mx-auto sm:max-w-3xl" : ""}`}>
+          <div className="flex items-center justify-between px-1 pt-1">
+            <span className="text-[10px] font-medium tracking-[0.15em] text-muted-foreground uppercase">{isPlatinum ? "Weltlos des Tages" : `Los ${String(index + 1).padStart(2, "0")}`}</span>
+            <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-medium tracking-tight ${artRankClasses(rarity)}`}>
+              <span className="h-1.5 w-1.5 rounded-full bg-current opacity-50" />{rarity}
+            </span>
           </div>
-          <div className="px-2 pb-2 pt-5 sm:px-3 sm:pt-6">
-            <div className="flex items-center justify-between gap-4"><p className="text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{isPlatinum ? "Das Weltlos des Tages" : `Los ${String(index + 1).padStart(2, "0")}`}</p><Gem className="h-4 w-4 text-muted-foreground" /></div>
-            <h3 className={`font-display mt-2 font-medium ${isPlatinum ? "text-3xl sm:text-center sm:text-4xl" : "text-2xl sm:text-3xl"}`}>{work.title}</h3>
-            <p className={`mt-1 text-sm text-muted-foreground ${isPlatinum ? "sm:text-center" : ""}`}>{work.painter.name} · {work.year}</p>
-            <div className="mt-6 flex flex-col gap-4 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between">
-              <div><p className="text-[9px] tracking-[0.18em] text-muted-foreground uppercase">Festpreis</p><p className="mt-1 flex items-center gap-2 font-display text-xl font-medium"><img src={coin} alt="" className="h-6 w-6" />{offer.price.toLocaleString("de-DE")}</p></div>
-               <Button type="button" disabled={!hasAccess || busy !== null} onClick={async () => { setBusy(offer.id); setMessage(""); try { await purchase({ data: { offerId: offer.id } }); setMessage(`${work.title} wurde deiner Galerie hinzugefügt.`); await Promise.all([queryClient.invalidateQueries({ queryKey: ["owned_items"] }), queryClient.invalidateQueries({ queryKey: ["user_stats"] })]); } catch (cause) { setMessage(cause instanceof Error ? cause.message : "Der Ankauf war nicht möglich."); } finally { setBusy(null); } }} className="h-11 rounded-full px-6">{hasAccess ? <Gem /> : <LockKeyhole />}{busy === offer.id ? "Wird erworben …" : hasAccess ? "Werk erwerben" : "Premium"}</Button>
+
+          <Link to="/werke/$id" params={{ id: work.id }} className={`group relative block overflow-hidden rounded-[1.5rem] bg-muted ${isPlatinum ? "aspect-[16/9]" : "aspect-[4/5]"}`}>
+            <img src={work.image} alt={`${work.title} von ${work.painter.name}`} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          </Link>
+
+          <div className="flex flex-col gap-1 px-1">
+            <h3 className={`font-display leading-none font-normal tracking-tight ${isPlatinum ? "text-3xl" : "text-2xl"}`}>{work.title}</h3>
+            <p className="text-[13px] font-light text-muted-foreground">{work.painter.name} · {work.year}</p>
+          </div>
+
+          <div className="flex items-center justify-between gap-3 rounded-[1.25rem] border border-border/60 bg-muted/40 p-2">
+            <div className="flex items-center gap-2.5 pl-2">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background shadow-sm"><img src={coin} alt="" className="h-5 w-5" /></span>
+              <span className="flex flex-col">
+                <span className="font-display text-lg leading-none">{offer.price.toLocaleString("de-DE")}</span>
+                <span className="text-[9px] font-semibold tracking-wider text-muted-foreground uppercase">Coins</span>
+              </span>
             </div>
+            <Button type="button" disabled={!hasAccess || busy !== null} onClick={async () => { setBusy(offer.id); setMessage(""); try { await purchase({ data: { offerId: offer.id } }); setMessage(`${work.title} wurde deiner Galerie hinzugefügt.`); await Promise.all([queryClient.invalidateQueries({ queryKey: ["owned_items"] }), queryClient.invalidateQueries({ queryKey: ["user_stats"] })]); } catch (cause) { setMessage(cause instanceof Error ? cause.message : "Der Ankauf war nicht möglich."); } finally { setBusy(null); } }} className="h-11 rounded-full px-6 text-[12px] font-medium tracking-wide">{hasAccess ? <Gem /> : <LockKeyhole />}{busy === offer.id ? "Wird erworben …" : hasAccess ? "Werk erwerben" : "Premium"}</Button>
           </div>
         </article>;
       })}</div>
+
       <LicenseNotice context="Im Auktionshaus werden nur gemeinfreie Werke gehandelt." />
     </div>
   </main>;
