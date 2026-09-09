@@ -357,7 +357,12 @@ function ArtPathPage() {
       setNotice(gained > 0
         ? `Station geschafft — ${gained} studierte Werke wurden deiner Sammlung hinzugefügt.`
         : "Station geschafft — die nächste Epoche ist offen.");
-      if (gained > 0) setUnlock({ title: `${gained} ${gained === 1 ? "studiertes Werk" : "studierte Werke"}`, subtitle: "Du findest sie ab sofort in deiner Galerie." });
+      /** Sammlungs-Fenster: erst die Künstler, dann die Werke dieser Station. */
+      const finished = artPathWithWorks[index];
+      if (finished) {
+        for (const painter of finished.artistProfiles) emitCollected({ kind: "painter", slug: painter.slug });
+        for (const stationWork of finished.works) emitCollected({ kind: "work", slug: stationWork.id });
+      }
       await refetch(); invalidateFarm();
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Die Station konnte nicht abgeschlossen werden.");
