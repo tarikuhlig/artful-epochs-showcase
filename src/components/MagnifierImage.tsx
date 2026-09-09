@@ -79,13 +79,6 @@ export function MagnifierImage({
   }, []);
 
 
-  /** Höchster Zoom, der die echte Auflösung nicht überschreitet. */
-  const ceiling = useCallback(() => {
-    const c = content();
-    if (!c) return MAX_ZOOM;
-    const limit = natural.current.w / c.width;
-    return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, limit));
-  }, [content]);
 
   const paint = useCallback(() => {
     raf.current = null;
@@ -142,7 +135,7 @@ export function MagnifierImage({
       const dy =
         event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 100 : 1);
       setFactor((current) =>
-        Math.min(ceiling(), Math.max(MIN_ZOOM, current * Math.exp(-dy * 0.0015))),
+        Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, current * Math.exp(-dy * 0.0015))),
       );
     };
     el.addEventListener("wheel", onWheel, { passive: false });
