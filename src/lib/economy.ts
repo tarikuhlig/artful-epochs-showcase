@@ -78,3 +78,36 @@ export function useCardQuizRounds(date: string) {
     },
   });
 }
+
+export function useDailyLessons(date: string) {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["daily_lessons", user?.id, date],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("daily_lessons")
+        .select("kind, score, coin_reward")
+        .eq("lesson_date", date);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
+export function useStudyRewards(date: string) {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["study_rewards", user?.id, date],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("study_rewards")
+        .select("cards_rewarded, coins_awarded")
+        .eq("reward_date", date)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+}
