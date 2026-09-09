@@ -10,6 +10,7 @@ import { useArtPathProgress } from "@/lib/economy";
 import { completePathStation } from "@/lib/economy.functions";
 import { useAuth } from "@/hooks/useAuth";
 import { useInvalidateFarm } from "@/lib/farm";
+import { supabase } from "@/integrations/supabase/client";
 import coin from "@/assets/provenance-coin.png";
 import { questionKindLabel, repeatVariant, stationFinalQuestion, stationQuestions, stationSummary, stationTransferQuestion, type ArtQuestion } from "@/lib/art-path-questions";
 import { explainTerms, type GlossaryEntry } from "@/lib/art-path-glossary";
@@ -240,37 +241,86 @@ function ArtPathPage() {
     });
   }
 
-  /** Letzten Stand laden: gespeicherte Karte oder die erste offene Station. */
+  /** Letzten Stand laden: zuerst vom Server, dann lokal. */
   useEffect(() => {
-    if (restored) return;
-    let station = Math.min(progress.length, artPathWithWorks.length - 1);
+    if (restored || !user) return;
+    const userId = user.id;
+    const nextStation = Math.min(progress.length, artPathWithWorks.length - 1);
+    let cancelled = false;
+    let station = nextStation;
     let savedCard = 0;
-    try {
-      const raw = window.localStorage.getItem(RESUME_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as { station?: number; card?: number };
-        if (typeof parsed.station === "number") {
-          station = Math.min(Math.max(0, parsed.station), artPathWithWorks.length - 1);
-          savedCard = Math.max(0, parsed.card ?? 0);
+
+    async function loadServerResume() {
+      const { data } = await supabase.from("art_path_resume").select("station_index, card_index, updated_at").eq("user_id", userId).maybeSingle();
+      if (data && !cancelled) {
+        const serverStation = Math.min(Math.max(0, data.station_index), artPathWithWorks.length - 1);
+        const serverCard = Math.max(0, data.card_index ?? 0);
+        if (serverStation < progress.length) {
+          station = nextStation;
+          savedCard = 0;
+        } else {
+          station = serverStation;
+          savedCard = serverCard;
         }
       }
-    } catch {
-      /* kein gespeicherter Stand */
+      if (cancelled) return;
+      try {
+        const raw = window.localStorage.getItem(RESUME_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw) as { station?: number; card?: number; ts?: number };
+          const localTs = typeof parsed.ts === "number" ? parsed.ts : 0;
+          const serverTs = data ? new Date(data.updated_at ?? 0).getTime() : 0;
+          if (!data || localTs > serverTs) {
+            if (typeof parsed.station === "number") {
+              const localStation = Math.min(Math.max(0, parsed.station), artPathWithWorks.length - 1);
+              if (localStation < progress.length) {
+                station = nextStation;
+                savedCard = 0;
+              } else {
+                station = localStation;
+                savedCard = Math.max(0, parsed.card ?? 0);
+              }
+            }
+          }
+        }
+      } catch {
+        /* kein gespeicherter Stand */
+      }
+      if (!cancelled) {
+        setActiveStation(station);
+        setCard(savedCard);
+        setRestored(true);
+      }
     }
-    setActiveStation(station);
-    setCard(savedCard);
-    setRestored(true);
-  }, [restored, progress.length]);
 
-  /** Fortschritt automatisch merken — der Nutzer steigt genau hier wieder ein. */
+    void loadServerResume();
+    return () => { cancelled = true; };
+  }, [restored, progress.length, user]);
+
+  /** Fortschritt automatisch merken — lokal sofort, auf den Server debounced. */
   useEffect(() => {
     if (!restored) return;
+    const ts = Date.now();
     try {
-      window.localStorage.setItem(RESUME_KEY, JSON.stringify({ station: activeStation, card }));
+      window.localStorage.setItem(RESUME_KEY, JSON.stringify({ station: activeStation, card, ts }));
     } catch {
       /* Speicher nicht verfügbar */
     }
-  }, [restored, activeStation, card]);
+
+    if (!user) return;
+    const userId = user.id;
+    const timeout = setTimeout(async () => {
+      const { error } = await supabase.from("art_path_resume").upsert({
+        user_id: userId,
+        station_index: activeStation,
+        card_index: card,
+      }, { onConflict: "user_id" });
+      if (error) {
+        console.warn("Reise-Stand konnte nicht gespeichert werden:", error.message);
+      }
+    }, 800);
+    return () => clearTimeout(timeout);
+  }, [restored, activeStation, card, user]);
 
   function openStation(index: number) {
     setActiveStation(index);
@@ -348,9 +398,13 @@ function ArtPathPage() {
 
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <Button type="button" onClick={resumeJourney} className="h-auto min-h-11 rounded-full px-6">
-                {progress.length > 0 || card > 0 ? "Weiterlernen" : "Reise beginnen"} <ChevronRight className="h-4 w-4" />
+                {progress.length > 0 || card > 0 ? "Reise fortsetzen" : "Reise beginnen"} <ChevronRight className="h-4 w-4" />
               </Button>
-              <span className="text-sm text-muted-foreground">Station {activeStation + 1} · {station?.era}</span>
+              <span className="text-sm text-muted-foreground">
+                {progress.length > 0 || card > 0
+                  ? `Du bist bei Station ${activeStation + 1} · ${station?.era}${card > 0 ? ` · Karte ${card + 1}` : ""}`
+                  : `Station ${activeStation + 1} · ${station?.era}`}
+              </span>
             </div>
           </div>
 
