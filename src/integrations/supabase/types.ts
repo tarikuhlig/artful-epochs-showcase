@@ -246,6 +246,7 @@ export type Database = {
           display_name: string | null
           featured_work_ids: string[]
           id: string
+          tour_completed_at: string | null
           updated_at: string
           username: string | null
         }
@@ -255,6 +256,7 @@ export type Database = {
           display_name?: string | null
           featured_work_ids?: string[]
           id: string
+          tour_completed_at?: string | null
           updated_at?: string
           username?: string | null
         }
@@ -264,6 +266,7 @@ export type Database = {
           display_name?: string | null
           featured_work_ids?: string[]
           id?: string
+          tour_completed_at?: string | null
           updated_at?: string
           username?: string | null
         }
