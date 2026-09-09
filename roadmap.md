@@ -48,3 +48,7 @@
 - [x] Tageswerk und Tageskünstler mit Lernstoff und je zwei Quizfragen ausstatten
 - [ ] Dashboard: studierte Stationen/Karten und fehlende Coins bis zur Vollsammlung anzeigen
 - [ ] Karten-Quiz über die eigenen gesammelten Werke in der Sammlung
+- [x] Dashboard: studierte Stationen/Karten und fehlende Coins bis zur Vollsammlung anzeigen
+- [x] Karten-Quiz über die eigenen gesammelten Werke in der Sammlung
+- [x] Tageswerk-/Tageskünstler-Karten mit Stoff und je zwei Fragen im Dashboard
+- [x] Studierkarten geben Coins (serverseitig gedeckelt)
