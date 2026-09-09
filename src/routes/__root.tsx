@@ -23,6 +23,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { PremiumBanner } from "@/components/PremiumUpsell";
 import { CoinBadge } from "@/components/CoinBadge";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -272,6 +273,7 @@ function RootComponent() {
       <ProfileSetup />
       <AppTour />
       <CollectionPopups />
+      <Toaster position="bottom-center" />
 
     </QueryClientProvider>
   );

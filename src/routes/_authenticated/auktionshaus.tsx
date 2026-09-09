@@ -13,6 +13,7 @@ import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { purchaseAuctionOffer } from "@/lib/economy.functions";
 import { LicenseNotice } from "@/components/LicenseNotice";
 import { emitCollected } from "@/lib/collection-events";
+import { FavoriteButton } from "@/components/FavoriteButton";
 
 
 export const Route = createFileRoute("/_authenticated/auktionshaus")({
@@ -59,8 +60,11 @@ function AuctionPage() {
         return <article key={offer.id} className={`flex flex-col gap-4 rounded-[2rem] border border-border bg-card p-4 shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-shadow hover:shadow-[0_16px_44px_rgba(0,0,0,0.07)] ${isPlatinum ? "w-full sm:col-span-2 sm:mx-auto sm:max-w-3xl" : ""}`}>
           <div className="flex items-center justify-between px-1 pt-1">
             <span className="text-[10px] font-medium tracking-[0.15em] text-muted-foreground uppercase">{isPlatinum ? "Weltlos des Tages" : `Los ${String(index + 1).padStart(2, "0")}`}</span>
-            <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-medium tracking-tight ${artRankClasses(rarity)}`}>
-              <span className="h-1.5 w-1.5 rounded-full bg-current opacity-50" />{rarity}
+            <span className="flex items-center gap-2">
+              <FavoriteButton workSlug={work.id} className="h-8 w-8" />
+              <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-medium tracking-tight ${artRankClasses(rarity)}`}>
+                <span className="h-1.5 w-1.5 rounded-full bg-current opacity-50" />{rarity}
+              </span>
             </span>
           </div>
 

@@ -209,6 +209,30 @@ export type Database = {
         }
         Relationships: []
       }
+      favorites: {
+        Row: {
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+          work_slug: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+          work_slug: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+          work_slug?: string
+        }
+        Relationships: []
+      }
       journey_progress: {
         Row: {
           completed_at: string
@@ -569,6 +593,13 @@ export type Database = {
       }
       purchase_auction_offer_for_user: {
         Args: { target_offer: string; target_user: string }
+        Returns: {
+          coins: number
+          item_slug: string
+        }[]
+      }
+      purchase_private_auction_for_user: {
+        Args: { target_price: number; target_slug: string; target_user: string }
         Returns: {
           coins: number
           item_slug: string

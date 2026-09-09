@@ -16,6 +16,7 @@ import { PremiumLock } from "@/components/PremiumLock";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { LicenseNotice } from "@/components/LicenseNotice";
 import { OwnPhotos } from "@/components/OwnPhotos";
+import { FavoritesSection } from "@/components/FavoritesSection";
 
 
 export const Route = createFileRoute("/_authenticated/sammlung")({
@@ -240,6 +241,8 @@ function CollectionPage() {
         <div><p className="text-xs tracking-[0.22em] text-muted-foreground uppercase">Deine Ausstellung</p><h2 className="font-display mt-2 text-3xl font-medium">Lieblingswerke an der Wand</h2><p className="mt-2 text-sm text-muted-foreground">Stelle bis zu drei Ankäufe prominent aus.</p></div>
         {featuredWorks.length ? <div className="mt-7 grid gap-5 sm:grid-cols-3">{featuredWorks.map(({ item, work }) => { const rank = artRank(item.purchase_price); return <div key={item.id} className="group relative"><Link to="/werke/$id" params={{ id: work.id }}><div className="bg-muted p-3 shadow-sm"><div className="aspect-[4/3] overflow-hidden bg-background"><img src={work.image} alt={work.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" /></div></div><span className={`mt-3 inline-flex border px-2 py-1 text-[9px] tracking-[0.18em] uppercase ${artRankClasses(rank)}`}>{rank}</span><h3 className="font-display mt-2 text-xl font-medium">{work.title}</h3><p className="text-sm text-muted-foreground">{work.painter.name}</p></Link><button type="button" onClick={() => toggleFeatured(work.id)} aria-label={`${work.title} aus der Ausstellung nehmen`} className="absolute top-5 right-5 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-background/90 shadow-sm transition-colors hover:bg-accent"><X className="h-4 w-4" /></button></div>; })}</div> : <div className="mt-7 border border-dashed border-border p-8 text-center text-sm text-muted-foreground">Wähle unten bei einem gekauften Werk den Stern, um es hier auszustellen.</div>}
       </section>
+
+      <FavoritesSection />
 
       <section className="mt-16 border-y border-border py-12">
         <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs tracking-[0.22em] text-muted-foreground uppercase">Deine Ankäufe</p><h2 className="font-display mt-2 text-3xl font-medium">Galeriedepot</h2></div><Button asChild className="rounded-full"><Link to="/auktionshaus">Zum Auktionshaus</Link></Button></div>

@@ -17,6 +17,7 @@ import { explainTerms, type GlossaryEntry } from "@/lib/art-path-glossary";
 import { pigmentSwatch } from "@/lib/pigment-colors";
 import { Button } from "@/components/ui/button";
 import { MagnifierImage } from "@/components/MagnifierImage";
+import { FavoriteButton } from "@/components/FavoriteButton";
 import { PremiumLock } from "@/components/PremiumLock";
 import { LicenseNotice } from "@/components/LicenseNotice";
 import { FREE_JOURNEY_STATIONS, isFreeJourneyStation } from "@/lib/premium-access";
@@ -566,7 +567,10 @@ function ArtPathPage() {
             <div className="flex min-h-64 items-center justify-center bg-muted p-4 md:min-h-full"><MagnifierImage src={detailWork.image} alt={detailWork.title} className="w-full" /></div>
             <div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9">
               <div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Landmark className="h-4 w-4" /> Werk im Detail</div>
-              <h3 className="font-display mt-3 text-2xl font-medium sm:text-3xl">{detailWork.title}</h3>
+              <div className="mt-3 flex items-start justify-between gap-3">
+                <h3 className="font-display text-2xl font-medium sm:text-3xl">{detailWork.title}</h3>
+                <FavoriteButton workSlug={detailWork.id} />
+              </div>
               <p className="mt-1 text-sm text-muted-foreground">{detailWork.painter.name} · {detailWork.year} · gemalt in der Zeit von {station.era} ({station.years})</p>
               <p className="mt-5 text-sm leading-relaxed text-muted-foreground">{detailWork.description}</p>
               <p className="mt-4 text-sm leading-relaxed"><span className="font-medium">Bedeutung:</span> {detailWork.significance}</p>
