@@ -255,6 +255,10 @@ function RootComponent() {
       <SiteHeader />
       <PremiumBanner />
       <BackButton />
+      {/* Coin-Stand jederzeit sichtbar — auf dem Handy oben rechts. */}
+      <div className="fixed top-[calc(env(safe-area-inset-top)+0.5rem)] right-3 z-[65] md:hidden">
+        <CoinBadge className="bg-background/95 shadow-sm backdrop-blur" />
+      </div>
       <main>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
