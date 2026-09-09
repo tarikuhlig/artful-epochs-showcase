@@ -148,6 +148,7 @@ export function MagnifierImage({
     pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
     if (pointers.current.size === 2) {
       const [a, b] = [...pointers.current.values()];
+      if (!a || !b) return;
       pinchStart.current = {
         dist: Math.hypot(a.x - b.x, a.y - b.y),
         zoom: factorRef.current,
@@ -165,6 +166,7 @@ export function MagnifierImage({
     }
     if (pointers.current.size === 2 && pinchStart.current) {
       const [a, b] = [...pointers.current.values()];
+      if (!a || !b) return;
       const dist = Math.hypot(a.x - b.x, a.y - b.y);
       const start = pinchStart.current;
       setFactor(
