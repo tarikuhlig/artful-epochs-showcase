@@ -35,8 +35,8 @@ const STEPS: Step[] = [
   },
   {
     icon: Images,
-    title: "Deine Galerie",
-    text: "In der Galerie siehst du Level, Punkte, Coins, deine Serie und was dir noch bis zur Vollsammlung fehlt.",
+    title: "Dein Profil",
+    text: "In deinem Profil siehst du Level, Punkte, Coins, deine Serie und was dir noch bis zur Vollsammlung fehlt. Deine Galerie findest du dort ebenfalls.",
   },
 ];
 
