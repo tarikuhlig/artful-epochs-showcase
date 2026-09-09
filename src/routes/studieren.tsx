@@ -13,6 +13,7 @@ import { awardStudyCard } from "@/lib/economy.functions";
 import { STUDY_CARDS_PER_DAY, STUDY_CARD_REWARD } from "@/lib/coin-economy";
 import { todayISO, useInvalidateFarm } from "@/lib/farm";
 import coin from "@/assets/provenance-coin.png";
+import { FavoriteButton } from "@/components/FavoriteButton";
 
 export const Route = createFileRoute("/studieren")({
   head: () => ({ meta: [
@@ -127,6 +128,7 @@ function StudyPage() {
       {card ? <article key={card.key} className="mt-6 grid overflow-hidden rounded-lg border border-border bg-card shadow-sm md:grid-cols-[1fr_1fr]">
         <div className="relative min-h-64 bg-muted md:min-h-[440px]">
           <img src={card.work.image} alt={picked ? card.work.title : "Werk erraten"} className="absolute inset-0 h-full w-full object-cover" />
+          {picked && <FavoriteButton workSlug={card.work.id} className="absolute top-3 right-3" />}
         </div>
         <div className="flex flex-col justify-center p-6 sm:p-8">
           <p className="text-[10px] tracking-[0.2em] text-muted-foreground uppercase">Karte {seen + (picked ? 0 : 1)}</p>

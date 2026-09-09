@@ -141,3 +141,23 @@ export const awardStudyCard = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return result?.[0] ?? null;
   });
+
+export const purchasePrivateAuction = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({ workSlug: z.string().trim().min(1).max(200) }).parse(data))
+  .handler(async ({ data, context }) => {
+    await requirePremium(context);
+    const { allWorks } = await import("@/lib/art-data");
+    const work = allWorks.find((entry) => entry.id === data.workSlug);
+    if (!work) throw new Error("Dieses Werk gibt es im Katalog nicht.");
+    const { privateAuctionPrice } = await import("@/lib/art-valuation");
+    const price = privateAuctionPrice(work.id);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: result, error } = await supabaseAdmin.rpc("purchase_private_auction_for_user", {
+      target_user: context.userId,
+      target_slug: work.id,
+      target_price: price,
+    });
+    if (error) throw new Error(error.message);
+    return { ...(result?.[0] ?? {}), price, painterSlug: work.painter.slug };
+  });

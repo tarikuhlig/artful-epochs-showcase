@@ -1,5 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, Check, Gavel } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { FavoriteButton } from "@/components/FavoriteButton";
+import { PrivateAuctionDialog } from "@/components/PrivateAuctionDialog";
+import { useOwnedItems } from "@/lib/economy";
 import { findStyle, findWork } from "@/lib/art-data";
 import { useTrackDiscovery } from "@/lib/progress";
 import { isFreeWork } from "@/lib/premium-access";
@@ -38,6 +43,9 @@ function WorkPage() {
   const { hasAccess } = usePremiumAccess();
   const free = hasAccess || isFreeWork(work.id);
   useTrackDiscovery("work", work.id, { enabled: free });
+  const { data: owned = [] } = useOwnedItems();
+  const [auctionOpen, setAuctionOpen] = useState(false);
+  const isOwned = owned.some((item) => item.item_slug === work.id);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
@@ -66,6 +74,20 @@ function WorkPage() {
             {work.title}
           </h1>
           <p className="mt-1 text-base text-muted-foreground">{work.painter.name}</p>
+
+          <div className="mt-5 flex flex-wrap items-center gap-2">
+            <FavoriteButton workSlug={work.id} variant="inline" />
+            {isOwned ? (
+              <span className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border px-5 text-[12px] text-muted-foreground">
+                <Check className="h-4 w-4" /> In deiner Sammlung
+              </span>
+            ) : (
+              <Button type="button" variant="outline" className="h-11 rounded-full px-5 text-[12px] font-medium tracking-wide" onClick={() => setAuctionOpen(true)}>
+                <Gavel /> Privatauktion
+              </Button>
+            )}
+          </div>
+          <PrivateAuctionDialog work={work} open={auctionOpen} onOpenChange={setAuctionOpen} />
 
           <dl className="mt-6 divide-y divide-border border-y border-border text-sm">
             <div className="flex justify-between gap-6 py-3">

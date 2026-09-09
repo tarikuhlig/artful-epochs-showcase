@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { findStyle, type allPainters } from "@/lib/art-data";
+import { FavoriteButton } from "@/components/FavoriteButton";
 
 type PainterEntry = (typeof allPainters)[number];
 
@@ -18,7 +19,7 @@ export function PainterCard({ painter }: { painter: PainterEntry }) {
       params={{ slug: painter.slug }}
       className="group flex flex-col overflow-hidden rounded-xl border border-border bg-background transition-colors hover:border-pastel-tip/60"
     >
-      <div className="aspect-[4/3] overflow-hidden bg-muted">
+      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         {cover && (
           <img
             src={cover}
@@ -27,6 +28,7 @@ export function PainterCard({ painter }: { painter: PainterEntry }) {
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
           />
         )}
+        {works[0] && <FavoriteButton workSlug={works[0].id} className="absolute top-3 right-3 h-9 w-9" />}
       </div>
 
       <div className="flex flex-1 flex-col p-5">
