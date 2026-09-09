@@ -21,7 +21,8 @@ import { PremiumLock } from "@/components/PremiumLock";
 import { LicenseNotice } from "@/components/LicenseNotice";
 import { FREE_JOURNEY_STATIONS, isFreeJourneyStation } from "@/lib/premium-access";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
-import { UnlockDialog, type UnlockInfo } from "@/components/UnlockDialog";
+import { allWorks } from "@/lib/art-data";
+import { emitCollected } from "@/lib/collection-events";
 
 export const Route = createFileRoute("/kunstpfad")({
   head: () => ({ meta: [
@@ -162,7 +163,6 @@ function ArtPathPage() {
   const [busy, setBusy] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  const [unlock, setUnlock] = useState<UnlockInfo | null>(null);
 
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [feedback, setFeedback] = useState<Record<number, "correct" | "wrong">>({});
@@ -357,7 +357,12 @@ function ArtPathPage() {
       setNotice(gained > 0
         ? `Station geschafft — ${gained} studierte Werke wurden deiner Sammlung hinzugefügt.`
         : "Station geschafft — die nächste Epoche ist offen.");
-      if (gained > 0) setUnlock({ title: `${gained} ${gained === 1 ? "studiertes Werk" : "studierte Werke"}`, subtitle: "Du findest sie ab sofort in deiner Galerie." });
+      /** Sammlungs-Fenster: erst die Künstler, dann die Werke dieser Station. */
+      const finished = artPathWithWorks[index];
+      if (finished) {
+        for (const painter of finished.artistProfiles) emitCollected({ kind: "painter", slug: painter.slug });
+        for (const stationWork of finished.works) emitCollected({ kind: "work", slug: stationWork.id });
+      }
       await refetch(); invalidateFarm();
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Die Station konnte nicht abgeschlossen werden.");
@@ -524,12 +529,51 @@ function ArtPathPage() {
             const artist = station.artistProfiles[study - 6];
             const portrait = station.works[study - 6];
             if (!artist) return <div className="p-8 text-muted-foreground">Künstlerprofil wird vorbereitet.</div>;
-            return <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[0.95fr_1.05fr]"><div className="flex min-h-72 items-center justify-center bg-muted p-4 md:min-h-full">{portrait && <MagnifierImage src={portrait.image} alt={`Werk von ${artist.name}`} className="w-full" />}</div><div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><UserRound className="h-4 w-4" /> Künstler {study - 5} von 4</div><h3 className="font-display mt-4 text-3xl font-medium sm:text-4xl">{artist.name}</h3><p className="mt-1 text-sm text-muted-foreground">{artist.life} · {artist.origin}</p><p className="mt-5 text-sm leading-relaxed text-muted-foreground">{artist.bio}</p><div className="mt-5 border-l-2 border-foreground pl-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">In dieser Zeit</p><p className="mt-2 text-sm leading-relaxed">{station.artistLens[study - 6]}</p></div>{portrait && <div className="mt-5 rounded-lg border border-border p-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">Blick ins Werk</p><p className="mt-2 text-sm font-medium">{portrait.title} · {portrait.year}</p><p className="mt-1 text-xs leading-relaxed text-muted-foreground">{portrait.technique}</p></div>}<Button asChild variant="outline" className="mt-6 w-fit rounded-full font-normal"><Link to="/maler/$slug" params={{ slug: artist.slug }}>Profil und Werke ansehen</Link></Button></div></div>;
+            const artistWorks = allWorks.filter((item) => item.painter.slug === artist.slug).slice(0, 5);
+            const houses = Array.from(new Set(artistWorks.map((item) => item.museum).filter(Boolean))).slice(0, 4);
+            return <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[0.95fr_1.05fr]">
+              <div className="flex min-h-72 items-center justify-center bg-muted p-4 md:min-h-full">{portrait && <MagnifierImage src={portrait.image} alt={`Werk von ${artist.name}`} className="w-full" />}</div>
+              <div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9">
+                <div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><UserRound className="h-4 w-4" /> Künstler {study - 5} von 4</div>
+                <h3 className="font-display mt-4 text-3xl font-medium sm:text-4xl">{artist.name}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{artist.life} · {artist.origin}</p>
+                <p className="mt-3 rounded-lg bg-muted px-4 py-3 text-xs leading-relaxed text-muted-foreground">Lebte mitten in der Zeit dieser Station: {station.era}, {station.years}. Wer damals in {station.place} stand, sah genau diese Bilder entstehen.</p>
+                <p className="mt-5 text-sm leading-relaxed text-muted-foreground">{artist.bio}</p>
+                <div className="mt-5 border-l-2 border-foreground pl-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">In dieser Zeit</p><p className="mt-2 text-sm leading-relaxed">{station.artistLens[study - 6]}</p></div>
+                {portrait && <div className="mt-5 rounded-lg border border-border p-4">
+                  <p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">Blick ins Werk</p>
+                  <p className="mt-2 text-sm font-medium">{portrait.title} · {portrait.year}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{portrait.technique}</p>
+                  <p className="mt-2 text-xs leading-relaxed"><span className="font-medium">Heute zu sehen:</span> {portrait.museum}</p>
+                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{portrait.description}</p>
+                </div>}
+                {artistWorks.length > 0 && <div className="mt-5 border-t border-border pt-4">
+                  <p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">Bekannte Werke und ihre Häuser</p>
+                  <ul className="mt-2 grid gap-1.5 text-xs leading-relaxed">
+                    {artistWorks.map((item) => <li key={item.id}><span className="font-medium">{item.title}</span> <span className="text-muted-foreground">· {item.year} · {item.museum}</span></li>)}
+                  </ul>
+                </div>}
+                {houses.length > 0 && <p className="mt-4 text-xs leading-relaxed text-muted-foreground">Auf einer Reise findest du {artist.name} vor allem in: {houses.join(" · ")}.</p>}
+                <Button asChild variant="outline" className="mt-6 w-fit rounded-full font-normal"><Link to="/maler/$slug" params={{ slug: artist.slug }}>Profil und Werke ansehen</Link></Button>
+              </div>
+            </div>;
           })()}
 
           {study === 10 && detailWork && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1fr_1fr]">
             <div className="flex min-h-64 items-center justify-center bg-muted p-4 md:min-h-full"><MagnifierImage src={detailWork.image} alt={detailWork.title} className="w-full" /></div>
-            <div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Landmark className="h-4 w-4" /> Werk im Detail</div><h3 className="font-display mt-3 text-2xl font-medium sm:text-3xl">{detailWork.title}</h3><p className="mt-1 text-sm text-muted-foreground">{detailWork.painter.name} · {detailWork.year}</p><p className="mt-5 text-sm leading-relaxed text-muted-foreground">{detailWork.description}</p><p className="mt-4 text-sm leading-relaxed"><span className="font-medium">Bedeutung:</span> {detailWork.significance}</p><Button asChild variant="outline" className="mt-6 w-fit rounded-full font-normal"><Link to="/werke/$id" params={{ id: detailWork.id }}>Ganze Werkseite öffnen</Link></Button></div>
+            <div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9">
+              <div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Landmark className="h-4 w-4" /> Werk im Detail</div>
+              <h3 className="font-display mt-3 text-2xl font-medium sm:text-3xl">{detailWork.title}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{detailWork.painter.name} · {detailWork.year} · gemalt in der Zeit von {station.era} ({station.years})</p>
+              <p className="mt-5 text-sm leading-relaxed text-muted-foreground">{detailWork.description}</p>
+              <p className="mt-4 text-sm leading-relaxed"><span className="font-medium">Bedeutung:</span> {detailWork.significance}</p>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground"><span className="font-medium text-foreground">Damals aufgenommen:</span> {detailWork.reception}</p>
+              <div className="mt-5 grid gap-x-8 gap-y-4 sm:grid-cols-2">
+                <section className="border-t border-border pt-3"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">Heute zu sehen</p><p className="mt-1.5 text-sm leading-relaxed">{detailWork.museum}</p></section>
+                <section className="border-t border-border pt-3"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">Material & Maß</p><p className="mt-1.5 text-sm leading-relaxed">{detailWork.technique}</p></section>
+              </div>
+              <Button asChild variant="outline" className="mt-6 w-fit rounded-full font-normal"><Link to="/werke/$id" params={{ id: detailWork.id }}>Ganze Werkseite öffnen</Link></Button>
+            </div>
           </div>}
 
           {study === 11 && <div className="min-h-[570px] p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Eye className="h-4 w-4" /> Bilder einprägen</div><h3 className="font-display mt-3 text-3xl font-medium">Vier Werke, vier Namen</h3><p className="mt-3 text-sm text-muted-foreground">Präge dir Bild und Maler ein — gleich musst du zuordnen.</p><div className="mt-6 grid grid-cols-2 gap-4">{station.works.slice(0, 4).map((stationWork) => <figure key={stationWork.id} className="min-w-0"><div className="aspect-[4/3] overflow-hidden rounded-md bg-muted p-1.5"><img src={stationWork.image} alt={stationWork.title} loading="lazy" className="h-full w-full object-contain" /></div><figcaption className="mt-2 text-xs leading-snug"><span className="font-medium">{stationWork.painter.name}</span><br /><span className="text-muted-foreground">{stationWork.title} · {stationWork.year}</span></figcaption></figure>)}</div></div>}
@@ -564,6 +608,5 @@ function ArtPathPage() {
       <LicenseNotice context="Die Reise zeigt ausschließlich Werke, deren Schutzfrist abgelaufen ist." />
       </div>
     </section>
-    <UnlockDialog unlock={unlock} onClose={() => setUnlock(null)} />
   </div>;
 }
