@@ -243,7 +243,7 @@ function ArtPathPage() {
 
   /** Letzten Stand laden: zuerst vom Server, dann lokal. */
   useEffect(() => {
-    if (restored || !user) return;
+    if (restored || progressLoading || !user) return;
     const userId = user.id;
     const nextStation = Math.min(progress.length, artPathWithWorks.length - 1);
     let cancelled = false;
