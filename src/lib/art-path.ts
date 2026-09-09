@@ -1,5 +1,7 @@
-import { allPainters, type Painter, type Work } from "@/lib/art-data";
+import { allPainters, allWorks, type Work } from "@/lib/art-data";
 import { stationContent, type StationContent } from "@/lib/art-path-content";
+
+type CatalogPainter = (typeof allPainters)[number];
 
 export type ArtPathStation = StationContent & {
   index: number;
@@ -9,10 +11,9 @@ export type ArtPathStation = StationContent & {
 const aliases: Record<string, string> = {
   "J. M. W. Turner": "william-turner",
   "Édouard Manet": "edouard-manet",
-  "Piet Mondrian": "piet-mondrian",
 };
 
-function findPainter(name: string): Painter | undefined {
+function findPainter(name: string): CatalogPainter | undefined {
   const alias = aliases[name];
   if (alias) return allPainters.find((painter) => painter.slug === alias);
   return allPainters.find((painter) => painter.name === name);
@@ -25,9 +26,10 @@ export const artPath: ArtPathStation[] = stationContent.map((content, index) => 
 }));
 
 export type ArtPathStationWithWorks = ArtPathStation & {
+  /** Alias, damit bestehende Karten weiter auf station.atelier zugreifen können. */
   atelier: StationContent;
-  artistProfiles: Painter[];
-  /** Ein Schlüsselwerk je Künstler — die Werke, die auf der Station studiert werden. */
+  artistProfiles: CatalogPainter[];
+  /** Ein Schlüsselwerk je Künstler — genau die Werke, die auf der Station studiert werden. */
   works: Work[];
   work: Work | undefined;
 };
@@ -35,9 +37,9 @@ export type ArtPathStationWithWorks = ArtPathStation & {
 export const artPathWithWorks: ArtPathStationWithWorks[] = artPath.map((station) => {
   const artistProfiles = station.artists
     .map((name) => findPainter(name))
-    .filter((painter): painter is Painter => painter !== undefined);
+    .filter((painter): painter is CatalogPainter => painter !== undefined);
   const works = artistProfiles
-    .map((painter) => painter.works[0])
+    .map((painter) => allWorks.find((work) => work.painter.slug === painter.slug))
     .filter((work): work is Work => work !== undefined);
   return {
     ...station,
