@@ -59,9 +59,14 @@ export function MagnifierImage({
 
   /** Inhaltsfläche des Bildes im Rahmen (ohne Letterbox-Ränder). */
   const content = useCallback((): Content | null => {
-    const box = image.current?.getBoundingClientRect();
-    const { w, h } = natural.current;
-    if (!box || !w || !h) return null;
+    const el = image.current;
+    const box = el?.getBoundingClientRect();
+    if (!el || !box || !box.width || !box.height) return null;
+    const w = natural.current.w || el.naturalWidth;
+    const h = natural.current.h || el.naturalHeight;
+    // Ohne bekannte Originalmaße die Rahmenfläche nutzen, damit die Lupe trotzdem folgt.
+    if (!w || !h) return { left: box.left, top: box.top, width: box.width, height: box.height };
+    natural.current = { w, h };
     const scale = Math.min(box.width / w, box.height / h);
     const width = w * scale;
     const height = h * scale;
@@ -72,6 +77,7 @@ export function MagnifierImage({
       height,
     };
   }, []);
+
 
   /** Höchster Zoom, der die echte Auflösung nicht überschreitet. */
   const ceiling = useCallback(() => {
