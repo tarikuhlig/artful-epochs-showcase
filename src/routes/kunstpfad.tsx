@@ -7,7 +7,7 @@ import { completePathStation } from "@/lib/economy.functions";
 import { useAuth } from "@/hooks/useAuth";
 import { useInvalidateFarm } from "@/lib/farm";
 import coin from "@/assets/provenance-coin.png";
-import { stationFinalQuestion, stationQuestions, type ArtQuestion } from "@/lib/art-path-questions";
+import { questionKindLabel, repeatVariant, stationFinalQuestion, stationQuestions, stationSummary, stationTransferQuestion, type ArtQuestion } from "@/lib/art-path-questions";
 import { Button } from "@/components/ui/button";
 import { PremiumLock } from "@/components/PremiumLock";
 import { LicenseNotice } from "@/components/LicenseNotice";
