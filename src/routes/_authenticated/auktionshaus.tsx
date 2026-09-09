@@ -30,7 +30,9 @@ function AuctionPage() {
   const purchase = useServerFn(purchaseAuctionOffer);
   const queryClient = useQueryClient();
   const [busy, setBusy] = useState<string | null>(null);
+  const [message, setMessage] = useState("");
   const [unlock, setUnlock] = useState<UnlockInfo | null>(null);
+
   const rankedOffers = [...offers].sort((a, b) => b.price - a.price);
   void refetchOffers;
   return <main className="min-h-screen bg-background">
