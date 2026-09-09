@@ -149,9 +149,10 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 const NAV: {
-  to: "/" | "/kunstpfad" | "/studieren" | "/epochen" | "/museen" | "/auktionshaus" | "/premium";
+  to: "/" | "/kunstpfad" | "/studieren" | "/epochen" | "/museen" | "/auktionshaus" | "/atelier" | "/premium";
   label: string;
   exact?: boolean;
+  authOnly?: boolean;
 }[] = [
   { to: "/", label: "Entdecken", exact: true },
   { to: "/kunstpfad", label: "Reise" },
@@ -159,8 +160,10 @@ const NAV: {
   { to: "/epochen", label: "Epochen" },
   { to: "/museen", label: "Museen" },
   { to: "/auktionshaus", label: "Auktionshaus" },
+  { to: "/atelier", label: "Galerie", authOnly: true },
   { to: "/premium", label: "Premium" },
 ];
+
 
 function SiteHeader() {
   const { user } = useAuth();
@@ -179,7 +182,7 @@ function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-1 text-sm font-medium md:flex">
-          {NAV.map((item) => (
+          {NAV.filter((item) => !item.authOnly || user).map((item) => (
             <Link
               key={item.to}
               to={item.to}

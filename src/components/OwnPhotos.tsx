@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { MagnifierImage } from "@/components/MagnifierImage";
+import { UnlockDialog, type UnlockInfo } from "@/components/UnlockDialog";
 
 type OwnPhoto = {
   id: string;
@@ -25,6 +26,7 @@ export function OwnPhotos() {
   const [location, setLocation] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [message, setMessage] = useState("");
+  const [unlock, setUnlock] = useState<UnlockInfo | null>(null);
 
   const photos = useQuery({
     queryKey: ["user_artworks", user?.id],
@@ -55,17 +57,21 @@ export function OwnPhotos() {
         .from("user-artworks")
         .upload(path, file, { contentType: file.type });
       if (uploadError) throw new Error("Das Foto konnte nicht gespeichert werden.");
+      const savedTitle = title.trim() || file.name.replace(/\.[^.]+$/, "");
+      const savedArtist = artist.trim();
       const { error } = await supabase.from("user_artworks").insert({
         user_id: user.id,
-        title: title.trim() || file.name.replace(/\.[^.]+$/, ""),
+        title: savedTitle,
         artist: artist.trim() || null,
         location: location.trim() || null,
         image_path: path,
       });
       if (error) throw new Error("Die Angaben konnten nicht gespeichert werden.");
+      return { savedTitle, savedArtist };
     },
-    onSuccess: async () => {
+    onSuccess: async (saved) => {
       setTitle(""); setArtist(""); setLocation(""); setFile(null); setMessage("Foto gespeichert.");
+      setUnlock({ title: saved.savedTitle, subtitle: saved.savedArtist ? `${saved.savedArtist} — dein eigenes Foto.` : "Dein eigenes Foto ist jetzt Teil deiner Sammlung." });
       await queryClient.invalidateQueries({ queryKey: ["user_artworks"] });
     },
     onError: (error: Error) => setMessage(error.message),
@@ -142,6 +148,7 @@ export function OwnPhotos() {
           Noch keine eigenen Fotos — lade dein erstes Museumsfoto hoch.
         </p>
       )}
+      <UnlockDialog unlock={unlock} onClose={() => setUnlock(null)} />
     </section>
   );
 }

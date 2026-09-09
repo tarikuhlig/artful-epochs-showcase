@@ -15,6 +15,7 @@ import { PremiumLock } from "@/components/PremiumLock";
 import { LicenseNotice } from "@/components/LicenseNotice";
 import { FREE_JOURNEY_STATIONS, isFreeJourneyStation } from "@/lib/premium-access";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
+import { UnlockDialog, type UnlockInfo } from "@/components/UnlockDialog";
 
 export const Route = createFileRoute("/kunstpfad")({
   head: () => ({ meta: [
@@ -155,6 +156,8 @@ function ArtPathPage() {
   const [busy, setBusy] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [unlock, setUnlock] = useState<UnlockInfo | null>(null);
+
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [feedback, setFeedback] = useState<Record<number, "correct" | "wrong">>({});
   const [activeStation, setActiveStation] = useState(0);
@@ -256,6 +259,7 @@ function ArtPathPage() {
       setNotice(gained > 0
         ? `Station geschafft — ${gained} studierte Werke wurden deiner Sammlung hinzugefügt.`
         : "Station geschafft — die nächste Epoche ist offen.");
+      if (gained > 0) setUnlock({ title: `${gained} ${gained === 1 ? "studiertes Werk" : "studierte Werke"}`, subtitle: "Du findest sie ab sofort in deiner Galerie." });
       await refetch(); invalidateFarm();
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Die Station konnte nicht abgeschlossen werden.");
@@ -386,5 +390,6 @@ function ArtPathPage() {
       <LicenseNotice context="Die Reise zeigt ausschließlich Werke, deren Schutzfrist abgelaufen ist." />
       </div>
     </section>
+    <UnlockDialog unlock={unlock} onClose={() => setUnlock(null)} />
   </div>;
 }
