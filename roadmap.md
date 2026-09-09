@@ -56,3 +56,4 @@
 - [ ] Coins klein im Dashboard und auf Entdecken anzeigen
 - [ ] Fester Zurück-Pfeil, der beim Scrollen sichtbar bleibt
 - [ ] Lupenfunktion zum Erkunden der Werke
+- [ ] Eigene Fotos von Werken in der Galerie speichern (ohne KI/Credits)
