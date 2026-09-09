@@ -81,10 +81,14 @@ export function stationFinalQuestion(index: number): ArtQuestion | undefined {
   const wrong = others.map((item) => short(item.mnemonics[0] ?? item.turningPoint));
   if (wrong.length < 2) return undefined;
   return {
+    id: `final-${index}`,
+    kind: "verstaendnis",
     question: `Abschlussfrage: Welcher Merksatz gehört zu ${station.era}?`,
     options: shuffle([answer, wrong[0] as string, wrong[1] as string], index + 101),
     answer,
     explanation: `${station.era} (${station.years}): ${station.turningPoint}`,
+    hint: `Denk an den Wendepunkt dieser Station: ${short(station.turningPoint, 150)}`,
+    topic: "Merksätze der Epoche",
   };
 }
 
@@ -97,46 +101,58 @@ export function stationQuestions(index: number): ArtQuestion[] {
   const names = artists.map((artist) => artist.name);
   const questions: ArtQuestion[] = [];
 
-  // 1 & 9: Bildzuordnung — genau die Werke der Künstlerkarten
-  const attributionFor = (position: number, seed: number): ArtQuestion | undefined => {
+  // Bildzuordnung — genau die Werke der Künstlerkarten
+  const attributionFor = (position: number, seed: number, id: string): ArtQuestion | undefined => {
     const artist = artists[position];
     const work = station.works[position];
     if (!artist || !work) return undefined;
     const wrong = names.filter((name) => name !== artist.name).slice(0, 2);
     if (wrong.length < 2) return undefined;
     return {
+      id,
+      kind: "bild",
       question: `Von wem stammt dieses Werk — «${work.title}»?`,
       options: shuffle([artist.name, ...wrong], seed),
       answer: artist.name,
-      explanation: `${work.title} (${work.year}) malte ${artist.name} (${artist.life}).`,
+      explanation: `${work.title} (${work.year}) malte ${artist.name} (${artist.life}). Achte auf: ${short(work.technique, 110)}`,
+      hint: `${artist.name} (${artist.life}) erkennst du an: ${short(station.artistLens[position] ?? station.technique, 150)}`,
+      topic: `Werke von ${artist.name} erkennen`,
       image: work.image,
     };
   };
 
-  const first = attributionFor(0, index + 1);
+  const first = attributionFor(0, index + 1, `bild-1-${index}`);
   if (first) questions.push(first);
 
-  // 2: Merksatz zur Technik
+  // Technik
   const techniqueAnswer = short(station.technique, 130);
   if (others.length >= 2) {
     questions.push({
+      id: `technik-${index}`,
+      kind: "verstaendnis",
       question: `Welche Technik kennzeichnet die Werkstatt dieser Epoche?`,
       options: shuffle([techniqueAnswer, short(others[0]!.technique, 130), short(others[1]!.technique, 130)], index + 21),
       answer: techniqueAnswer,
       explanation: station.technique,
+      hint: `In ${station.era} arbeitet man so: ${short(station.technique, 160)}`,
+      topic: "Technik der Epoche",
       ...(station.work?.image ? { image: station.work.image } : {}),
     });
   }
 
-  // 3: Bildvergleich — wer hat gemalt?
+  // Bildvergleich — wer hat gemalt?
   const workA = station.works[0];
   const workB = station.works[1];
   if (workA && workB && artists[0] && artists[1]) {
     questions.push({
+      id: `vergleich-maler-${index}`,
+      kind: "vergleich",
       question: `Welches der beiden Bilder malte ${artists[0].name}?`,
       options: ["Linkes Bild", "Rechtes Bild"],
       answer: "Linkes Bild",
       explanation: `Links: ${workA.title} von ${artists[0].name}. Rechts: ${workB.title} von ${artists[1].name}.`,
+      hint: `Vergleiche Handschrift und Bildaufbau: ${short(station.artistLens[0] ?? "", 150)}`,
+      topic: "Handschriften unterscheiden",
       compare: [
         { src: workA.image, label: "Linkes Bild", caption: artists[0].name },
         { src: workB.image, label: "Rechtes Bild", caption: artists[1].name },
@@ -144,36 +160,48 @@ export function stationQuestions(index: number): ArtQuestion[] {
     });
   }
 
-  // 4: Merksatz 2
+  // Merksatz 2
   if (station.mnemonics[1] && others.length >= 2) {
     const answer = short(station.mnemonics[1]);
     questions.push({
+      id: `merke-2-${index}`,
+      kind: "fakt",
       question: "Welche Aussage hast du auf den Merkkarten dieser Station gelernt?",
       options: shuffle([answer, short(others[0]!.mnemonics[1] ?? others[0]!.turningPoint), short(others[1]!.mnemonics[1] ?? others[1]!.turningPoint)], index + 31),
       answer,
       explanation: station.mnemonics[1],
+      hint: `Die anderen Sätze gehören zu späteren oder früheren Epochen. Merke dir: ${short(station.mnemonics[1], 150)}`,
+      topic: "Merksätze der Epoche",
     });
   }
 
-  // 5: Werkzeuge und Pinsel
+  // Werkzeuge und Pinsel
   if (others.length >= 2) {
     const answer = short(station.brushes, 130);
     questions.push({
+      id: `werkzeug-${index}`,
+      kind: "fakt",
       question: "Womit wurde in dieser Epoche gemalt?",
       options: shuffle([answer, short(others[0]!.brushes, 130), short(others[1]!.brushes, 130)], index + 41),
       answer,
       explanation: `${station.brushes} Werkzeuge: ${station.tools}`,
+      hint: `Werkzeug verrät die Technik: ${short(station.tools, 150)}`,
+      topic: "Werkzeug und Material",
     });
   }
 
-  // 6: Bildvergleich — welches Werk entstand früher?
+  // Bildvergleich — welches Werk entstand früher?
   if (workA && workB) {
     const earlierLeft = yearNumber(workA.year) <= yearNumber(workB.year);
     questions.push({
-      question: "Welches der beiden Werke entstand früher?",
+      id: `vergleich-zeit-${index}`,
+      kind: "vergleich",
+      question: "Welches der beiden Werke entstand später — und woran erkennst du es?",
       options: ["Linkes Bild", "Rechtes Bild"],
-      answer: earlierLeft ? "Linkes Bild" : "Rechtes Bild",
-      explanation: `${workA.title} (${workA.year}) gegenüber ${workB.title} (${workB.year}).`,
+      answer: earlierLeft ? "Rechtes Bild" : "Linkes Bild",
+      explanation: `${workA.title} (${workA.year}) gegenüber ${workB.title} (${workB.year}). Später heißt hier: ${short(station.technique, 110)}`,
+      hint: `Achte auf Malmittel, Raumtiefe und Detailschärfe. ${workA.title}: ${workA.year}, ${workB.title}: ${workB.year}.`,
+      topic: "Werke zeitlich einordnen",
       compare: [
         { src: workA.image, label: "Linkes Bild", caption: workA.year },
         { src: workB.image, label: "Rechtes Bild", caption: workB.year },
@@ -181,7 +209,7 @@ export function stationQuestions(index: number): ArtQuestion[] {
     });
   }
 
-  // 7: Farben und Pigmente
+  // Farben und Pigmente
   const paletteAnswer = station.palette[0];
   if (paletteAnswer && others.length >= 2) {
     const used = new Set(station.palette);
@@ -199,17 +227,23 @@ export function stationQuestions(index: number): ArtQuestion[] {
     }
     if (wrong.length >= 2) {
       questions.push({
+        id: `palette-${index}`,
+        kind: "fakt",
         question: `Welche Farbe gehört zur typischen Palette von ${station.era}?`,
         options: shuffle([paletteAnswer, wrong[0] as string, wrong[1] as string], index + 51),
         answer: paletteAnswer,
         explanation: `Palette dieser Epoche: ${station.palette.join(", ")}. ${station.pigments}`,
+        hint: `Pigmente hängen an Handel und Technik: ${short(station.pigments, 150)}`,
+        topic: "Farben und Pigmente",
       });
     }
   }
 
-  // 8: Ort und Zeit
+  // Ort und Zeit
   if (others.length >= 2) {
     questions.push({
+      id: `ort-${index}`,
+      kind: "fakt",
       question: `Wo und wann entsteht ${station.era}?`,
       options: shuffle([
         `${station.place}, ${station.years}`,
@@ -218,22 +252,90 @@ export function stationQuestions(index: number): ArtQuestion[] {
       ], index + 61),
       answer: `${station.place}, ${station.years}`,
       explanation: `${station.era} entfaltet sich in ${station.place} (${station.years}).`,
+      hint: `Denk an die Ankunftskarte: ${short(station.experience.story, 150)}`,
+      topic: "Ort und Zeit der Epoche",
     });
   }
 
-  // 9: Merksatz 3
+  // Merksatz 3
   if (station.mnemonics[2] && others.length >= 2) {
     const answer = short(station.mnemonics[2]);
     questions.push({
+      id: `merke-3-${index}`,
+      kind: "verstaendnis",
       question: "Und zum Schluss: Welcher Merksatz stimmt?",
       options: shuffle([answer, short(others[0]!.mnemonics[2] ?? others[0]!.lesson), short(others[1]!.mnemonics[2] ?? others[1]!.lesson)], index + 71),
       answer,
       explanation: station.mnemonics[2],
+      hint: `Prüfe, ob die Aussage zu ${station.years} passt. Richtig ist: ${short(station.mnemonics[2], 150)}`,
+      topic: "Merksätze der Epoche",
     });
   }
 
-  const last = attributionFor(2, index + 81) ?? attributionFor(1, index + 91);
+  const last = attributionFor(2, index + 81, `bild-2-${index}`) ?? attributionFor(1, index + 91, `bild-2-${index}`);
   if (last) questions.push(last);
 
   return questions.slice(0, 9);
+}
+
+/**
+ * Transferfrage am Stationsende: ein Werk, das auf dieser Station nicht gezeigt wurde.
+ * Der Nutzer muss die Epoche allein anhand der Stilmerkmale einordnen.
+ */
+export function stationTransferQuestion(index: number): ArtQuestion | undefined {
+  const station = artPathWithWorks[index];
+  if (!station) return undefined;
+  const epoch = station.artistProfiles[0]?.epoch;
+  if (!epoch) return undefined;
+  const known = new Set(station.works.map((work) => work.id));
+  const knownPainters = new Set(station.artistProfiles.map((artist) => artist.slug));
+  const pool = allWorks.filter(
+    (work) => work.epoch.slug === epoch.slug && !known.has(work.id) && !knownPainters.has(work.painter.slug),
+  );
+  const candidate = pool[(index * 17 + 5) % (pool.length || 1)];
+  if (!candidate) return undefined;
+  const wrongEpochs = epochs
+    .filter((item) => item.slug !== epoch.slug)
+    .filter((_, position) => position % 2 === index % 2)
+    .slice(0, 3)
+    .map((item) => item.name);
+  if (wrongEpochs.length < 2) return undefined;
+  return {
+    id: `transfer-${index}`,
+    kind: "transfer",
+    question: "Neues Werk, das du noch nicht studiert hast: Welche Epoche ist wahrscheinlich?",
+    options: shuffle([epoch.name, ...wrongEpochs.slice(0, 3)], index + 131),
+    answer: epoch.name,
+    explanation: `Richtig: ${candidate.title} (${candidate.year}) von ${candidate.painter.name} gehört zu ${epoch.name}. Entscheidend sind ${short(station.technique, 120)}`,
+    hint: `Prüfe Malmittel, Licht und Raum. Merkmale dieser Epoche: ${short(station.technique, 140)} Palette: ${station.palette.slice(0, 3).join(", ")}.`,
+    topic: "Stilmerkmale auf neue Werke übertragen",
+    image: candidate.image,
+  };
+}
+
+/** Kompakte Zusammenfassung am Stationsende. */
+export function stationSummary(index: number) {
+  const station = artPathWithWorks[index];
+  if (!station) return undefined;
+  return {
+    style: `${short(station.turningPoint, 180)} Palette: ${station.palette.slice(0, 4).join(", ")}.`,
+    artists: station.artistProfiles.map((artist) => `${artist.name} (${artist.life})`),
+    technique: station.technique,
+    context: station.history,
+  };
+}
+
+/**
+ * Wiederholung in anderer Form: gleiche Sache, neu formuliert und neu gemischt,
+ * damit falsch beantwortete Inhalte später erneut geprüft werden.
+ */
+export function repeatVariant(question: ArtQuestion, seed: number): ArtQuestion {
+  return {
+    ...question,
+    id: `${question.id}-wdh`,
+    question: question.compare
+      ? `Noch einmal genau hinsehen: ${question.question}`
+      : `Wiederholung — ${question.question}`,
+    options: shuffle(question.options, seed + 977),
+  };
 }
