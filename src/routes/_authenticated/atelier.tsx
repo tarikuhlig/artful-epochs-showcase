@@ -1,9 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Images } from "lucide-react";
+import { ArrowRight, Images, Settings } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useOwnedItems } from "@/lib/economy";
 import { allWorks } from "@/lib/art-data";
 import { Button } from "@/components/ui/button";
+import { CoinBadge } from "@/components/CoinBadge";
+import { useDiscoveries } from "@/lib/progress";
+import { POINTS_PER_DISCOVERY, levelFor, levelTitle, useUserStats } from "@/lib/farm";
+
 
 export const Route = createFileRoute("/_authenticated/atelier")({
   head: () => ({
