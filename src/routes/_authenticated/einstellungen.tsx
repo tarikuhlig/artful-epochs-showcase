@@ -142,6 +142,18 @@ function SettingsPage() {
       <h1 className="font-display mt-3 text-4xl font-medium tracking-tight">Einstellungen</h1>
       <p className="mt-3 text-sm text-muted-foreground">{user?.email}</p>
 
+      <Link
+        to="/profil"
+        className="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-border bg-card px-5 py-4 transition-colors hover:bg-accent"
+      >
+        <span>
+          <span className="text-[10px] tracking-[0.24em] text-muted-foreground uppercase">Übersicht</span>
+          <span className="font-display mt-1 block text-lg font-medium">Mein Profil &amp; Fortschritt</span>
+        </span>
+        <UserRound className="h-5 w-5 shrink-0" />
+      </Link>
+
+
       <section className="mt-10 rounded-2xl border border-border p-6 sm:p-8">
         <h2 className="font-display text-2xl font-medium">Profil</h2>
         <div className="mt-6 flex flex-col gap-6 sm:flex-row sm:items-center">

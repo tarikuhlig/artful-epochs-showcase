@@ -1,5 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+/** Speicherort für den zuletzt geöffneten Reisepunkt. */
+const RESUME_KEY = "provenance:journey";
+
 import { BookOpen, Brush, Check, ChevronLeft, ChevronRight, Coins, Compass, Eye, HelpCircle, Images, Landmark, Lightbulb, Lock, Palette, ScrollText, Sparkles, UserRound, X } from "lucide-react";
 import { artPathWithWorks } from "@/lib/art-path";
 import { useArtPathProgress } from "@/lib/economy";
@@ -162,6 +166,8 @@ function ArtPathPage() {
   const [feedback, setFeedback] = useState<Record<number, "correct" | "wrong">>({});
   const [activeStation, setActiveStation] = useState(0);
   const [card, setCard] = useState(0);
+  /** Wurde der gespeicherte Stand schon geladen? Verhindert Überschreiben beim Start. */
+  const [restored, setRestored] = useState(false);
   /** Isolierter Reise-Flow: die Station läuft in einem eigenen Vollbild-Fenster. */
   const [focus, setFocus] = useState(false);
   /** Ergebnisse je Station und Frage — Grundlage für Wiederholung und Lernstand. */
@@ -169,6 +175,7 @@ function ArtPathPage() {
   const [repeats, setRepeats] = useState<Record<number, string[]>>({});
   const completed = new Set(progress.map((entry) => entry.station_index));
   const next = progress.length;
+
   const station = artPathWithWorks[activeStation] ?? artPathWithWorks[0];
   const quiz = stationFinalQuestion(activeStation);
   const practice = useMemo(() => stationQuestions(activeStation), [activeStation]);
@@ -232,6 +239,38 @@ function ArtPathPage() {
     });
   }
 
+  /** Letzten Stand laden: gespeicherte Karte oder die erste offene Station. */
+  useEffect(() => {
+    if (restored) return;
+    let station = Math.min(progress.length, artPathWithWorks.length - 1);
+    let savedCard = 0;
+    try {
+      const raw = window.localStorage.getItem(RESUME_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as { station?: number; card?: number };
+        if (typeof parsed.station === "number") {
+          station = Math.min(Math.max(0, parsed.station), artPathWithWorks.length - 1);
+          savedCard = Math.max(0, parsed.card ?? 0);
+        }
+      }
+    } catch {
+      /* kein gespeicherter Stand */
+    }
+    setActiveStation(station);
+    setCard(savedCard);
+    setRestored(true);
+  }, [restored, progress.length]);
+
+  /** Fortschritt automatisch merken — der Nutzer steigt genau hier wieder ein. */
+  useEffect(() => {
+    if (!restored) return;
+    try {
+      window.localStorage.setItem(RESUME_KEY, JSON.stringify({ station: activeStation, card }));
+    } catch {
+      /* Speicher nicht verfügbar */
+    }
+  }, [restored, activeStation, card]);
+
   function openStation(index: number) {
     setActiveStation(index);
     setCard(0);
@@ -239,6 +278,14 @@ function ArtPathPage() {
     setError("");
     setNotice("");
   }
+
+  /** Weiterlernen an der zuletzt geöffneten Karte. */
+  function resumeJourney() {
+    setFocus(true);
+    setError("");
+    setNotice("");
+  }
+
 
   function changeCard(direction: -1 | 1) {
     setCard((current) => Math.min(sequence.length - 1, Math.max(0, current + direction)));
@@ -272,16 +319,58 @@ function ArtPathPage() {
   const study = entry?.type === "study" ? entry.study : -1;
 
   return <div className="min-h-screen bg-background">
-    <section className="border-b border-border bg-background">
-      <div className="mx-auto max-w-6xl px-5 py-14 sm:px-6 md:py-20">
-        <p className="text-xs tracking-[0.25em] text-muted-foreground uppercase">Die große Kunstreise</p>
-        <h1 className="font-display mt-3 max-w-3xl text-4xl font-medium md:text-6xl">Von Epoche zu Epoche</h1>
-        <p className="mt-4 max-w-2xl leading-relaxed text-muted-foreground">{artPathWithWorks.length} Stationen von der Gotik bis zum Bauhaus. Jede Station: erst zwölf Lernkarten mit Geschichte, Farben, Werkzeugen, Techniken und Merksätzen — dann neun Fragen genau zu diesem Stoff und die Abschlussfrage.</p>
-        <div className="mt-7 flex items-center gap-4">
-          <img src={coin} alt="Provenance Coin" width={1024} height={1024} className="h-12 w-12" />
-          <div><p className="font-display text-2xl font-medium">{progress.reduce((sum, p) => sum + p.coin_reward, 0)} Coins verdient</p><p className="text-sm text-muted-foreground">{progress.length} von {artPathWithWorks.length} Stationen</p></div>
+    <section className="bg-background">
+      <div className="mx-auto max-w-6xl px-5 py-12 sm:px-6 md:py-16">
+        <div className="grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
+          <div>
+            <p className="text-xs tracking-[0.25em] text-muted-foreground uppercase">Die große Kunstreise</p>
+            <h1 className="font-display mt-3 text-4xl font-medium md:text-6xl">Von Epoche zu Epoche</h1>
+            <p className="mt-4 max-w-xl leading-relaxed text-muted-foreground">
+              {artPathWithWorks.length} Stationen von der Gotik bis zum Bauhaus. Dein Fortschritt wird automatisch gespeichert — du steigst immer dort wieder ein, wo du aufgehört hast.
+            </p>
+
+            <div className="mt-8 max-w-md">
+              <div className="flex items-end justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <img src={coin} alt="Provenance Coin" width={1024} height={1024} className="h-10 w-10" />
+                  <div>
+                    <p className="font-display text-xl font-medium">{progress.reduce((sum, p) => sum + p.coin_reward, 0)} Coins verdient</p>
+                    <p className="text-sm text-muted-foreground">{progress.length} von {artPathWithWorks.length} Stationen</p>
+                  </div>
+                </div>
+                <span className="text-sm text-muted-foreground">{Math.round((progress.length / artPathWithWorks.length) * 100)} %</span>
+              </div>
+              <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-muted">
+                <div className="h-full rounded-full bg-foreground transition-all duration-700" style={{ width: `${Math.max(2, (progress.length / artPathWithWorks.length) * 100)}%` }} />
+              </div>
+            </div>
+
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <Button type="button" onClick={resumeJourney} className="h-auto min-h-11 rounded-full px-6">
+                {progress.length > 0 || card > 0 ? "Weiterlernen" : "Reise beginnen"} <ChevronRight className="h-4 w-4" />
+              </Button>
+              <span className="text-sm text-muted-foreground">Station {activeStation + 1} · {station?.era}</span>
+            </div>
+          </div>
+
+          {station && (
+            <div className="overflow-hidden rounded-2xl bg-muted">
+              <img
+                src={station.work?.image}
+                alt={station.work?.title ?? station.era}
+                loading="lazy"
+                className="aspect-[4/3] w-full object-cover"
+              />
+              <div className="bg-card p-5">
+                <p className="text-[10px] tracking-[0.24em] text-muted-foreground uppercase">{station.years}</p>
+                <p className="font-display mt-1 text-xl font-medium">{station.era}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{station.work?.title} · {station.work?.painter.name}</p>
+              </div>
+            </div>
+          )}
         </div>
-        <nav aria-label="Epochenfolge" className="mt-10 overflow-x-auto pb-2">
+
+        <nav aria-label="Epochenfolge" className="mt-12 overflow-x-auto pb-2">
           <ol className="flex min-w-max items-center gap-2">
             {artPathWithWorks.map((item) => {
               const itemDone = completed.has(item.index);
@@ -298,6 +387,7 @@ function ArtPathPage() {
         </nav>
       </div>
     </section>
+
 
     <section className={focus ? "fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-background px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(5rem,env(safe-area-inset-bottom))] sm:px-6" : "mx-auto max-w-4xl px-5 py-10 sm:px-6 md:py-14"}>
       <div className={focus ? "mx-auto w-full max-w-4xl" : ""}>
@@ -316,10 +406,14 @@ function ArtPathPage() {
           </div>
         </div>
 
-        {!focus && <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-          <p className="text-sm leading-relaxed text-muted-foreground">{station.lesson}</p>
-          <Button type="button" onClick={() => { setCard(0); setFocus(true); }} className="mt-6 rounded-full">Station starten <ChevronRight className="h-4 w-4" /></Button>
+        {!focus && <div className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
+          <p className="leading-relaxed text-muted-foreground">{station.lesson}</p>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Button type="button" onClick={resumeJourney} className="h-auto min-h-11 rounded-full px-6">{card > 0 ? `Weiter bei Karte ${card + 1}` : "Station starten"} <ChevronRight className="h-4 w-4" /></Button>
+            {card > 0 && <Button type="button" variant="outline" onClick={() => openStation(activeStation)} className="h-auto min-h-11 rounded-full px-6">Von vorn</Button>}
+          </div>
         </div>}
+
 
         {focus && <>
         <div className="mb-2 flex flex-wrap justify-center gap-1.5" aria-label={`Karte ${card + 1} von ${sequence.length}`}>

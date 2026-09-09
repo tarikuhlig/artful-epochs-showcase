@@ -1,9 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Images } from "lucide-react";
+import { ArrowRight, Images, Settings } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useOwnedItems } from "@/lib/economy";
 import { allWorks } from "@/lib/art-data";
 import { Button } from "@/components/ui/button";
+import { CoinBadge } from "@/components/CoinBadge";
+import { useDiscoveries } from "@/lib/progress";
+import { POINTS_PER_DISCOVERY, levelFor, levelTitle, useUserStats } from "@/lib/farm";
+
 
 export const Route = createFileRoute("/_authenticated/atelier")({
   head: () => ({
@@ -26,7 +30,11 @@ export const Route = createFileRoute("/_authenticated/atelier")({
 function AtelierPage() {
   const { user } = useAuth();
   const { data: ownedItems } = useOwnedItems();
+  const { data: stats } = useUserStats();
+  const { data: discoveries } = useDiscoveries();
   const name = (user?.user_metadata?.["display_name"] as string | undefined) ?? user?.email?.split("@")[0] ?? "Kunstfreund";
+  const totalPoints = (stats?.points ?? 0) + (discoveries?.length ?? 0) * POINTS_PER_DISCOVERY;
+  const lvl = levelFor(totalPoints);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
@@ -39,6 +47,37 @@ function AtelierPage() {
       <p className="mt-3 text-muted-foreground">
         {ownedItems?.length ?? 0} Werke gesammelt — ausstellen, vergleichen und neu ordnen.
       </p>
+
+      <div className="mt-8 rounded-2xl border border-border bg-card p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-[10px] tracking-[0.24em] text-muted-foreground uppercase">Dein Profil</p>
+            <p className="font-display mt-1 text-xl font-medium">{name}</p>
+            <p className="text-sm text-muted-foreground">Level {lvl.level} · {levelTitle(lvl.level)}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <CoinBadge />
+            <Link
+              to="/einstellungen"
+              aria-label="Einstellungen"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-input transition-colors hover:bg-accent"
+            >
+              <Settings className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+        <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-muted">
+          <div className="h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${lvl.progress}%` }} />
+        </div>
+        <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-muted-foreground">
+          <span>{totalPoints} Punkte</span>
+          <span>Serie: {stats?.streak ?? 0} Tage</span>
+          <span>{ownedItems?.length ?? 0} Werke</span>
+          <Link to="/profil" className="inline-flex items-center gap-1 text-foreground hover:underline">
+            Ganzes Profil <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+      </div>
 
       <div className="mt-8 flex flex-wrap items-center gap-3">
         <Button asChild className="rounded-full px-6">
@@ -54,6 +93,7 @@ function AtelierPage() {
           </Link>
         </Button>
       </div>
+
 
       {ownedItems && ownedItems.length > 0 ? (
         <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">

@@ -149,20 +149,17 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 const NAV: {
-  to: "/" | "/kunstpfad" | "/studieren" | "/epochen" | "/museen" | "/auktionshaus" | "/atelier" | "/premium";
+  to: "/" | "/kunstpfad" | "/auktionshaus" | "/atelier";
   label: string;
   exact?: boolean;
   authOnly?: boolean;
 }[] = [
   { to: "/", label: "Entdecken", exact: true },
   { to: "/kunstpfad", label: "Reise" },
-  { to: "/studieren", label: "Studieren" },
-  { to: "/epochen", label: "Epochen" },
-  { to: "/museen", label: "Museen" },
   { to: "/auktionshaus", label: "Auktionshaus" },
   { to: "/atelier", label: "Galerie", authOnly: true },
-  { to: "/premium", label: "Premium" },
 ];
+
 
 
 function SiteHeader() {
@@ -196,13 +193,6 @@ function SiteHeader() {
           {user ? (
             <div className="ml-2 flex items-center gap-1">
               <CoinBadge className="mr-1" />
-              <Link
-                to="/profil"
-                className="inline-flex items-center rounded-full border border-input bg-background px-4 py-2 text-foreground transition-colors hover:bg-accent"
-                activeProps={{ className: "bg-accent" }}
-              >
-                Profil
-              </Link>
               <Link
                 to="/einstellungen"
                 aria-label="Einstellungen"

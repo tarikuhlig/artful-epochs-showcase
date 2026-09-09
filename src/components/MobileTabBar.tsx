@@ -3,23 +3,26 @@ import { Link, useRouter } from "@tanstack/react-router";
 import {
   Compass,
   Map,
-  GraduationCap,
-  UserRound,
+  Gavel,
+  Images,
   MoreHorizontal,
   LogIn,
   X,
 } from "lucide-react";
+
 import { useAuth } from "@/hooks/useAuth";
 
-const MORE: { to: "/atelier" | "/epochen" | "/museen" | "/auktionshaus" | "/moderne" | "/premium" | "/einstellungen"; label: string; authOnly?: boolean }[] = [
-  { to: "/atelier", label: "Galerie", authOnly: true },
+const MORE: { to: "/studieren" | "/epochen" | "/museen" | "/kuenstler-des-tages" | "/moderne" | "/premium" | "/profil" | "/einstellungen"; label: string; authOnly?: boolean }[] = [
+  { to: "/studieren", label: "Studieren" },
   { to: "/epochen", label: "Epochen" },
   { to: "/museen", label: "Museen" },
-  { to: "/auktionshaus", label: "Auktionshaus" },
+  { to: "/kuenstler-des-tages", label: "Künstler des Tages" },
   { to: "/moderne", label: "Moderne & Gegenwart" },
   { to: "/premium", label: "Premium" },
+  { to: "/profil", label: "Profil", authOnly: true },
   { to: "/einstellungen", label: "Einstellungen", authOnly: true },
 ];
+
 
 const itemClass =
   "flex flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors";
@@ -85,14 +88,14 @@ export function MobileTabBar() {
             <Map className="h-5 w-5" />
             Reise
           </Link>
-          <Link to="/studieren" className={itemClass} activeProps={activeClass}>
-            <GraduationCap className="h-5 w-5" />
-            Studieren
+          <Link to="/auktionshaus" className={itemClass} activeProps={activeClass}>
+            <Gavel className="h-5 w-5" />
+            Auktion
           </Link>
           {user ? (
-          <Link to="/profil" className={itemClass} activeProps={activeClass}>
-            <UserRound className="h-5 w-5" />
-            Profil
+          <Link to="/atelier" className={itemClass} activeProps={activeClass}>
+            <Images className="h-5 w-5" />
+            Galerie
           </Link>
           ) : (
             <Link to="/auth" className={itemClass} activeProps={activeClass}>
@@ -100,6 +103,7 @@ export function MobileTabBar() {
               Anmelden
             </Link>
           )}
+
           <button type="button" onClick={() => setOpen((value) => !value)} className={itemClass}>
             <MoreHorizontal className="h-5 w-5" />
             Mehr
