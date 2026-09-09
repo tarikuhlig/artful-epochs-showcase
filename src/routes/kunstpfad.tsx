@@ -98,7 +98,7 @@ function PracticeCard({ quiz, step, total, imageUrl, onResult }: { quiz: ArtQues
       <h3 className="font-display mt-3 text-2xl leading-snug font-medium sm:text-3xl">{quiz.question}</h3>
       <div className="mt-6 grid grid-cols-2 gap-4">
         {quiz.compare.map((item) => <button key={item.label} type="button" onClick={() => choose(item.label)} className={`overflow-hidden rounded-lg border text-left transition-colors ${picked === item.label ? (item.label === quiz.answer ? "border-foreground" : "border-destructive/50") : "border-border hover:border-foreground/40"}`}>
-          <div className="aspect-[4/3] overflow-hidden bg-muted"><img src={item.src} alt={item.label} loading="lazy" className="h-full w-full object-cover" /></div>
+          <div className="aspect-[4/3] overflow-hidden bg-muted p-2"><img src={item.src} alt={item.label} loading="lazy" className="h-full w-full object-contain" /></div>
           <p className="px-3 py-2 text-xs text-muted-foreground">{item.label} · {item.caption}</p>
         </button>)}
       </div>
@@ -109,7 +109,7 @@ function PracticeCard({ quiz, step, total, imageUrl, onResult }: { quiz: ArtQues
   }
 
   return <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[0.85fr_1.15fr]">
-    <div className="relative min-h-56 bg-muted md:min-h-full">{(quiz.image ?? imageUrl) && <img src={quiz.image ?? imageUrl} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-90" />}</div>
+    <div className="flex min-h-56 items-center justify-center bg-muted p-4 md:min-h-full">{(quiz.image ?? imageUrl) && <MagnifierImage src={(quiz.image ?? imageUrl)!} alt="Werk zur Frage" className="w-full" />}</div>
     <div className="flex flex-col justify-center p-6 sm:p-9">
       {label}
       <h3 className="font-display mt-3 text-2xl leading-snug font-medium sm:text-3xl">{quiz.question}</h3>
@@ -267,13 +267,13 @@ function ArtPathPage() {
 
         {!unlocked ? <PremiumLock title={`${station.era} wartet auf dich`} description={`Du siehst alle ${artPathWithWorks.length} Stationen der Reise. Die ersten ${FREE_JOURNEY_STATIONS} sind frei; Premium öffnet diese und alle folgenden Lernstationen.`} /> : <article className="relative min-h-[570px] overflow-hidden rounded-lg border border-border bg-card shadow-sm sm:min-h-[610px]">
           {study === 0 && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1.08fr_0.92fr]">
-            <div className="relative min-h-64 bg-muted md:min-h-full">{station.work && <img src={station.work.image} alt={station.work.title} className="absolute inset-0 h-full w-full object-cover" />}</div>
+            <div className="flex min-h-64 items-center justify-center bg-muted p-4 md:min-h-full">{station.work && <MagnifierImage src={station.work.image} alt={station.work.title} className="w-full" />}</div>
             <div className="flex flex-col justify-center p-6 sm:p-9"><BookOpen className="h-6 w-6" /><p className="mt-5 text-[10px] tracking-[0.24em] text-muted-foreground uppercase">{station.years} · {station.place}</p><h3 className="font-display mt-2 text-3xl font-medium sm:text-4xl">{station.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground">{station.lesson}</p></div>
           </div>}
 
           {study === 1 && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1fr_1fr]">
             <div className="flex flex-col justify-center p-6 sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Compass className="h-4 w-4" /> Ankunft</div><h3 className="font-display mt-3 text-3xl font-medium">{station.experience.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground">{station.experience.story}</p><p className="mt-6 text-sm text-muted-foreground">Reiseziel: <span className="text-foreground">{station.place}</span> · {station.years}</p></div>
-            <div className="relative min-h-56 bg-muted md:min-h-full">{station.works[1] && <img src={station.works[1]!.image} alt={station.works[1]!.title} className="absolute inset-0 h-full w-full object-cover" />}</div>
+            <div className="flex min-h-56 items-center justify-center bg-muted p-4 md:min-h-full">{station.works[1] && <MagnifierImage src={station.works[1]!.image} alt={station.works[1]!.title} className="w-full" />}</div>
           </div>}
 
           {study === 2 && <div className="flex min-h-[570px] flex-col justify-center p-6 sm:min-h-[610px] sm:p-10"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><ScrollText className="h-4 w-4" /> Zeit & Wendepunkt</div><h3 className="font-display mt-3 text-3xl font-medium">Was die Welt verändert</h3><p className="mt-5 max-w-2xl leading-relaxed text-muted-foreground">{station.history}</p><p className="mt-6 max-w-2xl border-l-2 border-foreground pl-5 leading-relaxed">{station.turningPoint}</p><div className="mt-8 grid gap-3 sm:grid-cols-3">{[{ label: "Zeitraum", value: station.years }, { label: "Ort", value: station.place }, { label: "Epoche", value: station.era }].map((fact) => <div key={fact.label} className="rounded-lg border border-border p-4"><p className="text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{fact.label}</p><p className="mt-1 text-sm">{fact.value}</p></div>)}</div></div>}
@@ -292,7 +292,7 @@ function ArtPathPage() {
           })()}
 
           {study === 10 && detailWork && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1fr_1fr]">
-            <div className="relative min-h-64 bg-muted md:min-h-full"><img src={detailWork.image} alt={detailWork.title} className="absolute inset-0 h-full w-full object-cover" /></div>
+            <div className="flex min-h-64 items-center justify-center bg-muted p-4 md:min-h-full"><MagnifierImage src={detailWork.image} alt={detailWork.title} className="w-full" /></div>
             <div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Landmark className="h-4 w-4" /> Werk im Detail</div><h3 className="font-display mt-3 text-2xl font-medium sm:text-3xl">{detailWork.title}</h3><p className="mt-1 text-sm text-muted-foreground">{detailWork.painter.name} · {detailWork.year}</p><p className="mt-5 text-sm leading-relaxed text-muted-foreground">{detailWork.description}</p><p className="mt-4 text-sm leading-relaxed"><span className="font-medium">Bedeutung:</span> {detailWork.significance}</p><Button asChild variant="outline" className="mt-6 w-fit rounded-full font-normal"><Link to="/werke/$id" params={{ id: detailWork.id }}>Ganze Werkseite öffnen</Link></Button></div>
           </div>}
 
