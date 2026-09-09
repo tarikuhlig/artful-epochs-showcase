@@ -15,6 +15,7 @@ import { PremiumLock } from "@/components/PremiumLock";
 import { LicenseNotice } from "@/components/LicenseNotice";
 import { FREE_JOURNEY_STATIONS, isFreeJourneyStation } from "@/lib/premium-access";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
+import { UnlockDialog, type UnlockInfo } from "@/components/UnlockDialog";
 
 export const Route = createFileRoute("/kunstpfad")({
   head: () => ({ meta: [
@@ -256,6 +257,7 @@ function ArtPathPage() {
       setNotice(gained > 0
         ? `Station geschafft — ${gained} studierte Werke wurden deiner Sammlung hinzugefügt.`
         : "Station geschafft — die nächste Epoche ist offen.");
+      if (gained > 0) setUnlock({ title: `${gained} ${gained === 1 ? "studiertes Werk" : "studierte Werke"}`, subtitle: "Du findest sie ab sofort in deiner Galerie." });
       await refetch(); invalidateFarm();
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Die Station konnte nicht abgeschlossen werden.");
@@ -386,5 +388,6 @@ function ArtPathPage() {
       <LicenseNotice context="Die Reise zeigt ausschließlich Werke, deren Schutzfrist abgelaufen ist." />
       </div>
     </section>
+    <UnlockDialog unlock={unlock} onClose={() => setUnlock(null)} />
   </div>;
 }
