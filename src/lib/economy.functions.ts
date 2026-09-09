@@ -1,8 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { artPathQuizzes } from "@/lib/art-path-quiz";
+import { stationFinalQuestion } from "@/lib/art-path-questions";
 import { dailyChallenge } from "@/lib/daily-coin-challenge";
+import { CARD_QUIZ_CARDS, CARD_QUIZ_ROUNDS_PER_DAY, cardQuizRound } from "@/lib/card-quiz";
 
 async function requirePremium(context: { supabase: any; userId: string }) {
   const token = process.env["VITE_PAYMENTS_CLIENT_TOKEN"] ?? "";
