@@ -326,7 +326,7 @@ function ArtPathPage() {
         {!unlocked ? <PremiumLock title={`${station.era} wartet auf dich`} description={`Du siehst alle ${artPathWithWorks.length} Stationen der Reise. Die ersten ${FREE_JOURNEY_STATIONS} sind frei; Premium öffnet diese und alle folgenden Lernstationen.`} /> : <article className="relative min-h-[570px] rounded-lg border border-border bg-card shadow-sm sm:min-h-[610px]">
           {study === 0 && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1.08fr_0.92fr]">
             <div className="flex min-h-64 items-center justify-center bg-muted p-4 md:min-h-full">{station.work && <MagnifierImage src={station.work.image} alt={station.work.title} className="w-full" />}</div>
-            <div className="flex flex-col justify-center p-6 sm:p-9"><BookOpen className="h-6 w-6" /><p className="mt-5 text-[10px] tracking-[0.24em] text-muted-foreground uppercase">{station.years} · {station.place}</p><h3 className="font-display mt-2 text-3xl font-medium sm:text-4xl">{station.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground">{station.lesson}</p></div>
+            <div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9"><BookOpen className="h-6 w-6" /><p className="mt-5 text-[10px] tracking-[0.24em] text-muted-foreground uppercase">{station.years} · {station.place}</p><h3 className="font-display mt-2 text-3xl font-medium sm:text-4xl">{station.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground">{station.lesson}</p><TermNotes entries={termsForStudy(0)} /></div>
           </div>}
 
           {study === 1 && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1fr_1fr]">
