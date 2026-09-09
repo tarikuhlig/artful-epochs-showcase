@@ -62,7 +62,7 @@ function HomePage() {
       {stage === "title" && <TitleGate onDone={() => setStage("intro")} />}
       {stage === "intro" && <IntroTunnel onDone={finishIntro} />}
 
-      <section className="relative overflow-hidden border-b border-border bg-background">
+      <section className="relative overflow-hidden bg-background">
         <div className="relative mx-auto grid max-w-6xl gap-10 px-6 py-12 lg:grid-cols-[0.88fr_1.12fr] lg:items-center lg:py-16">
           <div>
             <div className="flex flex-wrap items-center gap-3">
@@ -128,7 +128,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="border-y border-border bg-card">
+      <section className="bg-card">
         <div className="mx-auto max-w-6xl px-6 py-14">
           <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Wähle deinen Einstieg</p>
           <h2 className="font-display mt-2 text-3xl font-medium">Was möchtest du heute entdecken?</h2>
