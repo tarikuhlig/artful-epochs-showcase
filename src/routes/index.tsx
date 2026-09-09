@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
-import { ArrowRight, Brush, Coins, Landmark, Layers, Map, Palette, Sparkles } from "lucide-react";
+import { ArrowRight, Brush, Coins, GraduationCap, Landmark, Layers, Map, Palette, Sparkles } from "lucide-react";
 import { IntroTunnel } from "@/components/IntroTunnel";
 import { PremiumUpsell } from "@/components/PremiumUpsell";
 import { TitleGate } from "@/components/TitleGate";
@@ -162,6 +162,6 @@ function HomePage() {
   );
 }
 
-function ExploreCard({ to, image, icon, title, text }: { to: "/kunstpfad" | "/kuenstler-des-tages" | "/epochen" | "/museen" | "/auktionshaus"; image: string | undefined; icon: React.ReactNode; title: string; text: string }) {
+function ExploreCard({ to, image, icon, title, text }: { to: "/kunstpfad" | "/kuenstler-des-tages" | "/studieren" | "/epochen" | "/museen" | "/auktionshaus"; image: string | undefined; icon: React.ReactNode; title: string; text: string }) {
   return <Link to={to} className="group overflow-hidden rounded-xl border border-border bg-background hover:border-pastel-tip/60"><div className="aspect-[4/3] overflow-hidden bg-muted"><img src={image} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" /></div><div className="p-5"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-pastel-tip/25 text-background [&_svg]:h-4 [&_svg]:w-4">{icon}</span><span className="font-display mt-5 flex items-center justify-between text-xl font-medium">{title}<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span><span className="mt-2 block text-sm text-muted-foreground">{text}</span></div></Link>;
 }
