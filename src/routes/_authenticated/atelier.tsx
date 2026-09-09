@@ -28,6 +28,7 @@ import { PremiumUpsell } from "@/components/PremiumUpsell";
 import { DailyCoinChallenge } from "@/components/DailyCoinChallenge";
 import { CardQuiz } from "@/components/CardQuiz";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
+import { CoinBadge } from "@/components/CoinBadge";
 
 export const Route = createFileRoute("/_authenticated/atelier")({
   head: () => ({
@@ -87,7 +88,10 @@ function AtelierPage() {
         Willkommen, {name}
       </h1>
       <p className="mt-3 text-muted-foreground">Level {lvl.level} · {levelTitle(lvl.level)} — hier wächst deine persönliche Kunstwelt.</p>
-      <p className="mt-3 inline-flex rounded-full border border-border px-3 py-1 text-xs">{access.isAdmin ? "Admin · Premium-Testzugang" : access.hasAccess ? "Premium aktiv" : "Free"}</p>
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <span className="inline-flex rounded-full border border-border px-3 py-1 text-xs">{access.isAdmin ? "Admin · Premium-Testzugang" : access.hasAccess ? "Premium aktiv" : "Free"}</span>
+        <CoinBadge />
+      </div>
 
       <div className="mt-6 max-w-xl">
         <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
@@ -108,13 +112,42 @@ function AtelierPage() {
           label="Serie"
           value={`${stats?.streak ?? 0} Tage`}
         />
-        <Stat icon={<Coins className="h-4 w-4" />} label="Provenance Coins" value={stats?.coins ?? 0} />
+        <Stat icon={<Images className="h-4 w-4" />} label="Werke gesammelt" value={ownedItems?.length ?? 0} />
         <Stat
           icon={<Trophy className="h-4 w-4" />}
           label="Beste Serie"
           value={`${stats?.best_streak ?? 0} Tage`}
         />
       </div>
+
+      <section className="mt-10">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Deine Sammlung</p>
+            <h2 className="font-display mt-2 text-2xl font-medium">Gesammelte Werke</h2>
+          </div>
+          <Link to="/sammlung" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">Alle ansehen <ArrowRight className="h-4 w-4" /></Link>
+        </div>
+        {ownedItems && ownedItems.length > 0 ? (
+          <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            {ownedItems.slice(0, 12).map((item) => {
+              const owned = allWorks.find((candidate) => candidate.id === item.item_slug);
+              if (!owned) return null;
+              return (
+                <Link key={item.id} to="/werke/$id" params={{ id: owned.id }} className="group">
+                  <div className="aspect-[4/5] overflow-hidden rounded-lg bg-muted">
+                    <img src={owned.image} alt={owned.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
+                  </div>
+                  <p className="mt-2 truncate text-sm font-medium">{owned.title}</p>
+                  <p className="truncate text-xs text-muted-foreground">{owned.painter.name}</p>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="mt-5 rounded-xl border border-dashed border-border p-6 text-sm text-muted-foreground">Noch keine Werke gesammelt — verdiene Coins und ersteigere dein erstes Bild.</p>
+        )}
+      </section>
 
       <section className="mt-8 grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
         <div className="rounded-xl border border-border p-6 sm:p-8">
