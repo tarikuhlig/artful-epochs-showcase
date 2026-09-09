@@ -1,15 +1,35 @@
-import { useRef, useState } from "react";
-import { Search, SearchX } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Minus, Plus, Search, SearchX } from "lucide-react";
 
 /**
- * Bild mit Lupe. Das Werk bleibt immer vollständig sichtbar (object-contain).
- * Der Lupenkreis darf über den Bildrand hinausragen und schwebt auf Touch-Geräten
- * deutlich über dem Finger, damit der Daumen das Detail nicht verdeckt.
+ * Bild mit Lupe.
+ *
+ * Das Werk bleibt immer vollständig sichtbar (object-contain). Der Ausschnitt
+ * unter der Lupe behält exakt das Seitenverhältnis des Originals, weil die
+ * tatsächliche Inhaltsfläche (ohne Letterbox-Ränder) gemessen wird.
+ *
+ * Positions-Updates laufen über requestAnimationFrame und direkte
+ * DOM-Manipulation (translate3d), damit die Lupe ohne Re-Renders dem
+ * Finger folgt.
  */
+
+const LENS = 220;
+const HALF = LENS / 2;
+const MIN_ZOOM = 2;
+const MAX_ZOOM = 5;
+const TOUCH_OFFSET = -150;
+
+type Content = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+};
+
 export function MagnifierImage({
   src,
   alt,
-  zoom = 4.5,
+  zoom = 3,
   className = "",
   frameClassName = "",
 }: {
@@ -20,33 +40,159 @@ export function MagnifierImage({
   frameClassName?: string;
 }) {
   const frame = useRef<HTMLDivElement>(null);
+  const image = useRef<HTMLImageElement>(null);
+  const lens = useRef<HTMLSpanElement>(null);
+  const natural = useRef({ w: 0, h: 0 });
+  const raf = useRef<number | null>(null);
+  const pending = useRef<{ x: number; y: number; touch: boolean } | null>(null);
+  const last = useRef<{ x: number; y: number; touch: boolean } | null>(null);
+  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  const pinchStart = useRef<{ dist: number; zoom: number } | null>(null);
+
   const [active, setActive] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [pos, setPos] = useState({ x: 0, y: 0, bgX: 0, bgY: 0 });
+  const [factor, setFactor] = useState(() =>
+    Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom)),
+  );
+  const factorRef = useRef(factor);
+  factorRef.current = factor;
 
-  const lensSize = 200;
-  const half = lensSize / 2;
+  /** Inhaltsfläche des Bildes im Rahmen (ohne Letterbox-Ränder). */
+  const content = useCallback((): Content | null => {
+    const box = image.current?.getBoundingClientRect();
+    const { w, h } = natural.current;
+    if (!box || !w || !h) return null;
+    const scale = Math.min(box.width / w, box.height / h);
+    const width = w * scale;
+    const height = h * scale;
+    return {
+      left: box.left + (box.width - width) / 2,
+      top: box.top + (box.height - height) / 2,
+      width,
+      height,
+    };
+  }, []);
 
-  function move(clientX: number, clientY: number, pointerType: string) {
-    const box = frame.current?.getBoundingClientRect();
-    if (!box) return;
+  /** Höchster Zoom, der die echte Auflösung nicht überschreitet. */
+  const ceiling = useCallback(() => {
+    const c = content();
+    if (!c) return MAX_ZOOM;
+    const limit = natural.current.w / c.width;
+    return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, limit));
+  }, [content]);
 
-    const touch = pointerType === "touch" || pointerType === "pen";
+  const paint = useCallback(() => {
+    raf.current = null;
+    const next = pending.current;
+    const node = lens.current;
+    const frameBox = frame.current?.getBoundingClientRect();
+    const c = content();
+    if (!next || !node || !frameBox || !c) return;
 
-    // Betrachteter Punkt: über die ganze Bildfläche von Rand zu Rand erreichbar.
-    const pointX = Math.max(0, Math.min(clientX - box.left, box.width));
-    const pointY = Math.max(0, Math.min(clientY - box.top, box.height));
+    const px = Math.max(0, Math.min(next.x - c.left, c.width));
+    const py = Math.max(0, Math.min(next.y - c.top, c.height));
+    const z = factorRef.current;
 
-    // Die Linse selbst darf aus dem Bild herausragen — sie wird nicht begrenzt.
-    const offsetY = touch ? -150 : 0;
+    const lensX = c.left - frameBox.left + px;
+    const lensY = c.top - frameBox.top + py + (next.touch ? TOUCH_OFFSET : 0);
 
-    setPos({
-      x: pointX,
-      y: pointY + offsetY,
-      bgX: (pointX / box.width) * 100,
-      bgY: (pointY / box.height) * 100,
-    });
+    node.style.transform = `translate3d(${lensX - HALF}px, ${lensY - HALF}px, 0)`;
+    node.style.backgroundSize = `${c.width * z}px ${c.height * z}px`;
+    node.style.backgroundPosition = `${HALF - px * z}px ${HALF - py * z}px`;
+  }, [content]);
+
+  const schedule = useCallback(
+    (x: number, y: number, touch: boolean) => {
+      pending.current = { x, y, touch };
+      last.current = pending.current;
+      if (raf.current === null) raf.current = requestAnimationFrame(paint);
+    },
+    [paint],
+  );
+
+  const redraw = useCallback(() => {
+    if (!last.current) return;
+    pending.current = last.current;
+    if (raf.current === null) raf.current = requestAnimationFrame(paint);
+  }, [paint]);
+
+  useEffect(() => {
+    redraw();
+  }, [factor, redraw]);
+
+  useEffect(
+    () => () => {
+      if (raf.current !== null) cancelAnimationFrame(raf.current);
+    },
+    [],
+  );
+
+  // Mausrad-Zoom (nicht passiv, damit die Seite nicht mitscrollt).
+  useEffect(() => {
+    const el = frame.current;
+    if (!el || !active) return;
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      const dy =
+        event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 100 : 1);
+      setFactor((current) =>
+        Math.min(ceiling(), Math.max(MIN_ZOOM, current * Math.exp(-dy * 0.0015))),
+      );
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [active, ceiling]);
+
+  function pointerDown(event: React.PointerEvent) {
+    if (!active) return;
+    pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (pointers.current.size === 2) {
+      const [a, b] = [...pointers.current.values()];
+      if (!a || !b) return;
+      pinchStart.current = {
+        dist: Math.hypot(a.x - b.x, a.y - b.y),
+        zoom: factorRef.current,
+      };
+      return;
+    }
     setVisible(true);
+    schedule(event.clientX, event.clientY, event.pointerType !== "mouse");
+  }
+
+  function pointerMove(event: React.PointerEvent) {
+    if (!active) return;
+    if (pointers.current.has(event.pointerId)) {
+      pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    }
+    if (pointers.current.size === 2 && pinchStart.current) {
+      const [a, b] = [...pointers.current.values()];
+      if (!a || !b) return;
+      const dist = Math.hypot(a.x - b.x, a.y - b.y);
+      const start = pinchStart.current;
+      setFactor(
+        Math.min(
+          ceiling(),
+          Math.max(MIN_ZOOM, (start.zoom * dist) / (start.dist || dist)),
+        ),
+      );
+      return;
+    }
+    if (event.pointerType === "mouse" && event.buttons === 0 && !visible) {
+      setVisible(true);
+    }
+    schedule(event.clientX, event.clientY, event.pointerType !== "mouse");
+  }
+
+  function release(event: React.PointerEvent) {
+    pointers.current.delete(event.pointerId);
+    if (pointers.current.size < 2) pinchStart.current = null;
+    if (pointers.current.size === 0) setVisible(false);
+  }
+
+  function step(delta: number) {
+    setFactor((current) =>
+      Math.min(ceiling(), Math.max(MIN_ZOOM, Math.round((current + delta) * 10) / 10)),
+    );
   }
 
   return (
@@ -54,42 +200,70 @@ export function MagnifierImage({
       <div
         ref={frame}
         className={`relative rounded-lg bg-muted ${active ? "cursor-none touch-none select-none" : ""} ${frameClassName}`}
-        onPointerMove={(event) =>
-          active && move(event.clientX, event.clientY, event.pointerType)
-        }
-        onPointerDown={(event) => {
-          if (!active) return;
-          event.preventDefault();
-          move(event.clientX, event.clientY, event.pointerType);
-        }}
-        onPointerUp={() => setVisible(false)}
-        onPointerLeave={() => setVisible(false)}
+        onPointerDown={pointerDown}
+        onPointerMove={pointerMove}
+        onPointerUp={release}
+        onPointerCancel={release}
+        onPointerLeave={release}
       >
         <img
+          ref={image}
           src={src}
           alt={alt}
+          onLoad={(event) => {
+            natural.current = {
+              w: event.currentTarget.naturalWidth,
+              h: event.currentTarget.naturalHeight,
+            };
+            setFactor((current) => Math.min(ceiling(), Math.max(MIN_ZOOM, current)));
+          }}
           className="h-full max-h-[70vh] w-full rounded-lg object-contain"
         />
-        {active && visible && (
+        {active && (
           <span
+            ref={lens}
             aria-hidden="true"
-            className="pointer-events-none absolute z-30 rounded-full border-2 border-background shadow-[0_12px_44px_rgba(0,0,0,0.3)]"
+            className="pointer-events-none absolute top-0 left-0 z-30 rounded-full border border-border/60 shadow-[0_18px_50px_rgba(0,0,0,0.22)] transition-opacity duration-150 ease-out will-change-transform"
             style={{
-              width: lensSize,
-              height: lensSize,
-              left: pos.x - half,
-              top: pos.y - half,
+              width: LENS,
+              height: LENS,
+              opacity: visible ? 1 : 0,
               backgroundImage: `url(${src})`,
               backgroundRepeat: "no-repeat",
-              backgroundSize: `${zoom * 100}% ${zoom * 100}%`,
-              backgroundPosition: `${pos.bgX}% ${pos.bgY}%`,
-              backgroundColor: "hsl(var(--muted))",
+              backgroundColor: "var(--color-background)",
             }}
-          />
+          >
+            <span className="absolute right-3 bottom-3 rounded-full bg-background/85 px-2 py-0.5 text-[10px] font-medium tracking-wide text-muted-foreground">
+              {factor.toFixed(1)}×
+            </span>
+          </span>
         )}
       </div>
 
-      <div className="mt-3 flex items-center justify-end">
+      <div className="mt-3 flex items-center justify-end gap-2">
+        {active && (
+          <div className="flex items-center gap-1 rounded-full border border-border bg-background px-1 py-1">
+            <button
+              type="button"
+              onClick={() => step(-0.5)}
+              aria-label="Weniger vergrößern"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-accent"
+            >
+              <Minus className="h-4 w-4" />
+            </button>
+            <span className="min-w-10 text-center text-xs text-muted-foreground">
+              {factor.toFixed(1)}×
+            </span>
+            <button
+              type="button"
+              onClick={() => step(0.5)}
+              aria-label="Stärker vergrößern"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-accent"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
+          </div>
+        )}
         <button
           type="button"
           onClick={() => {
