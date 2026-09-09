@@ -163,14 +163,14 @@ export function stationQuestions(index: number): ArtQuestion[] {
 
   // Merksatz 2
   if (station.mnemonics[1] && others.length >= 2) {
-    const answer = short(station.mnemonics[1]);
+    const answer = short(station.mnemonics[1].text);
     questions.push({
       id: `merke-2-${index}`,
       kind: "fakt",
       question: "Welche Aussage hast du auf den Merkkarten dieser Station gelernt?",
-      options: shuffle([answer, short(others[0]!.mnemonics[1] ?? others[0]!.turningPoint), short(others[1]!.mnemonics[1] ?? others[1]!.turningPoint)], index + 31),
+      options: shuffle([answer, short(others[0]!.mnemonics[1]?.text ?? others[0]!.turningPoint), short(others[1]!.mnemonics[1]?.text ?? others[1]!.turningPoint)], index + 31),
       answer,
-      explanation: station.mnemonics[1],
+      explanation: station.mnemonics[1].text,
       hint: `Die anderen Sätze gehören zu anderen Epochen — prüfe, ob Ort und Jahreszahl zu ${station.place} (${station.years}) passen.`,
       topic: "Merksätze der Epoche",
     });
