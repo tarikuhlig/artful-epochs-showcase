@@ -183,6 +183,34 @@ function CollectionPage() {
         </Button>
       </div>
 
+      <section className="mt-8 rounded-2xl border border-border bg-card p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-[10px] tracking-[0.24em] text-muted-foreground uppercase">Dein Fortschritt</p>
+            <p className="font-display mt-1 text-xl font-medium">Level {level.level} · {levelTitle(level.level)}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <CoinBadge />
+            <Link
+              to="/einstellungen"
+              aria-label="Einstellungen"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-input transition-colors hover:bg-accent"
+            >
+              <Settings className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+        <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-muted">
+          <div className="h-full rounded-full bg-primary transition-all duration-700" style={{ width: `${level.progress}%` }} />
+        </div>
+        <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-muted-foreground">
+          <span>{totalPoints} Punkte</span>
+          <span>Serie: {stats?.streak ?? 0} Tage</span>
+          <span>{owned.length} Werke</span>
+          <Link to="/profil" className="text-foreground hover:underline">Ganzes Profil</Link>
+        </div>
+      </section>
+
       <section className="mt-10 grid gap-6 border-y border-border py-8 md:grid-cols-[auto_1fr_auto] md:items-center">
         <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border border-border bg-muted">
           {avatarUrl ? <img src={avatarUrl} alt={`Profilbild von ${username || name}`} className="h-full w-full object-cover" /> : <UserRound className="h-9 w-9 text-muted-foreground" />}
