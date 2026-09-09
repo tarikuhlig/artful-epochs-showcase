@@ -1,59 +1,8 @@
 # Roadmap
 
-- [x] Katalog auf 30 Maler / 60 Werke mit Entstehung, Technik, Museum, Bedeutung, Rezeption
-- [x] Stilrichtungen, Kunstreisen, Atelier (tägliche Ernte, Punkte, Serie, Level)
-- [x] Logo als Tinten-Signatur in Klein-Blau
-- [x] Museen bereisen: 38 Häuser mit eigener Seite, Werken und Fortschritt
-- [x] Katalog ersetzt durch interaktiven alten Globus (/globus) mit Städten, Museen und Kunstreisen
-- [x] Startseite: Logo im Atelier (schwebende Malutensilien) statt Bildertunnel, klare Einstiege
-- [x] Globus in echtem 3D (Drehen, Schwung, Zoom), Museen mit Öffnungszeiten/Tipps, Stadt-Kunstreise-Karte, Mobile-Optimierung
-- [x] Katalog auf 128 Künstler (98 neu) mit je min. 5 Werken, 826 Werke mit je min. 5 Werken erweitern (Bilder gemeinfrei via Wikimedia)
-- [x] Globus-Stecknadeln öffnen eigene Stadtseiten mit Museen, Kunstreisen und Stadtkarte
-- [x] Jede bestehende Kunstreise erhält eine vertiefte Geschichte mit Kontext, Künstlern, Konflikten und Entdeckungen
-- [x] Museumsinfos um Prüfdatum, offizielle Quellen und aktuelle Ausstellungen ergänzen
-- [x] Renaissance-Licht, Schatten und mobile 3D-Leistung des Globus verbessern
-- [x] Chronologische Kunstreise als begehbaren Pfad von alter zu neuer Kunst aufbauen
-- [x] Provenance Coins mit eigenem Münzlogo und Belohnungen für abgeschlossene Pfadstationen einführen
-- [x] Auktionshaus mit kaufbaren Werken und sicherer Coin-Abbuchung ergänzen
-- [x] Meine Sammlung um gekaufte Werke und eine interaktive Galerie erweitern
-- [x] Globus vom Museumsmodus zur überdimensionalen Abenteuer-Reiseroute mit Weltpfad umbauen
-- [x] Dashboard farbiger und bildstärker mit mehreren Highlights und täglichen Lerntipps gestalten
-- [x] Navigation aufräumen und Museen als eigenen Lernbereich stärker einbinden
-- [x] Globus und separates Quiz entfernen; Stationsquiz als Freischaltung in den Kunstpfad integrieren
-- [x] Auktionshaus in die Hauptnavigation aufnehmen und Coins pastellfarben neu gestalten
-- [x] Rote Startseiten-Akzente durch Pastelltöne ersetzen, Atelier mit Coin-Anzeige verbinden und Kunstpfad als Reise benennen
-- [x] Alle 12 Reise-Stationen mit echten Epochen, Künstlern, mehreren Werken und Reiseerlebnissen ausbauen
-- [x] Reise-Stationen um echte Werkbilder, Ortskarten und Künstlerbiografien ergänzen
-- [x] Private Galerie per Ziehen sortierbar machen und Werkvergleich ergänzen
-- [x] Dashboard in „Mein Atelier“ integrieren und Startseite als farbige Kunstentdeckung mit Tagestipps neu gestalten
-- [x] Handy-Optimierung (Safe Areas, kein Auto-Zoom, Touch-Ziele) und Installierbarkeit als App-Symbol (Manifest, Icons)
-
-- [x] Reise-Karte: stilisierte Übersichtskarte ohne OpenStreetMap-Einblendung
-- [x] Sicherstellen: keine Laufzeit-Credits (keine AI/Cloud-Calls im normalen Seitenbetrieb), nur eigener Katalog
-- [x] Katalog: viele neue Kuenstler + Werke pro Epoche
-- [x] Provenance Coin schwarz-weiß gestalten und die Reise sichtbar von Epoche zu Epoche strukturieren
-- [x] Jede Reise-Epoche mit vier prägenden Künstlerprofilen ausstatten
-- [x] Reise als durchklickbaren Kartenstapel pro Epoche gestalten
-- [x] Auktionshaus prächtiger gestalten und berühmte Meisterwerke deutlich höher bepreisen
-- [x] Auktionshaus täglich mit 1 Platin-, 2 Gold- und 2 Bronze-Werken rotieren lassen
-- [x] Galerie-Ausstellung, Benutzername und Profilbild umsetzen
-- [x] Platin-Weltwerk im Auktionshaus oben zentriert hervorheben, danach Gold und Bronze anordnen
-- [x] Epochen-Reiter chronologisch vom ältesten bis zum neuesten Zeitraum anordnen
-- [x] Tägliche Kunst-Challenge mit bis zu 60 Provenance Coins ohne KI- oder Credit-Verbrauch ergänzen
-- [x] Paywall mit 15-%-Gratisvorschau sowie Monats- und Jahresabo einführen
-- [x] Coin-Guthaben ausschließlich im Galerie-Dashboard zeigen, nicht in der oberen Leiste
-- [x] Reise-Epochen um vertiefte Biografien sowie Farben, Pigmente, Materialien und Techniken ergänzen
-- [x] Echte Monats-/Jahresabos, Premiumstatus und Admin-Testzugang fertig verbinden und prüfen
-- [x] Coin-Budget aufteilen: Reise 50 %, Studierkarten 35 %, Tagesinhalte 15 %
-- [x] Tageswerk und Tageskünstler mit Lernstoff und je zwei Quizfragen ausstatten
-- [ ] Dashboard: studierte Stationen/Karten und fehlende Coins bis zur Vollsammlung anzeigen
-- [ ] Karten-Quiz über die eigenen gesammelten Werke in der Sammlung
-- [x] Dashboard: studierte Stationen/Karten und fehlende Coins bis zur Vollsammlung anzeigen
-- [x] Karten-Quiz über die eigenen gesammelten Werke in der Sammlung
-- [x] Tageswerk-/Tageskünstler-Karten mit Stoff und je zwei Fragen im Dashboard
-- [x] Studierkarten geben Coins (serverseitig gedeckelt)
-- [x] Galerie: gesammelte Werke direkt unter kompaktem Dashboard zeigen
-- [x] Coins klein im Dashboard und auf Entdecken anzeigen
-- [x] Fester Zurück-Pfeil, der beim Scrollen sichtbar bleibt
-- [x] Lupenfunktion zum Erkunden der Werke
-- [x] Eigene Fotos von Werken in der Galerie speichern (ohne KI/Credits)
+## Erledigt
+- [x] Reise-Quiz: Lernzyklus (Lernen → Abrufen → Anwenden → Feedback → Wiederholen), Fragetypen, Transferfrage, Lernstand, Stationsbilanz
+- [x] Lupe: gesamtes Bild erreichbar
+- [x] Text neben der Lupe entfernt
+- [x] Galerie im mobilen Menü (Mehr)
+- [x] Coin-Kontostand jederzeit sichtbar (Kopfzeile + Handy oben rechts)

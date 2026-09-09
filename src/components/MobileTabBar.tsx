@@ -11,7 +11,8 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
-const MORE: { to: "/epochen" | "/museen" | "/auktionshaus" | "/moderne" | "/premium" | "/einstellungen"; label: string; authOnly?: boolean }[] = [
+const MORE: { to: "/atelier" | "/epochen" | "/museen" | "/auktionshaus" | "/moderne" | "/premium" | "/einstellungen"; label: string; authOnly?: boolean }[] = [
+  { to: "/atelier", label: "Galerie", authOnly: true },
   { to: "/epochen", label: "Epochen" },
   { to: "/museen", label: "Museen" },
   { to: "/auktionshaus", label: "Auktionshaus" },

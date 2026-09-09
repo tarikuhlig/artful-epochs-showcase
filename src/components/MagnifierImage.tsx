@@ -22,7 +22,6 @@ export function MagnifierImage({
   const [active, setActive] = useState(false);
   const [visible, setVisible] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0, bgX: 0, bgY: 0 });
-  const [isTouch, setIsTouch] = useState(false);
 
   const lensSize = 160;
   const half = lensSize / 2;
@@ -32,30 +31,24 @@ export function MagnifierImage({
     if (!box) return;
 
     const isTouchPointer = pointerType === "touch" || pointerType === "pen";
-    setIsTouch(isTouchPointer);
 
-    const rawX = clientX - box.left;
-    const rawY = clientY - box.top;
+    // Der betrachtete Punkt: über die ganze Bildfläche erreichbar, von Rand zu Rand.
+    const pointX = Math.max(0, Math.min(clientX - box.left, box.width));
+    const pointY = Math.max(0, Math.min(clientY - box.top, box.height));
 
-    // Auf Touch-Geräten wird die Lupe über den Finger geschoben, damit man
-    // hindurchschauen kann. Der Finger bleibt unterhalb der Linse.
+    // Auf Touch-Geräten schwebt die Linse über dem Finger, damit der Daumen
+    // das Detail nicht verdeckt — der betrachtete Punkt bleibt unverändert.
     const offsetY = isTouchPointer ? -120 : 0;
     const offsetX = isTouchPointer ? -10 : 0;
 
-    const x = Math.max(
-      half,
-      Math.min(rawX + offsetX, box.width - half)
-    );
-    const y = Math.max(
-      half,
-      Math.min(rawY + offsetY, box.height - half)
-    );
+    const x = Math.max(half, Math.min(pointX + offsetX, box.width - half));
+    const y = Math.max(half, Math.min(pointY + offsetY, box.height - half));
 
     setPos({
       x,
       y,
-      bgX: ((x - offsetX) / box.width) * 100,
-      bgY: ((y - offsetY) / box.height) * 100,
+      bgX: (pointX / box.width) * 100,
+      bgY: (pointY / box.height) * 100,
     });
     setVisible(true);
   }
@@ -96,18 +89,7 @@ export function MagnifierImage({
         )}
       </div>
 
-      <div className="mt-3 flex items-center justify-between gap-3">
-        {active ? (
-          <p className="text-xs text-muted-foreground">
-            {isTouch
-              ? "Bewege den Finger — die Lupe schwebt darüber."
-              : "Bewege die Maus über das Bild."}
-          </p>
-        ) : (
-          <span className="text-xs text-muted-foreground">
-            Details genauer betrachten
-          </span>
-        )}
+      <div className="mt-3 flex items-center justify-end">
         <button
           type="button"
           onClick={() => {
