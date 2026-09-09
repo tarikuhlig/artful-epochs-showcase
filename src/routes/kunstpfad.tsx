@@ -157,7 +157,7 @@ function ArtPathPage() {
   const { user } = useAuth();
   const { hasAccess } = usePremiumAccess();
   const navigate = useNavigate();
-  const { data: progress = [], refetch } = useArtPathProgress();
+  const { data: progress = [], refetch, isLoading: progressLoading } = useArtPathProgress();
   const invalidateFarm = useInvalidateFarm();
   const [busy, setBusy] = useState<number | null>(null);
   const [error, setError] = useState("");
