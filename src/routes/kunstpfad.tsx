@@ -162,6 +162,8 @@ function ArtPathPage() {
   const [feedback, setFeedback] = useState<Record<number, "correct" | "wrong">>({});
   const [activeStation, setActiveStation] = useState(0);
   const [card, setCard] = useState(0);
+  /** Wurde der gespeicherte Stand schon geladen? Verhindert Überschreiben beim Start. */
+  const [restored, setRestored] = useState(false);
   /** Isolierter Reise-Flow: die Station läuft in einem eigenen Vollbild-Fenster. */
   const [focus, setFocus] = useState(false);
   /** Ergebnisse je Station und Frage — Grundlage für Wiederholung und Lernstand. */
@@ -169,6 +171,7 @@ function ArtPathPage() {
   const [repeats, setRepeats] = useState<Record<number, string[]>>({});
   const completed = new Set(progress.map((entry) => entry.station_index));
   const next = progress.length;
+
   const station = artPathWithWorks[activeStation] ?? artPathWithWorks[0];
   const quiz = stationFinalQuestion(activeStation);
   const practice = useMemo(() => stationQuestions(activeStation), [activeStation]);
