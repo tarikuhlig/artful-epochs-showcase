@@ -8,7 +8,7 @@ import { Search, SearchX } from "lucide-react";
 export function MagnifierImage({
   src,
   alt,
-  zoom = 2.6,
+  zoom = 4.5,
   className = "",
 }: {
   src: string;
