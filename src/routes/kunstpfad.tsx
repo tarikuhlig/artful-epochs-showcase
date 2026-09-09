@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { BookOpen, Brush, Check, ChevronLeft, ChevronRight, Coins, Compass, Eye, HelpCircle, Images, Landmark, Lightbulb, Lock, Palette, ScrollText, UserRound, X } from "lucide-react";
+import { useMemo, useState } from "react";
+import { BookOpen, Brush, Check, ChevronLeft, ChevronRight, Coins, Compass, Eye, HelpCircle, Images, Landmark, Lightbulb, Lock, Palette, ScrollText, Sparkles, UserRound, X } from "lucide-react";
 import { artPathWithWorks } from "@/lib/art-path";
 import { useArtPathProgress } from "@/lib/economy";
 import { completePathStation } from "@/lib/economy.functions";
