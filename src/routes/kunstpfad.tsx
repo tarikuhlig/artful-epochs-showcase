@@ -26,29 +26,78 @@ export const Route = createFileRoute("/kunstpfad")({
 });
 
 const STUDY_CARDS = 12;
-const QUESTION_CARDS = 9;
-const CARD_COUNT = STUDY_CARDS + QUESTION_CARDS + 1; // 22
 
-function PracticeCard({ quiz, step, imageUrl }: { quiz: ArtQuestion; step: number; imageUrl?: string | undefined }) {
+type CardItem =
+  | { type: "study"; study: number }
+  | { type: "question"; quiz: ArtQuestion; step: number }
+  | { type: "transfer" }
+  | { type: "summary" }
+  | { type: "final" };
+
+/**
+ * Lernzyklus je Station: nach zwei bis drei Lernkarten folgt eine kurze Abruffrage,
+ * danach die Wiederholungen falscher Antworten, die Transferfrage, die Bilanz und
+ * zum Schluss die Abschlussfrage, die weiterhin die nächste Station freischaltet.
+ */
+function buildSequence(practice: ArtQuestion[], repeatIds: string[], transfer: ArtQuestion | undefined): CardItem[] {
+  const slots: Record<number, number[]> = { 2: [0], 4: [1], 6: [2], 7: [3], 8: [4], 9: [5], 10: [6], 11: [7, 8] };
+  const items: CardItem[] = [];
+  let step = 0;
+  for (let study = 0; study < STUDY_CARDS; study++) {
+    items.push({ type: "study", study });
+    for (const position of slots[study] ?? []) {
+      const quiz = practice[position];
+      if (quiz) items.push({ type: "question", quiz, step: ++step });
+    }
+  }
+  repeatIds.forEach((id, position) => {
+    const original = practice.find((item) => item.id === id);
+    if (original) items.push({ type: "question", quiz: repeatVariant(original, position + 1), step: ++step });
+  });
+  if (transfer) items.push({ type: "transfer" });
+  items.push({ type: "summary" });
+  items.push({ type: "final" });
+  return items;
+}
+
+function PracticeCard({ quiz, step, total, imageUrl, onResult }: { quiz: ArtQuestion; step: number; total: number; imageUrl?: string | undefined; onResult: (correct: boolean) => void }) {
   const [picked, setPicked] = useState("");
+  const [unsure, setUnsure] = useState(false);
+  const correct = picked === quiz.answer;
+
+  function choose(option: string) {
+    if (picked) return;
+    setPicked(option);
+    onResult(option === quiz.answer && !unsure);
+  }
+
   const options = (
     <div className="mt-6 grid gap-2">
-      {quiz.options.map((option) => {
+      {quiz.options.slice(0, 4).map((option) => {
         const isPicked = picked === option;
         const isRight = option === quiz.answer;
-        return <Button key={option} type="button" variant="outline" onClick={() => setPicked(option)} className={`h-auto min-h-12 justify-start whitespace-normal rounded-lg px-4 py-3 text-left font-normal ${isPicked ? (isRight ? "border-foreground bg-path-leaf" : "border-destructive/40 bg-destructive/5") : ""}`}>{option}</Button>;
+        return <Button key={option} type="button" variant="outline" onClick={() => choose(option)} className={`h-auto min-h-12 justify-start whitespace-normal rounded-lg px-4 py-3 text-left font-normal transition-colors duration-300 ${picked ? (isRight ? "border-foreground bg-path-leaf" : isPicked ? "border-destructive/40 bg-destructive/5" : "opacity-60") : ""}`}>{option}</Button>;
       })}
     </div>
   );
-  const feedback = picked && <p className="mt-5 flex items-start gap-2 text-sm leading-relaxed">{picked === quiz.answer ? <Check className="mt-0.5 h-4 w-4 shrink-0" /> : <X className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />}<span>{picked === quiz.answer ? quiz.explanation : "Noch nicht richtig — blättere zurück zu den Merkkarten."}</span></p>;
-  const hint = <p className="mt-6 text-xs text-muted-foreground">Frage {step} von {QUESTION_CARDS} — erst die Abschlussfrage schaltet die nächste Station frei.</p>;
+
+  const feedback = picked
+    ? <div className="animate-in fade-in mt-5 rounded-lg border border-border p-4 text-sm leading-relaxed duration-500">
+        <p className="flex items-start gap-2">{correct ? <Check className="mt-0.5 h-4 w-4 shrink-0" /> : <X className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />}<span>{correct ? quiz.explanation : (quiz.hint ?? quiz.explanation)}</span></p>
+        {!correct && <p className="mt-2 text-muted-foreground">{quiz.explanation}</p>}
+        {(!correct || unsure) && <p className="mt-2 text-xs text-muted-foreground">Diese Frage kommt später noch einmal in anderer Form.</p>}
+      </div>
+    : <Button type="button" variant="ghost" onClick={() => setUnsure((value) => !value)} className={`mt-4 w-fit rounded-full px-3 text-xs font-normal ${unsure ? "bg-muted" : ""}`}>{unsure ? "Als unsicher markiert" : "Ich bin unsicher"}</Button>;
+
+  const hint = <p className="mt-6 text-xs text-muted-foreground">{total > 0 ? `Frage ${step} von ${total} — erst die Abschlussfrage schaltet die nächste Station frei.` : "Transferfrage — sie entscheidet, ob die Station als beherrscht gilt."}</p>;
+  const label = <div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{quiz.kind === "transfer" ? <Sparkles className="h-4 w-4" /> : quiz.compare ? <Images className="h-4 w-4" /> : <HelpCircle className="h-4 w-4" />} {questionKindLabel(quiz.kind)}</div>;
 
   if (quiz.compare) {
     return <div className="flex min-h-[570px] flex-col justify-center p-6 sm:min-h-[610px] sm:p-9">
-      <div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Images className="h-4 w-4" /> Bildvergleich</div>
+      {label}
       <h3 className="font-display mt-3 text-2xl leading-snug font-medium sm:text-3xl">{quiz.question}</h3>
       <div className="mt-6 grid grid-cols-2 gap-4">
-        {quiz.compare.map((item) => <button key={item.label} type="button" onClick={() => setPicked(item.label)} className={`overflow-hidden rounded-lg border text-left transition-colors ${picked === item.label ? (item.label === quiz.answer ? "border-foreground" : "border-destructive/50") : "border-border hover:border-foreground/40"}`}>
+        {quiz.compare.map((item) => <button key={item.label} type="button" onClick={() => choose(item.label)} className={`overflow-hidden rounded-lg border text-left transition-colors ${picked === item.label ? (item.label === quiz.answer ? "border-foreground" : "border-destructive/50") : "border-border hover:border-foreground/40"}`}>
           <div className="aspect-[4/3] overflow-hidden bg-muted"><img src={item.src} alt={item.label} loading="lazy" className="h-full w-full object-cover" /></div>
           <p className="px-3 py-2 text-xs text-muted-foreground">{item.label} · {item.caption}</p>
         </button>)}
@@ -60,9 +109,9 @@ function PracticeCard({ quiz, step, imageUrl }: { quiz: ArtQuestion; step: numbe
   }
 
   return <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[0.85fr_1.15fr]">
-    <div className="relative min-h-44 bg-muted md:min-h-full">{(quiz.image ?? imageUrl) && <img src={quiz.image ?? imageUrl} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-90" />}</div>
+    <div className="relative min-h-56 bg-muted md:min-h-full">{(quiz.image ?? imageUrl) && <img src={quiz.image ?? imageUrl} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-90" />}</div>
     <div className="flex flex-col justify-center p-6 sm:p-9">
-      <div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><HelpCircle className="h-4 w-4" /> Wissensfrage {step}</div>
+      {label}
       <h3 className="font-display mt-3 text-2xl leading-snug font-medium sm:text-3xl">{quiz.question}</h3>
       {options}
       {feedback}
