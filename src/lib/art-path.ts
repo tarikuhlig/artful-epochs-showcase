@@ -1,57 +1,51 @@
-import { allPainters, findWork } from "@/lib/art-data";
-import { epochAteliers } from "@/lib/art-path-context";
+import { allPainters, type Painter, type Work } from "@/lib/art-data";
+import { stationContent, type StationContent } from "@/lib/art-path-content";
 
-export type ArtPathStation = {
+export type ArtPathStation = StationContent & {
   index: number;
-  title: string;
-  era: string;
-  years: string;
-  place: string;
-  lat: number;
-  lon: number;
-  workId: string;
-  workIds: string[];
-  artists: string[];
-  lesson: string;
-  turningPoint: string;
-  experience: {
-    title: string;
-    story: string;
-    mission: string;
-  };
   coinReward: number;
 };
 
-export const artPath: ArtPathStation[] = [
-  { index: 0, title: "Das Bild wird Wirklichkeit", era: "Spätmittelalter · Frühe Niederländer", years: "1430–1460", place: "Brügge", lat: 51.21, lon: 3.22, workId: "arnolfini-hochzeit", workIds: ["arnolfini-hochzeit", "mann-mit-turban"], artists: ["Jan van Eyck", "Rogier van der Weyden", "Hieronymus Bosch", "Pieter Bruegel der Ältere"], lesson: "Öllasuren, Spiegelungen und mikroskopische Details machen Stoffe, Haut und Räume beinahe greifbar. Religiöse Symbolik versteckt sich nun in Dingen des täglichen Lebens.", turningPoint: "Die genaue Beobachtung der sichtbaren Welt öffnet den Weg von der mittelalterlichen Bildform in die Neuzeit.", experience: { title: "Ein Morgen in Brügge", story: "Du betrittst eine Werkstatt nahe dem Handelskontor. Pigmente, Harze und Leinöl stehen auf dem Tisch, während ein Spiegel das ganze Zimmer in einem winzigen Kreis verdoppelt.", mission: "Finde im Arnolfini-Porträt drei Details, die zugleich wirklich und symbolisch wirken." }, coinReward: 40 },
-  { index: 1, title: "Der Mensch im Mittelpunkt", era: "Frührenaissance", years: "1470–1490", place: "Florenz", lat: 43.77, lon: 11.26, workId: "geburt-der-venus", workIds: ["geburt-der-venus", "primavera"], artists: ["Sandro Botticelli", "Fra Angelico", "Piero della Francesca", "Andrea Mantegna"], lesson: "Humanismus, antike Mythologie und die neue Perspektive verändern das Bild. Körper, Landschaft und individuelle Schönheit erhalten einen eigenen Wert.", turningPoint: "Kunst erzählt nicht mehr ausschließlich Heilsgeschichte, sondern erforscht den Menschen und seine Welt.", experience: { title: "Frühling im Medici-Florenz", story: "Auf dem Weg durch Florenz hörst du Dichter über Ovid sprechen. In Botticellis Werkstatt entstehen bewegte Linien, wehende Gewänder und eine Göttin, die wie eine neue Idee an Land kommt.", mission: "Vergleiche Venus und Primavera: Folge den Linien der Haare, Stoffe und Hände." }, coinReward: 40 },
-  { index: 2, title: "Der Künstler als Schöpfer", era: "Nordische Renaissance", years: "1490–1530", place: "Nürnberg", lat: 49.45, lon: 11.08, workId: "duerer-selbstbildnis", workIds: ["duerer-selbstbildnis", "feldhase"], artists: ["Albrecht Dürer", "Hans Holbein der Jüngere", "Lucas Cranach der Ältere", "Matthias Grünewald"], lesson: "Druckgrafik verbreitet Bilder über Grenzen hinweg. Naturstudium und selbstbewusste Porträts machen den Maler zum intellektuellen Autor.", turningPoint: "Mit Signatur, Selbstbild und reproduzierbarer Grafik entsteht ein modernes Verständnis künstlerischer Urheberschaft.", experience: { title: "In Dürers Nürnberger Werkstatt", story: "Kupferplatten, Holzstöcke und Naturstudien füllen den Raum. Ein gedrucktes Blatt kann nun Hunderte Menschen erreichen – eine Medienrevolution der Renaissance.", mission: "Betrachte Fell und Haare: Wo zeigt Dürer Naturtreue, wo inszeniert er sich selbst?" }, coinReward: 40 },
-  { index: 3, title: "Wissen wird Kunst", era: "Hochrenaissance", years: "1500–1520", place: "Florenz · Rom", lat: 42.6, lon: 12.4, workId: "mona-lisa", workIds: ["mona-lisa", "schule-von-athen", "erschaffung-adams"], artists: ["Leonardo da Vinci", "Raffael", "Michelangelo Buonarroti", "Tizian"], lesson: "Sfumato, Anatomie, Zentralperspektive und ideale Proportion verbinden Forschung mit einer neuen Vorstellung vom Individuum.", turningPoint: "Die Künstler werden zu gefeierten Universalgelehrten; ihre Werke beanspruchen Wissen, Schönheit und geistige Autorität zugleich.", experience: { title: "Audienz bei den Meistern", story: "Du reist von Leonardos Florentiner Studienblättern in die päpstlichen Räume Roms. Philosophen diskutieren unter Raffaels Bögen, während Michelangelo über dir die Schöpfung malt.", mission: "Suche in allen drei Werken nach Gesten, die eine Beziehung zwischen Menschen herstellen." }, coinReward: 80 },
-  { index: 4, title: "Licht wird Drama", era: "Barock", years: "1590–1640", place: "Rom", lat: 41.9, lon: 12.5, workId: "berufung-des-matthaeus", workIds: ["berufung-des-matthaeus", "judith-holofernes", "kreuzabnahme"], artists: ["Michelangelo Merisi da Caravaggio", "Artemisia Gentileschi", "Peter Paul Rubens", "Diego Velázquez"], lesson: "Hell-Dunkel, bewegte Körper und starke Diagonalen verwandeln das Bild in eine Bühne. Kunst soll nicht nur erklären, sondern unmittelbar überwältigen.", turningPoint: "Heilige und Helden treten als körperlich glaubhafte Menschen in dramatisches Licht.", experience: { title: "Eine Nacht in Rom", story: "Du folgst einer schmalen Gasse bis San Luigi dei Francesi. Aus dem Halbdunkel der Kapelle schneidet Caravaggios Lichtstrahl durch eine alltägliche Tischrunde.", mission: "Verfolge in jedem Werk die hellste Stelle und entscheide, welchen Augenblick sie zum Höhepunkt macht." }, coinReward: 40 },
-  { index: 5, title: "Die Welt im Alltag", era: "Holländisches Goldenes Zeitalter", years: "1630–1670", place: "Amsterdam · Delft", lat: 52.2, lon: 4.6, workId: "dienstmagd-mit-milchkrug", workIds: ["dienstmagd-mit-milchkrug", "maedchen-mit-perlenohrring", "nachtwache"], artists: ["Johannes Vermeer", "Rembrandt van Rijn", "Frans Hals", "Jan Steen"], lesson: "Ein freier Kunstmarkt bringt Gruppenporträts, Innenräume, Landschaften und Alltagsszenen hervor. Licht verleiht selbst stillen Tätigkeiten Würde.", turningPoint: "Bürgerliche Auftraggeber und Sammler erweitern, wer Kunst bestellt und welche Motive als bedeutend gelten.", experience: { title: "Markttag zwischen Amsterdam und Delft", story: "Du besuchst erst Rembrandts geschäftige Stadt, dann Vermeers stilles Delft. Zwischen Schützengilde und Küche entdeckst du zwei völlig verschiedene Formen von Aufmerksamkeit.", mission: "Vergleiche Bewegung in der Nachtwache mit der Ruhe der Milchmagd." }, coinReward: 80 },
-  { index: 6, title: "Das Ich vor der Natur", era: "Romantik", years: "1790–1840", place: "Dresden · London · Madrid", lat: 51.05, lon: 13.74, workId: "wanderer-nebelmeer", workIds: ["wanderer-nebelmeer", "moench-am-meer", "die-kaempfende-temeraire", "der-dritte-mai"], artists: ["Caspar David Friedrich", "William Turner", "Francisco de Goya", "Eugène Delacroix"], lesson: "Landschaft, Geschichte und Nachtseiten der Fantasie werden zu Spiegeln von Sehnsucht, Erhabenheit und politischer Erfahrung.", turningPoint: "Persönliches Empfinden und historische Erschütterung treten gegen die Regeln akademischer Vernunft an.", experience: { title: "Vom Elbsandstein ans offene Meer", story: "Im Morgennebel steigst du mit Friedrich auf einen Felsen. Danach führt die Reise zu Turners aufgelöstem Licht und in Goyas erschüttertes Madrid.", mission: "Notiere, ob du dich in jedem Bild klein, frei oder bedroht fühlst – und wodurch." }, coinReward: 40 },
-  { index: 7, title: "Der flüchtige Eindruck", era: "Impressionismus", years: "1860–1886", place: "Le Havre · Paris", lat: 49.49, lon: 0.1, workId: "impression-sonnenaufgang", workIds: ["impression-sonnenaufgang", "moulin-de-la-galette", "die-ballettprobe", "fruehstueck-im-gruenen"], artists: ["Claude Monet", "Pierre-Auguste Renoir", "Edgar Degas", "Édouard Manet"], lesson: "Malen im Freien, neue Tubenfarben und die moderne Großstadt verändern den Blick. Sichtbare Pinselstriche halten Licht und Atmosphäre statt fester Konturen fest.", turningPoint: "Eine unabhängige Ausstellung und ein spöttischer Name werden zum Beginn der modernen Malerei.", experience: { title: "Ein Tag im modernen Paris", story: "Im Morgengrauen stehst du mit Monet am Hafen, nachmittags hinter der Opernbühne bei Degas und abends unter den Lampions des Moulin de la Galette.", mission: "Entdecke, wie Ausschnitt, Bewegung und wechselndes Licht den Eindruck eines Augenblicks erzeugen." }, coinReward: 40 },
-  { index: 8, title: "Farbe wird Gefühl", era: "Post-Impressionismus", years: "1886–1905", place: "Arles · Saint-Rémy · Provence", lat: 43.79, lon: 4.83, workId: "sternennacht", workIds: ["sternennacht", "sonnenblumen", "mont-sainte-victoire", "vision-nach-der-predigt"], artists: ["Vincent van Gogh", "Paul Cézanne", "Paul Gauguin", "Georges Seurat"], lesson: "Nach dem flüchtigen Eindruck suchen Künstler nach Ausdruck, Struktur und neuen Bildordnungen. Farbe darf seelisch, symbolisch oder konstruktiv funktionieren.", turningPoint: "Die sichtbare Welt wird zum Ausgangspunkt persönlicher Bildsprachen – und damit zum Sprungbrett der Moderne.", experience: { title: "Mit dem Nachtzug in die Provence", story: "Du folgst Van Goghs gelben Feldern nach Saint-Rémy und blickst dann mit Cézanne auf den Mont Sainte-Victoire. Dieselbe Landschaft wird Gefühl oder fest gebaute Form.", mission: "Vergleiche Van Goghs Rhythmus mit Cézannes Flächen: Wie hält jeder Künstler das Bild zusammen?" }, coinReward: 80 },
-  { index: 9, title: "Der Schrei der Moderne", era: "Symbolismus · Expressionismus", years: "1890–1914", place: "Oslo · Wien · München", lat: 55.7, lon: 11.0, workId: "der-schrei", workIds: ["der-schrei", "der-kuss", "adele-bloch-bauer", "blaues-pferd"], artists: ["Edvard Munch", "Gustav Klimt", "Franz Marc", "Egon Schiele"], lesson: "Linie, Ornament und unnatürliche Farbe machen Begehren, Angst und innere Spannung sichtbar. Äußere Ähnlichkeit verliert ihre Vorrangstellung.", turningPoint: "Innere Wahrheit wird wichtiger als akademische Schönheit; das Bild erscheint als unmittelbarer seelischer Ausdruck.", experience: { title: "Zwischen Oslo, Wien und München", story: "Auf Munchs Fjordweg kippt die Landschaft in Angst. In Wien glänzt Klimts Gold, bevor in München ein blaues Pferd die Natur in reine Empfindung übersetzt.", mission: "Wähle in jedem Werk eine Farbe und beschreibe, welches Gefühl sie unabhängig vom Motiv trägt." }, coinReward: 40 },
-  { index: 10, title: "Die Befreiung vom Gegenstand", era: "Expressionismus · Abstraktion", years: "1910–1925", place: "München · Weimar", lat: 49.5, lon: 11.0, workId: "komposition-vii", workIds: ["komposition-vii", "komposition-viii", "gelb-rot-blau", "blaues-pferd"], artists: ["Wassily Kandinsky", "Paul Klee", "Franz Marc", "László Moholy-Nagy"], lesson: "Farben, Linien und Formen werden wie Klänge komponiert. Der Blaue Reiter und später das Bauhaus suchen nach einer universellen visuellen Sprache.", turningPoint: "Ein Bild muss keinen erkennbaren Gegenstand mehr zeigen, um Bewegung, Spannung und Bedeutung zu erzeugen.", experience: { title: "Klangprobe im Atelier", story: "Du hörst Kandinsky über Musik sprechen und siehst, wie ein Motiv Schritt für Schritt verschwindet. Am Bauhaus werden Farbe und Form anschließend systematisch untersucht.", mission: "Lies Komposition VII wie Musik: Finde einen Auftakt, eine laute Passage und einen ruhigen Schluss." }, coinReward: 40 },
-  { index: 11, title: "Eine universelle Ordnung", era: "De Stijl · geometrische Moderne", years: "1917–1940", place: "Paris · New York", lat: 46.2, lon: -22.0, workId: "komposition-rot-blau-gelb", workIds: ["komposition-rot-blau-gelb", "tableau-i", "gelb-rot-blau"], artists: ["Piet Mondrian", "Kasimir Malewitsch", "László Moholy-Nagy", "Oskar Schlemmer"], lesson: "Vertikale, Horizontale und klar gesetzte Farbflächen sollen eine Ordnung jenseits persönlicher Handschrift schaffen. Malerei berührt Architektur, Möbel und Grafik.", turningPoint: "Die Avantgarde verlässt den Bilderrahmen und prägt die globale Gestaltung des 20. Jahrhunderts.", experience: { title: "Vom Pariser Atelier nach New York", story: "In Mondrians Atelier sind selbst Wände und Möbel Teil der Komposition. In New York begegnet sein Raster dem Rhythmus der Straßen und dem Jazz.", mission: "Prüfe, wie wenige Linien und Farben nötig sind, damit Ruhe, Spannung und Rhythmus entstehen." }, coinReward: 80 },
-];
+const aliases: Record<string, string> = {
+  "J. M. W. Turner": "william-turner",
+  "Édouard Manet": "edouard-manet",
+  "Piet Mondrian": "piet-mondrian",
+};
 
-export const artPathWithWorks = artPath.map((station) => ({
-  ...station,
-  atelier: epochAteliers[station.index],
-  work: findWork(station.workId),
-  works: station.workIds.map((id) => findWork(id)).filter((work) => work !== undefined),
-  artistProfiles: station.artists.map((name) => {
-    const aliases: Record<string, string> = {
-      "J. M. W. Turner": "william-turner",
-      "Édouard Manet": "edouard-manet",
-      "Piet Mondrian": "piet-mondrian",
-    };
-    return allPainters.find((painter) =>
-      aliases[name] ? painter.slug === aliases[name] : painter.name === name,
-    );
-  }).filter((painter) => painter !== undefined),
+function findPainter(name: string): Painter | undefined {
+  const alias = aliases[name];
+  if (alias) return allPainters.find((painter) => painter.slug === alias);
+  return allPainters.find((painter) => painter.name === name);
+}
+
+export const artPath: ArtPathStation[] = stationContent.map((content, index) => ({
+  ...content,
+  index,
+  coinReward: (index + 1) % 5 === 0 ? 80 : 40,
 }));
+
+export type ArtPathStationWithWorks = ArtPathStation & {
+  atelier: StationContent;
+  artistProfiles: Painter[];
+  /** Ein Schlüsselwerk je Künstler — die Werke, die auf der Station studiert werden. */
+  works: Work[];
+  work: Work | undefined;
+};
+
+export const artPathWithWorks: ArtPathStationWithWorks[] = artPath.map((station) => {
+  const artistProfiles = station.artists
+    .map((name) => findPainter(name))
+    .filter((painter): painter is Painter => painter !== undefined);
+  const works = artistProfiles
+    .map((painter) => painter.works[0])
+    .filter((work): work is Work => work !== undefined);
+  return {
+    ...station,
+    atelier: station,
+    artistProfiles,
+    works,
+    work: works[0],
+  };
+});
 
 export const totalArtPathCoins = artPath.reduce((sum, station) => sum + station.coinReward, 0);
