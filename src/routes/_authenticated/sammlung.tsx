@@ -13,6 +13,7 @@ import { artRank, artRankClasses } from "@/lib/art-rarity";
 import { PremiumLock } from "@/components/PremiumLock";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { LicenseNotice } from "@/components/LicenseNotice";
+import { OwnPhotos } from "@/components/OwnPhotos";
 
 export const Route = createFileRoute("/_authenticated/sammlung")({
   head: () => ({
@@ -243,6 +244,8 @@ function CollectionPage() {
         })}
       </div>
       <LicenseNotice context="Deine Sammlung enthält ausschließlich gemeinfreie Werke." /></div>
+
+      <OwnPhotos />
 
 
       <h2 className="font-display mt-14 mb-4 text-2xl font-medium">Maler</h2>
