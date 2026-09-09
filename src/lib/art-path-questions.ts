@@ -1,5 +1,4 @@
 import { artPathWithWorks } from "@/lib/art-path";
-import { stationQuizSets } from "@/lib/art-path-quiz";
 
 export type ArtQuestion = {
   question: string;
@@ -17,7 +16,7 @@ function yearNumber(year: string): number {
 
 function shuffle<T>(items: T[], seed: number): T[] {
   const copy = [...items];
-  let state = seed * 9301 + 49297;
+  let state = (seed * 9301 + 49297) % 233280 || 7;
   for (let i = copy.length - 1; i > 0; i--) {
     state = (state * 9301 + 49297) % 233280;
     const j = state % (i + 1);
@@ -29,136 +28,178 @@ function shuffle<T>(items: T[], seed: number): T[] {
   return copy;
 }
 
-/** Zehn Fragen je Station: drei kuratierte, sieben aus dem Katalog erzeugte (inkl. Bildvergleich). */
+function short(text: string, max = 120): string {
+  const clean = text.replace(/^Merke:\s*/, "").trim();
+  return clean.length > max ? `${clean.slice(0, max - 1)}…` : clean;
+}
+
+/** Stationen, aus denen falsche Antworten stammen — immer zwei andere Epochen. */
+function otherStations(index: number) {
+  const others = artPathWithWorks.filter((item) => item.index !== index);
+  const first = others[(index * 7 + 3) % others.length];
+  let second = others[(index * 13 + 11) % others.length];
+  if (second && first && second.index === first.index) {
+    second = others[(others.indexOf(first) + 5) % others.length];
+  }
+  return [first, second].filter((item): item is (typeof artPathWithWorks)[number] => item !== undefined);
+}
+
+/**
+ * Die Abschlussfrage einer Station. Sie prüft den Merksatz, der auf den
+ * Lernkarten dieser Station ausdrücklich hervorgehoben wurde.
+ * Wird von Client und Server identisch verwendet.
+ */
+export function stationFinalQuestion(index: number): ArtQuestion | undefined {
+  const station = artPathWithWorks[index];
+  if (!station) return undefined;
+  const others = otherStations(index);
+  const answer = short(station.mnemonics[0] ?? station.turningPoint);
+  const wrong = others.map((item) => short(item.mnemonics[0] ?? item.turningPoint));
+  if (wrong.length < 2) return undefined;
+  return {
+    question: `Abschlussfrage: Welcher Merksatz gehört zu ${station.era}?`,
+    options: shuffle([answer, wrong[0] as string, wrong[1] as string], index + 101),
+    answer,
+    explanation: `${station.era} (${station.years}): ${station.turningPoint}`,
+  };
+}
+
+/** Neun Übungsfragen je Station — alle beziehen sich auf den zuvor gelernten Stoff. */
 export function stationQuestions(index: number): ArtQuestion[] {
   const station = artPathWithWorks[index];
   if (!station) return [];
-  const curated: ArtQuestion[] = (stationQuizSets[index] ?? []).map((quiz) => ({
-    question: quiz.question,
-    options: [...quiz.options],
-    answer: quiz.answer,
-    explanation: quiz.explanation,
-  }));
-
+  const others = otherStations(index);
   const artists = station.artistProfiles;
   const names = artists.map((artist) => artist.name);
-  const generated: ArtQuestion[] = [];
+  const questions: ArtQuestion[] = [];
 
-  // 1. Bildzuordnung – Werk aus dem Katalog eines Stationskünstlers
-  artists.forEach((artist, position) => {
-    const work = artist.works[position % Math.max(1, artist.works.length)] ?? artist.works[0];
-    if (!work) return;
+  // 1 & 9: Bildzuordnung — genau die Werke der Künstlerkarten
+  const attributionFor = (position: number, seed: number): ArtQuestion | undefined => {
+    const artist = artists[position];
+    const work = station.works[position];
+    if (!artist || !work) return undefined;
     const wrong = names.filter((name) => name !== artist.name).slice(0, 2);
-    if (wrong.length < 2) return;
-    generated.push({
+    if (wrong.length < 2) return undefined;
+    return {
       question: `Von wem stammt dieses Werk — «${work.title}»?`,
-      options: shuffle([artist.name, ...wrong], index + position + 1),
+      options: shuffle([artist.name, ...wrong], seed),
       answer: artist.name,
       explanation: `${work.title} (${work.year}) malte ${artist.name} (${artist.life}).`,
       image: work.image,
-    });
-  });
+    };
+  };
 
-  // 2. Jahreszahl
-  const dated = station.works[0];
-  if (dated) {
-    const year = yearNumber(dated.year);
-    generated.push({
-      question: `In welchem Zeitraum entstand «${dated.title}»?`,
-      options: shuffle([dated.year, `${year - 40}`, `${year + 60}`], index + 7),
-      answer: dated.year,
-      explanation: `${dated.title} entstand ${dated.year} — mitten in der Epoche ${station.era}.`,
+  const first = attributionFor(0, index + 1);
+  if (first) questions.push(first);
+
+  // 2: Merksatz zur Technik
+  const techniqueAnswer = short(station.technique, 130);
+  if (others.length >= 2) {
+    questions.push({
+      question: `Welche Technik kennzeichnet die Werkstatt dieser Epoche?`,
+      options: shuffle([techniqueAnswer, short(others[0]!.technique, 130), short(others[1]!.technique, 130)], index + 21),
+      answer: techniqueAnswer,
+      explanation: station.technique,
+      ...(station.work?.image ? { image: station.work.image } : {}),
     });
   }
 
-  // 3. Bildvergleich – zwei Werke verschiedener Künstler nebeneinander
-  const first = artists[0]?.works[0];
-  const second = artists[1]?.works[0];
-  if (first && second && artists[0] && artists[1]) {
-    generated.push({
+  // 3: Bildvergleich — wer hat gemalt?
+  const workA = station.works[0];
+  const workB = station.works[1];
+  if (workA && workB && artists[0] && artists[1]) {
+    questions.push({
       question: `Welches der beiden Bilder malte ${artists[0].name}?`,
       options: ["Linkes Bild", "Rechtes Bild"],
       answer: "Linkes Bild",
-      explanation: `Links: ${first.title} von ${artists[0].name}. Rechts: ${second.title} von ${artists[1].name}.`,
+      explanation: `Links: ${workA.title} von ${artists[0].name}. Rechts: ${workB.title} von ${artists[1].name}.`,
       compare: [
-        { src: first.image, label: "Linkes Bild", caption: "A" },
-        { src: second.image, label: "Rechtes Bild", caption: "B" },
+        { src: workA.image, label: "Linkes Bild", caption: artists[0].name },
+        { src: workB.image, label: "Rechtes Bild", caption: artists[1].name },
       ],
     });
-    generated.push({
+  }
+
+  // 4: Merksatz 2
+  if (station.mnemonics[1] && others.length >= 2) {
+    const answer = short(station.mnemonics[1]);
+    questions.push({
+      question: "Welche Aussage hast du auf den Merkkarten dieser Station gelernt?",
+      options: shuffle([answer, short(others[0]!.mnemonics[1] ?? others[0]!.turningPoint), short(others[1]!.mnemonics[1] ?? others[1]!.turningPoint)], index + 31),
+      answer,
+      explanation: station.mnemonics[1],
+    });
+  }
+
+  // 5: Werkzeuge und Pinsel
+  if (others.length >= 2) {
+    const answer = short(station.brushes, 130);
+    questions.push({
+      question: "Womit wurde in dieser Epoche gemalt?",
+      options: shuffle([answer, short(others[0]!.brushes, 130), short(others[1]!.brushes, 130)], index + 41),
+      answer,
+      explanation: `${station.brushes} Werkzeuge: ${station.tools}`,
+    });
+  }
+
+  // 6: Bildvergleich — welches Werk entstand früher?
+  if (workA && workB) {
+    const earlierLeft = yearNumber(workA.year) <= yearNumber(workB.year);
+    questions.push({
       question: "Welches der beiden Werke entstand früher?",
       options: ["Linkes Bild", "Rechtes Bild"],
-      answer: yearNumber(first.year) <= yearNumber(second.year) ? "Linkes Bild" : "Rechtes Bild",
-      explanation: `${first.title} (${first.year}) gegenüber ${second.title} (${second.year}).`,
+      answer: earlierLeft ? "Linkes Bild" : "Rechtes Bild",
+      explanation: `${workA.title} (${workA.year}) gegenüber ${workB.title} (${workB.year}).`,
       compare: [
-        { src: first.image, label: "Linkes Bild", caption: first.year },
-        { src: second.image, label: "Rechtes Bild", caption: second.year },
+        { src: workA.image, label: "Linkes Bild", caption: workA.year },
+        { src: workB.image, label: "Rechtes Bild", caption: workB.year },
       ],
     });
   }
 
-  // 4. Epoche zuordnen
-  const otherEras = artPathWithWorks
-    .filter((item) => item.index !== index)
-    .map((item) => item.era)
-    .filter((era) => era !== station.era);
-  if (station.work && otherEras.length >= 2) {
-    generated.push({
-      question: `Zu welcher Epoche zählt «${station.work.title}»?`,
-      options: shuffle([station.era, otherEras[0] as string, otherEras[otherEras.length - 1] as string], index + 3),
-      answer: station.era,
-      explanation: `${station.work.title} gehört zur Epoche ${station.era} (${station.years}).`,
-      image: station.work.image,
-    });
-  }
-
-  // 5. Ort der Epoche
-  const otherPlaces = artPathWithWorks
-    .filter((item) => item.index !== index)
-    .map((item) => item.place)
-    .filter((place) => place !== station.place);
-  if (otherPlaces.length >= 2) {
-    generated.push({
-      question: `Wo liegt das Zentrum dieser Epoche?`,
-      options: shuffle([station.place, otherPlaces[0] as string, otherPlaces[1] as string], index + 11),
-      answer: station.place,
-      explanation: `${station.era} entfaltet sich vor allem in ${station.place} (${station.years}).`,
-    });
-  }
-
-  // 6. Wendepunkt der Epoche
-  const otherTurns = artPathWithWorks.filter((item) => item.index !== index);
-  if (otherTurns.length >= 2) {
-    const wrongA = otherTurns[0]?.turningPoint;
-    const wrongB = otherTurns[otherTurns.length - 1]?.turningPoint;
-    if (wrongA && wrongB) {
-      const short = (text: string) => (text.length > 110 ? `${text.slice(0, 108)}…` : text);
-      generated.push({
-        question: "Welcher Satz beschreibt den Wendepunkt dieser Epoche?",
-        options: shuffle([short(station.turningPoint), short(wrongA), short(wrongB)], index + 5),
-        answer: short(station.turningPoint),
-        explanation: station.turningPoint,
+  // 7: Farben und Pigmente
+  const paletteAnswer = station.palette[0];
+  if (paletteAnswer && others.length >= 2) {
+    const wrong = others
+      .map((item) => item.palette.find((color) => !station.palette.includes(color)))
+      .filter((color): color is string => Boolean(color));
+    if (wrong.length >= 2) {
+      questions.push({
+        question: `Welche Farbe gehört zur typischen Palette von ${station.era}?`,
+        options: shuffle([paletteAnswer, wrong[0] as string, wrong[1] as string], index + 51),
+        answer: paletteAnswer,
+        explanation: `Palette dieser Epoche: ${station.palette.join(", ")}. ${station.pigments}`,
       });
     }
   }
 
-  const attribution = generated.filter((q) => q.image && !q.compare);
-  const compares = generated.filter((q) => q.compare);
-  const rest = generated.filter((q) => !q.image && !q.compare);
-  const mixed = [
-    attribution[0], compares[0], attribution[1], compares[1],
-    rest[0], attribution[2], rest[1], rest[2], attribution[3],
-  ].filter((q): q is ArtQuestion => Boolean(q));
-  const generatedOrdered = mixed;
-  generated.length = 0;
-  generated.push(...generatedOrdered);
-  const all = [...curated, ...generated];
-  const ordered: ArtQuestion[] = [];
-  // kuratierte und erzeugte Fragen abwechselnd
-  for (let i = 0; i < Math.max(curated.length, generated.length); i++) {
-    if (curated[i]) ordered.push(curated[i] as ArtQuestion);
-    if (generated[i]) ordered.push(generated[i] as ArtQuestion);
+  // 8: Ort und Zeit
+  if (others.length >= 2) {
+    questions.push({
+      question: `Wo und wann entsteht ${station.era}?`,
+      options: shuffle([
+        `${station.place}, ${station.years}`,
+        `${others[0]!.place}, ${others[0]!.years}`,
+        `${others[1]!.place}, ${others[1]!.years}`,
+      ], index + 61),
+      answer: `${station.place}, ${station.years}`,
+      explanation: `${station.era} entfaltet sich in ${station.place} (${station.years}).`,
+    });
   }
-  const unique = ordered.length >= 9 ? ordered : all;
-  return unique.slice(0, 9);
+
+  // 9: Merksatz 3
+  if (station.mnemonics[2] && others.length >= 2) {
+    const answer = short(station.mnemonics[2]);
+    questions.push({
+      question: "Und zum Schluss: Welcher Merksatz stimmt?",
+      options: shuffle([answer, short(others[0]!.mnemonics[2] ?? others[0]!.lesson), short(others[1]!.mnemonics[2] ?? others[1]!.lesson)], index + 71),
+      answer,
+      explanation: station.mnemonics[2],
+    });
+  }
+
+  const last = attributionFor(2, index + 81) ?? attributionFor(1, index + 91);
+  if (last) questions.push(last);
+
+  return questions.slice(0, 9);
 }
