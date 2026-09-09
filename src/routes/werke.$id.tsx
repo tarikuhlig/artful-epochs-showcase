@@ -50,11 +50,11 @@ function WorkPage() {
       </Link>
 
       <div className="mt-8 grid items-start gap-10 lg:grid-cols-[1.4fr_1fr]">
-        <figure className="overflow-hidden rounded-lg border border-border bg-muted">
-          <img
+        <figure>
+          <MagnifierImage
             src={work.image}
             alt={`${work.title} von ${work.painter.name}`}
-            className="h-auto w-full object-contain"
+            className="overflow-hidden rounded-lg border border-border"
           />
         </figure>
         <div className="lg:sticky lg:top-8">
