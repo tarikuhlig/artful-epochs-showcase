@@ -52,3 +52,8 @@
 - [x] Karten-Quiz über die eigenen gesammelten Werke in der Sammlung
 - [x] Tageswerk-/Tageskünstler-Karten mit Stoff und je zwei Fragen im Dashboard
 - [x] Studierkarten geben Coins (serverseitig gedeckelt)
+- [x] Galerie: gesammelte Werke direkt unter kompaktem Dashboard zeigen
+- [x] Coins klein im Dashboard und auf Entdecken anzeigen
+- [x] Fester Zurück-Pfeil, der beim Scrollen sichtbar bleibt
+- [x] Lupenfunktion zum Erkunden der Werke
+- [x] Eigene Fotos von Werken in der Galerie speichern (ohne KI/Credits)

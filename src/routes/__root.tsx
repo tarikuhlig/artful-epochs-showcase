@@ -12,6 +12,7 @@ import { Settings } from "lucide-react";
 import { MobileTabBar } from "@/components/MobileTabBar";
 import { AppTour } from "@/components/AppTour";
 import { ProfileSetup } from "@/components/ProfileSetup";
+import { BackButton } from "@/components/BackButton";
 
 import appCss from "../styles.css?url";
 import provenanceLogo from "../assets/provenance-logo.png";
@@ -251,6 +252,7 @@ function RootComponent() {
       <PaymentTestModeBanner />
       <SiteHeader />
       <PremiumBanner />
+      <BackButton />
       <main>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
