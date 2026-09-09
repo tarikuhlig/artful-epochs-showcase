@@ -255,7 +255,7 @@ function ArtPathPage() {
     <section className={focus ? "fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-background px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(5rem,env(safe-area-inset-bottom))] sm:px-6" : "mx-auto max-w-4xl px-5 py-10 sm:px-6 md:py-14"}>
       <div className={focus ? "mx-auto w-full max-w-4xl" : ""}>
       {focus && <div className="mb-5 flex items-center justify-between gap-3">
-        <p className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase">Reise · Station {activeStation + 1} von {artPathWithWorks.length}</p>
+        <p className="pl-14 text-[10px] tracking-[0.25em] text-muted-foreground uppercase">Station {activeStation + 1} von {artPathWithWorks.length}</p>
         <Button type="button" variant="outline" size="icon" aria-label="Reise verlassen" onClick={() => setFocus(false)} className="h-10 w-10 rounded-full"><X className="h-4 w-4" /></Button>
       </div>}
       {error && <p className="mb-6 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">{error}</p>}
