@@ -217,6 +217,8 @@ function ArtPathPage() {
 
   const detailWork = station?.works[1] ?? station?.work;
   const unlocked = hasAccess || isFreeJourneyStation(activeStation);
+  /** Index der Lernkarte, wenn gerade eine Lernkarte offen ist. */
+  const study = entry?.type === "study" ? entry.study : -1;
 
   return <div className="min-h-screen bg-background">
     <section className="border-b border-border bg-background">
