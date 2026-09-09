@@ -253,6 +253,8 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {/* Platz für die feste Leiste oben auf dem Handy */}
+      <div aria-hidden className="h-[calc(env(safe-area-inset-top)+3.25rem)] md:hidden" />
       <PaymentTestModeBanner />
       <SiteHeader />
       <PremiumBanner />
@@ -266,7 +268,7 @@ function RootComponent() {
       <div className="fixed top-[calc(env(safe-area-inset-top)+0.6rem)] right-3 z-[65] md:hidden">
         <CoinBadge className="h-9 bg-background/95 px-3 shadow-sm backdrop-blur" />
       </div>
-      <main className="pt-[calc(env(safe-area-inset-top)+3.25rem)] md:pt-0">
+      <main>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
       </main>
