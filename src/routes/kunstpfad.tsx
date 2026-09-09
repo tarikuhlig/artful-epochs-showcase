@@ -163,7 +163,6 @@ function ArtPathPage() {
   const [busy, setBusy] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  const [unlock, setUnlock] = useState<UnlockInfo | null>(null);
 
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [feedback, setFeedback] = useState<Record<number, "correct" | "wrong">>({});
@@ -570,6 +569,5 @@ function ArtPathPage() {
       <LicenseNotice context="Die Reise zeigt ausschließlich Werke, deren Schutzfrist abgelaufen ist." />
       </div>
     </section>
-    <UnlockDialog unlock={unlock} onClose={() => setUnlock(null)} />
   </div>;
 }
