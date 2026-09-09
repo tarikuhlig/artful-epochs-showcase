@@ -295,7 +295,7 @@ function ArtPathPage() {
 
     void loadServerResume();
     return () => { cancelled = true; };
-  }, [restored, progress.length, user]);
+  }, [restored, progressLoading, progress.length, user]);
 
   /** Fortschritt automatisch merken — lokal sofort, auf den Server debounced. */
   useEffect(() => {
