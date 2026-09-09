@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 import { Settings } from "lucide-react";
 import { MobileTabBar } from "@/components/MobileTabBar";
 import { AppTour } from "@/components/AppTour";
+import { ProfileSetup } from "@/components/ProfileSetup";
 
 import appCss from "../styles.css?url";
 import provenanceLogo from "../assets/provenance-logo.png";
@@ -256,6 +257,7 @@ function RootComponent() {
       </main>
       <SiteFooter />
       <MobileTabBar />
+      <ProfileSetup />
       <AppTour />
     </QueryClientProvider>
   );
