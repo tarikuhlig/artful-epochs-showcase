@@ -260,14 +260,14 @@ export function stationQuestions(index: number): ArtQuestion[] {
 
   // Merksatz 3
   if (station.mnemonics[2] && others.length >= 2) {
-    const answer = short(station.mnemonics[2]);
+    const answer = short(station.mnemonics[2].text);
     questions.push({
       id: `merke-3-${index}`,
       kind: "verstaendnis",
       question: "Und zum Schluss: Welcher Merksatz stimmt?",
-      options: shuffle([answer, short(others[0]!.mnemonics[2] ?? others[0]!.lesson), short(others[1]!.mnemonics[2] ?? others[1]!.lesson)], index + 71),
+      options: shuffle([answer, short(others[0]!.mnemonics[2]?.text ?? others[0]!.lesson), short(others[1]!.mnemonics[2]?.text ?? others[1]!.lesson)], index + 71),
       answer,
-      explanation: station.mnemonics[2],
+      explanation: station.mnemonics[2].text,
       hint: `Prüfe jede Aussage gegen das, was in ${station.years} technisch und gesellschaftlich möglich war.`,
       topic: "Merksätze der Epoche",
     });
