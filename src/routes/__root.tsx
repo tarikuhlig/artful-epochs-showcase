@@ -182,7 +182,7 @@ function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-1 text-sm font-medium md:flex">
-          {NAV.map((item) => (
+          {NAV.filter((item) => !item.authOnly || user).map((item) => (
             <Link
               key={item.to}
               to={item.to}
