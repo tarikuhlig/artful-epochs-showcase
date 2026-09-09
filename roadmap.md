@@ -1,10 +1,8 @@
 # Roadmap
 
-## In Arbeit
-- [x] Reise-Quiz: Lernzyklus (Lernen → Abrufen → Anwenden → Feedback → Wiederholen), Fragetypen, Transferfrage, Lernstand Angesehen/Gelernt/Beherrscht, Stationsbilanz
-
-## Offen
-- [ ] Lupe: gesamtes Bild erreichbar (nicht nur Hälfte)
-- [ ] Text neben der Lupe entfernen
-- [ ] Galerie-Eintrag im Menü (3 Striche / Profil-Sheet) ergänzen
-- [ ] Coin-Kontostand jederzeit sichtbar
+## Erledigt
+- [x] Reise-Quiz: Lernzyklus (Lernen → Abrufen → Anwenden → Feedback → Wiederholen), Fragetypen, Transferfrage, Lernstand, Stationsbilanz
+- [x] Lupe: gesamtes Bild erreichbar
+- [x] Text neben der Lupe entfernt
+- [x] Galerie im mobilen Menü (Mehr)
+- [x] Coin-Kontostand jederzeit sichtbar (Kopfzeile + Handy oben rechts)
