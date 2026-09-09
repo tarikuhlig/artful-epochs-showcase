@@ -162,7 +162,10 @@ function ArtPathPage() {
       {station && <>
         <div className="mb-4 flex items-center justify-between gap-3">
           <div><p className="text-xs text-muted-foreground">Station {station.index + 1} von {artPathWithWorks.length} · {station.years}</p><h2 className="font-display text-xl font-medium sm:text-2xl">{station.era}</h2></div>
-          <span className="flex items-center gap-1 text-sm"><Coins className="h-4 w-4" /> +{station.coinReward}</span>
+          <div className="flex items-center gap-2">
+            <span className="rounded-full border border-border px-3 py-1 text-[11px] tracking-wide">{masteryLabel}</span>
+            <span className="flex items-center gap-1 text-sm"><Coins className="h-4 w-4" /> +{station.coinReward}</span>
+          </div>
         </div>
 
         <div className="mb-2 flex flex-wrap justify-center gap-1.5" aria-label={`Karte ${card + 1} von ${sequence.length}`}>
