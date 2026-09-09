@@ -156,6 +156,8 @@ function ArtPathPage() {
   const [busy, setBusy] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [unlock, setUnlock] = useState<UnlockInfo | null>(null);
+
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [feedback, setFeedback] = useState<Record<number, "correct" | "wrong">>({});
   const [activeStation, setActiveStation] = useState(0);
