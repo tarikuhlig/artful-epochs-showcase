@@ -14,10 +14,10 @@ async function requirePremium(context: { supabase: any; userId: string }) {
 
 export const completePathStation = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ station: z.number().int().min(0).max(11), answer: z.string().trim().min(1).max(120) }).parse(data))
+  .inputValidator((data) => z.object({ station: z.number().int().min(0).max(29), answer: z.string().trim().min(1).max(200) }).parse(data))
   .handler(async ({ data, context }) => {
     if (data.station >= 2) await requirePremium(context);
-    const quiz = artPathQuizzes[data.station];
+    const quiz = stationFinalQuestion(data.station);
     if (!quiz || data.answer !== quiz.answer) throw new Error("Die Antwort ist noch nicht richtig.");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: result, error } = await supabaseAdmin.rpc("complete_art_path_station_for_user", {
