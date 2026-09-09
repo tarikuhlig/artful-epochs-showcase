@@ -85,6 +85,24 @@ function EpochenIndex() {
           );
         })}
       </div>
+
+      <Link
+        to="/moderne"
+        className="group mt-8 flex items-center justify-between gap-4 rounded-xl border border-border p-6 transition-colors hover:bg-accent"
+      >
+        <span>
+          <span className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase">
+            Noch geschützt
+          </span>
+          <span className="font-display mt-1 block text-2xl font-medium">
+            Moderne &amp; Gegenwart
+          </span>
+          <span className="mt-1 block text-sm text-muted-foreground">
+            Rothko, Picasso, Kahlo, Warhol und mehr — lernen ohne Abbildung, mit Weg zum Museum.
+          </span>
+        </span>
+        <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1" />
+      </Link>
     </div>
   );
 }

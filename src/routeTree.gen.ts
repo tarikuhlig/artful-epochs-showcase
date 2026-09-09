@@ -23,6 +23,8 @@ import { Route as AuthenticatedSammlungRouteImport } from './routes/_authenticat
 import { Route as EpochenIndexRouteImport } from './routes/epochen.index'
 import { Route as EpochenEpocheRouteImport } from './routes/epochen.$epoche'
 import { Route as MalerSlugRouteImport } from './routes/maler.$slug'
+import { Route as ModerneIndexRouteImport } from './routes/moderne.index'
+import { Route as ModerneSlugRouteImport } from './routes/moderne.$slug'
 import { Route as MuseenIndexRouteImport } from './routes/museen.index'
 import { Route as MuseenSlugRouteImport } from './routes/museen.$slug'
 import { Route as ReisenIndexRouteImport } from './routes/reisen.index'
@@ -102,6 +104,16 @@ const MalerSlugRoute = MalerSlugRouteImport.update({
   path: '/maler/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ModerneIndexRoute = ModerneIndexRouteImport.update({
+  id: '/moderne/',
+  path: '/moderne/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModerneSlugRoute = ModerneSlugRouteImport.update({
+  id: '/moderne/$slug',
+  path: '/moderne/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MuseenIndexRoute = MuseenIndexRouteImport.update({
   id: '/museen/',
   path: '/museen/',
@@ -152,11 +164,13 @@ export interface FileRoutesByFullPath {
   '/sammlung': typeof AuthenticatedSammlungRoute
   '/epochen/$epoche': typeof EpochenEpocheRoute
   '/maler/$slug': typeof MalerSlugRoute
+  '/moderne/$slug': typeof ModerneSlugRoute
   '/museen/$slug': typeof MuseenSlugRoute
   '/reisen/$slug': typeof ReisenSlugRoute
   '/stadt/$slug': typeof StadtSlugRoute
   '/werke/$id': typeof WerkeIdRoute
   '/epochen/': typeof EpochenIndexRoute
+  '/moderne/': typeof ModerneIndexRoute
   '/museen/': typeof MuseenIndexRoute
   '/reisen/': typeof ReisenIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -174,11 +188,13 @@ export interface FileRoutesByTo {
   '/sammlung': typeof AuthenticatedSammlungRoute
   '/epochen/$epoche': typeof EpochenEpocheRoute
   '/maler/$slug': typeof MalerSlugRoute
+  '/moderne/$slug': typeof ModerneSlugRoute
   '/museen/$slug': typeof MuseenSlugRoute
   '/reisen/$slug': typeof ReisenSlugRoute
   '/stadt/$slug': typeof StadtSlugRoute
   '/werke/$id': typeof WerkeIdRoute
   '/epochen': typeof EpochenIndexRoute
+  '/moderne': typeof ModerneIndexRoute
   '/museen': typeof MuseenIndexRoute
   '/reisen': typeof ReisenIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -198,11 +214,13 @@ export interface FileRoutesById {
   '/_authenticated/sammlung': typeof AuthenticatedSammlungRoute
   '/epochen/$epoche': typeof EpochenEpocheRoute
   '/maler/$slug': typeof MalerSlugRoute
+  '/moderne/$slug': typeof ModerneSlugRoute
   '/museen/$slug': typeof MuseenSlugRoute
   '/reisen/$slug': typeof ReisenSlugRoute
   '/stadt/$slug': typeof StadtSlugRoute
   '/werke/$id': typeof WerkeIdRoute
   '/epochen/': typeof EpochenIndexRoute
+  '/moderne/': typeof ModerneIndexRoute
   '/museen/': typeof MuseenIndexRoute
   '/reisen/': typeof ReisenIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -222,11 +240,13 @@ export interface FileRouteTypes {
     | '/sammlung'
     | '/epochen/$epoche'
     | '/maler/$slug'
+    | '/moderne/$slug'
     | '/museen/$slug'
     | '/reisen/$slug'
     | '/stadt/$slug'
     | '/werke/$id'
     | '/epochen/'
+    | '/moderne/'
     | '/museen/'
     | '/reisen/'
     | '/api/public/payments/webhook'
@@ -244,11 +264,13 @@ export interface FileRouteTypes {
     | '/sammlung'
     | '/epochen/$epoche'
     | '/maler/$slug'
+    | '/moderne/$slug'
     | '/museen/$slug'
     | '/reisen/$slug'
     | '/stadt/$slug'
     | '/werke/$id'
     | '/epochen'
+    | '/moderne'
     | '/museen'
     | '/reisen'
     | '/api/public/payments/webhook'
@@ -267,11 +289,13 @@ export interface FileRouteTypes {
     | '/_authenticated/sammlung'
     | '/epochen/$epoche'
     | '/maler/$slug'
+    | '/moderne/$slug'
     | '/museen/$slug'
     | '/reisen/$slug'
     | '/stadt/$slug'
     | '/werke/$id'
     | '/epochen/'
+    | '/moderne/'
     | '/museen/'
     | '/reisen/'
     | '/api/public/payments/webhook'
@@ -287,11 +311,13 @@ export interface RootRouteChildren {
   PremiumRoute: typeof PremiumRoute
   EpochenEpocheRoute: typeof EpochenEpocheRoute
   MalerSlugRoute: typeof MalerSlugRoute
+  ModerneSlugRoute: typeof ModerneSlugRoute
   MuseenSlugRoute: typeof MuseenSlugRoute
   ReisenSlugRoute: typeof ReisenSlugRoute
   StadtSlugRoute: typeof StadtSlugRoute
   WerkeIdRoute: typeof WerkeIdRoute
   EpochenIndexRoute: typeof EpochenIndexRoute
+  ModerneIndexRoute: typeof ModerneIndexRoute
   MuseenIndexRoute: typeof MuseenIndexRoute
   ReisenIndexRoute: typeof ReisenIndexRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -397,6 +423,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MalerSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/moderne/': {
+      id: '/moderne/'
+      path: '/moderne'
+      fullPath: '/moderne/'
+      preLoaderRoute: typeof ModerneIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/moderne/$slug': {
+      id: '/moderne/$slug'
+      path: '/moderne/$slug'
+      fullPath: '/moderne/$slug'
+      preLoaderRoute: typeof ModerneSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/museen/': {
       id: '/museen/'
       path: '/museen'
@@ -476,11 +516,13 @@ const rootRouteChildren: RootRouteChildren = {
   PremiumRoute: PremiumRoute,
   EpochenEpocheRoute: EpochenEpocheRoute,
   MalerSlugRoute: MalerSlugRoute,
+  ModerneSlugRoute: ModerneSlugRoute,
   MuseenSlugRoute: MuseenSlugRoute,
   ReisenSlugRoute: ReisenSlugRoute,
   StadtSlugRoute: StadtSlugRoute,
   WerkeIdRoute: WerkeIdRoute,
   EpochenIndexRoute: EpochenIndexRoute,
+  ModerneIndexRoute: ModerneIndexRoute,
   MuseenIndexRoute: MuseenIndexRoute,
   ReisenIndexRoute: ReisenIndexRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
