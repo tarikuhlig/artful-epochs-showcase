@@ -2,9 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQueryClient } from "@tanstack/react-query";
-import { Gem, LockKeyhole, Sparkles } from "lucide-react";
+import { Check, Gem, LockKeyhole, Sparkles } from "lucide-react";
 import { allWorks } from "@/lib/art-data";
-import { useAuctionOffers } from "@/lib/economy";
+import { useAuctionOffers, useOwnedItems } from "@/lib/economy";
 import { Button } from "@/components/ui/button";
 import { artRank, artRankClasses } from "@/lib/art-rarity";
 import coin from "@/assets/provenance-coin.png";
@@ -26,12 +26,14 @@ export const Route = createFileRoute("/_authenticated/auktionshaus")({
 
 function AuctionPage() {
   const { data: offers = [], refetch: refetchOffers } = useAuctionOffers();
+  const { data: owned = [] } = useOwnedItems();
   const { hasAccess } = usePremiumAccess();
   const purchase = useServerFn(purchaseAuctionOffer);
   const queryClient = useQueryClient();
   const [busy, setBusy] = useState<string | null>(null);
   const [message, setMessage] = useState("");
 
+  const ownedSlugs = new Set(owned.map((item) => item.item_slug));
   const rankedOffers = [...offers].sort((a, b) => b.price - a.price);
   void refetchOffers;
   return <main className="min-h-screen bg-background">
@@ -53,6 +55,7 @@ function AuctionPage() {
         const work = allWorks.find((w) => w.id === offer.work_slug); if (!work) return null;
         const rarity = artRank(offer.price);
         const isPlatinum = rarity === "Platin";
+        const alreadyOwned = ownedSlugs.has(work.id);
         return <article key={offer.id} className={`flex flex-col gap-4 rounded-[2rem] border border-border bg-card p-4 shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-shadow hover:shadow-[0_16px_44px_rgba(0,0,0,0.07)] ${isPlatinum ? "w-full sm:col-span-2 sm:mx-auto sm:max-w-3xl" : ""}`}>
           <div className="flex items-center justify-between px-1 pt-1">
             <span className="text-[10px] font-medium tracking-[0.15em] text-muted-foreground uppercase">{isPlatinum ? "Weltlos des Tages" : `Los ${String(index + 1).padStart(2, "0")}`}</span>
@@ -78,7 +81,7 @@ function AuctionPage() {
                 <span className="text-[9px] font-semibold tracking-wider text-muted-foreground uppercase">Coins</span>
               </span>
             </div>
-            <Button type="button" disabled={!hasAccess || busy !== null} onClick={async () => { setBusy(offer.id); setMessage(""); try { await purchase({ data: { offerId: offer.id } }); setMessage(`${work.title} wurde deiner Galerie hinzugefügt.`); emitCollected({ kind: "work", slug: work.id }); emitCollected({ kind: "painter", slug: work.painter.slug }); await Promise.all([queryClient.invalidateQueries({ queryKey: ["owned_items"] }), queryClient.invalidateQueries({ queryKey: ["user_stats"] })]); } catch (cause) { setMessage(cause instanceof Error ? cause.message : "Der Ankauf war nicht möglich."); } finally { setBusy(null); } }} className="h-11 rounded-full px-6 text-[12px] font-medium tracking-wide">{hasAccess ? <Gem /> : <LockKeyhole />}{busy === offer.id ? "Wird erworben …" : hasAccess ? "Werk erwerben" : "Premium"}</Button>
+            <Button type="button" disabled={!hasAccess || busy !== null || alreadyOwned} onClick={async () => { if (alreadyOwned) return; setBusy(offer.id); setMessage(""); try { await purchase({ data: { offerId: offer.id } }); setMessage(`${work.title} wurde deiner Galerie hinzugefügt.`); emitCollected({ kind: "work", slug: work.id }); emitCollected({ kind: "painter", slug: work.painter.slug }); await Promise.all([queryClient.invalidateQueries({ queryKey: ["owned_items"] }), queryClient.invalidateQueries({ queryKey: ["user_stats"] })]); } catch (cause) { setMessage(cause instanceof Error ? cause.message : "Der Ankauf war nicht möglich."); } finally { setBusy(null); } }} className="h-11 rounded-full px-6 text-[12px] font-medium tracking-wide">{alreadyOwned ? <><Check />Gekauft</> : hasAccess ? <Gem /> : <LockKeyhole />}{!alreadyOwned && (busy === offer.id ? "Wird erworben …" : hasAccess ? "Werk erwerben" : "Premium")}</Button>
           </div>
         </article>;
       })}</div>

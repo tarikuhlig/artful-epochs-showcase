@@ -41,6 +41,27 @@ export type Database = {
         }
         Relationships: []
       }
+      art_path_resume: {
+        Row: {
+          card_index: number
+          station_index: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          card_index?: number
+          station_index?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          card_index?: number
+          station_index?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       auction_offers: {
         Row: {
           created_at: string

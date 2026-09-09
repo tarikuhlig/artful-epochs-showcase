@@ -9,6 +9,7 @@ import { epochs, allWorks } from "@/lib/art-data";
 import { museums } from "@/lib/museums";
 import { artPathWithWorks } from "@/lib/art-path";
 import { useAuth } from "@/hooks/useAuth";
+import { useArtPathProgress } from "@/lib/economy";
 import { workOfTheDay } from "@/lib/farm";
 import { painterOfTheDay, worksOfPainter } from "@/lib/daily-artist";
 import coin from "@/assets/provenance-coin.png";
@@ -36,8 +37,22 @@ const DAILY_TIPS = [
   { title: "Vergleiche Größe und Wirkung", text: "Denke das echte Format mit: Ein kleines Bild lädt zur Nähe ein, ein monumentales Werk nimmt den ganzen Raum ein." },
 ];
 
+function readHasResume(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const raw = window.localStorage.getItem("provenance:journey");
+    if (!raw) return false;
+    const parsed = JSON.parse(raw) as { station?: number; card?: number };
+    return typeof parsed.station === "number" && (parsed.station > 0 || (parsed.card ?? 0) > 0);
+  } catch {
+    return false;
+  }
+}
+
 function HomePage() {
   const { user, loading } = useAuth();
+  const { data: progress = [] } = useArtPathProgress();
+  const [hasResume, setHasResume] = useState(readHasResume);
   const [stage, setStage] = useState<"boot" | "title" | "intro" | "app">("boot");
 
   useEffect(() => {
@@ -45,11 +60,16 @@ function HomePage() {
     if (!loading) setStage(user ? "intro" : "title");
   }, [loading, user]);
 
+  useEffect(() => {
+    setHasResume(readHasResume());
+  }, []);
+
   const finishIntro = useCallback(() => {
     sessionStorage.setItem("provenance-intro", "done");
     setStage("app");
   }, []);
 
+  const canResume = progress.length > 0 || hasResume;
   const work = workOfTheDay();
   const workIndex = Math.max(0, allWorks.indexOf(work));
   const discoveries = [work, allWorks[(workIndex + 29) % allWorks.length], allWorks[(workIndex + 71) % allWorks.length]].filter(Boolean);
@@ -72,7 +92,7 @@ function HomePage() {
             <h1 className="font-display mt-4 max-w-xl text-5xl leading-[0.98] font-medium md:text-6xl">Jeden Tag ein neues Bild sehen.</h1>
             <p className="mt-5 max-w-lg text-base leading-relaxed text-muted-foreground">Reise durch Jahrhunderte, begegne Künstlern und lerne Meisterwerke mit neuen Augen zu betrachten.</p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <Button asChild size="lg" className="rounded-full px-6"><Link to="/kunstpfad">Reise beginnen <ArrowRight /></Link></Button>
+              <Button asChild size="lg" className="rounded-full px-6"><Link to="/kunstpfad">{canResume ? "Reise fortsetzen" : "Reise beginnen"} <ArrowRight /></Link></Button>
               <Button asChild variant="outline" size="lg" className="rounded-full px-6"><Link to="/epochen">Frei entdecken</Link></Button>
             </div>
           </div>
