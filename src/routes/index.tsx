@@ -132,13 +132,15 @@ function HomePage() {
         <div className="mx-auto max-w-6xl px-6 py-14">
           <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Wähle deinen Einstieg</p>
           <h2 className="font-display mt-2 text-3xl font-medium">Was möchtest du heute entdecken?</h2>
-          <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             <ExploreCard to="/kuenstler-des-tages" image={painterWorks[0]?.image} icon={<Palette />} title="Künstler des Tages" text={dailyPainter.name} />
             <ExploreCard to="/kunstpfad" image={allWorks[(workIndex + 101) % allWorks.length]?.image} icon={<Map />} title="Reise" text={`${artPathWithWorks.length} Epochen Schritt für Schritt`} />
+            <ExploreCard to="/studieren" image={allWorks[(workIndex + 137) % allWorks.length]?.image} icon={<GraduationCap />} title="Studieren" text="Lernkarten zu Werken und Künstlern" />
             <ExploreCard to="/epochen" image={allWorks[(workIndex + 157) % allWorks.length]?.image} icon={<Layers />} title="Epochen" text={`${epochs.length} Kapitel der Kunstgeschichte`} />
             <ExploreCard to="/museen" image={allWorks[(workIndex + 223) % allWorks.length]?.image} icon={<Landmark />} title="Museen" text={`${museums.length} Häuser weltweit`} />
             <ExploreCard to="/auktionshaus" image={allWorks[(workIndex + 311) % allWorks.length]?.image} icon={<Coins />} title="Auktionshaus" text="Werke für deine Galerie finden" />
           </div>
+
           <Link to="/moderne" className="group mt-4 flex items-center justify-between gap-4 rounded-xl border border-border bg-background p-5 hover:border-pastel-tip/60">
             <span>
               <span className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Noch geschützt</span>
