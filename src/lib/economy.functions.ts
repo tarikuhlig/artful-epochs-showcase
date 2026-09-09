@@ -61,3 +61,28 @@ export const completeDailyCoinChallenge = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return result?.[0] ?? null;
   });
+
+export const completeCardQuizRound = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    round: z.number().int().min(0).max(CARD_QUIZ_ROUNDS_PER_DAY - 1),
+    answers: z.array(z.string()).length(CARD_QUIZ_CARDS),
+  }).parse(data))
+  .handler(async ({ data, context }) => {
+    await requirePremium(context);
+    const today = new Date().toISOString().slice(0, 10);
+    if (data.date !== today) throw new Error("Diese Runde ist nicht mehr aktuell.");
+    const cards = cardQuizRound(data.date, data.round);
+    if (cards.length !== CARD_QUIZ_CARDS) throw new Error("Die Runde konnte nicht geladen werden.");
+    const score = cards.reduce((total, card, index) => total + (data.answers[index] === card.answer ? 1 : 0), 0);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: result, error } = await supabaseAdmin.rpc("complete_card_quiz_round_for_user", {
+      target_user: context.userId,
+      target_date: data.date,
+      target_round: data.round,
+      target_score: score,
+    });
+    if (error) throw new Error(error.message);
+    return result?.[0] ?? null;
+  });

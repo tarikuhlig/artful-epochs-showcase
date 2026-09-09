@@ -62,3 +62,19 @@ export function useAuctionOffers() {
     },
   });
 }
+export function useCardQuizRounds(date: string) {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["card_quiz_rounds", user?.id, date],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("card_quiz_rounds")
+        .select("round_index, score, coin_reward")
+        .eq("round_date", date)
+        .order("round_index");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
