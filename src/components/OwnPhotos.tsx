@@ -119,7 +119,7 @@ export function OwnPhotos() {
           {photos.data.map((photo) => (
             <article key={photo.id} className="rounded-xl border border-border p-3">
               {photo.url ? (
-                <MagnifierImage src={photo.url} alt={photo.title} className="overflow-hidden rounded-lg" />
+                <MagnifierImage src={photo.url} alt={photo.title} />
               ) : (
                 <div className="aspect-[4/3] rounded-lg bg-muted" />
               )}

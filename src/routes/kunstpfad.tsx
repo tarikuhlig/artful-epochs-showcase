@@ -9,6 +9,7 @@ import { useInvalidateFarm } from "@/lib/farm";
 import coin from "@/assets/provenance-coin.png";
 import { questionKindLabel, repeatVariant, stationFinalQuestion, stationQuestions, stationSummary, stationTransferQuestion, type ArtQuestion } from "@/lib/art-path-questions";
 import { Button } from "@/components/ui/button";
+import { MagnifierImage } from "@/components/MagnifierImage";
 import { PremiumLock } from "@/components/PremiumLock";
 import { LicenseNotice } from "@/components/LicenseNotice";
 import { FREE_JOURNEY_STATIONS, isFreeJourneyStation } from "@/lib/premium-access";
@@ -98,7 +99,7 @@ function PracticeCard({ quiz, step, total, imageUrl, onResult }: { quiz: ArtQues
       <h3 className="font-display mt-3 text-2xl leading-snug font-medium sm:text-3xl">{quiz.question}</h3>
       <div className="mt-6 grid grid-cols-2 gap-4">
         {quiz.compare.map((item) => <button key={item.label} type="button" onClick={() => choose(item.label)} className={`overflow-hidden rounded-lg border text-left transition-colors ${picked === item.label ? (item.label === quiz.answer ? "border-foreground" : "border-destructive/50") : "border-border hover:border-foreground/40"}`}>
-          <div className="aspect-[4/3] overflow-hidden bg-muted"><img src={item.src} alt={item.label} loading="lazy" className="h-full w-full object-cover" /></div>
+          <div className="aspect-[4/3] overflow-hidden bg-muted p-2"><img src={item.src} alt={item.label} loading="lazy" className="h-full w-full object-contain" /></div>
           <p className="px-3 py-2 text-xs text-muted-foreground">{item.label} · {item.caption}</p>
         </button>)}
       </div>
@@ -109,7 +110,7 @@ function PracticeCard({ quiz, step, total, imageUrl, onResult }: { quiz: ArtQues
   }
 
   return <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[0.85fr_1.15fr]">
-    <div className="relative min-h-56 bg-muted md:min-h-full">{(quiz.image ?? imageUrl) && <img src={quiz.image ?? imageUrl} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-90" />}</div>
+    <div className="flex min-h-56 items-center justify-center bg-muted p-4 md:min-h-full">{(quiz.image ?? imageUrl) && <MagnifierImage src={(quiz.image ?? imageUrl)!} alt="Werk zur Frage" className="w-full" />}</div>
     <div className="flex flex-col justify-center p-6 sm:p-9">
       {label}
       <h3 className="font-display mt-3 text-2xl leading-snug font-medium sm:text-3xl">{quiz.question}</h3>
@@ -133,6 +134,8 @@ function ArtPathPage() {
   const [feedback, setFeedback] = useState<Record<number, "correct" | "wrong">>({});
   const [activeStation, setActiveStation] = useState(0);
   const [card, setCard] = useState(0);
+  /** Isolierter Reise-Flow: die Station läuft in einem eigenen Vollbild-Fenster. */
+  const [focus, setFocus] = useState(false);
   /** Ergebnisse je Station und Frage — Grundlage für Wiederholung und Lernstand. */
   const [results, setResults] = useState<Record<number, Record<string, boolean>>>({});
   const [repeats, setRepeats] = useState<Record<number, string[]>>({});
@@ -186,6 +189,7 @@ function ArtPathPage() {
   function openStation(index: number) {
     setActiveStation(index);
     setCard(0);
+    setFocus(true);
     setError("");
     setNotice("");
   }
@@ -248,7 +252,12 @@ function ArtPathPage() {
       </div>
     </section>
 
-    <section className="mx-auto max-w-4xl px-5 py-10 sm:px-6 md:py-14">
+    <section className={focus ? "fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-background px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(5rem,env(safe-area-inset-bottom))] sm:px-6" : "mx-auto max-w-4xl px-5 py-10 sm:px-6 md:py-14"}>
+      <div className={focus ? "mx-auto w-full max-w-4xl" : ""}>
+      {focus && <div className="mb-5 flex items-center justify-between gap-3">
+        <p className="pl-14 text-[10px] tracking-[0.25em] text-muted-foreground uppercase">Station {activeStation + 1} von {artPathWithWorks.length}</p>
+        <Button type="button" variant="outline" size="icon" aria-label="Reise verlassen" onClick={() => setFocus(false)} className="h-10 w-10 rounded-full"><X className="h-4 w-4" /></Button>
+      </div>}
       {error && <p className="mb-6 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">{error}</p>}
       {notice && <p role="status" className="mb-6 rounded-lg border border-border bg-path-leaf p-4 text-sm">{notice}</p>}
       {station && <>
@@ -260,25 +269,31 @@ function ArtPathPage() {
           </div>
         </div>
 
+        {!focus && <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+          <p className="text-sm leading-relaxed text-muted-foreground">{station.lesson}</p>
+          <Button type="button" onClick={() => { setCard(0); setFocus(true); }} className="mt-6 rounded-full">Station starten <ChevronRight className="h-4 w-4" /></Button>
+        </div>}
+
+        {focus && <>
         <div className="mb-2 flex flex-wrap justify-center gap-1.5" aria-label={`Karte ${card + 1} von ${sequence.length}`}>
           {sequence.map((item, index) => <Button key={`${item.type}-${index}`} type="button" variant="ghost" size="icon" aria-label={`Karte ${index + 1} öffnen`} onClick={() => setCard(index)} className="h-7 w-7 rounded-full p-0 hover:bg-transparent"><span className={`h-1.5 rounded-full transition-all ${index === card ? "w-6 bg-foreground" : index < card ? "w-3 bg-muted-foreground" : item.type === "study" ? "w-3 bg-border" : "w-1.5 bg-border"}`} /></Button>)}
         </div>
         <p className="mb-4 text-center text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{entry?.type === "study" ? "Lernen" : entry?.type === "question" ? "Abrufen" : entry?.type === "transfer" ? "Anwenden" : entry?.type === "summary" ? "Bilanz" : "Abschluss"}</p>
 
-        {!unlocked ? <PremiumLock title={`${station.era} wartet auf dich`} description={`Du siehst alle ${artPathWithWorks.length} Stationen der Reise. Die ersten ${FREE_JOURNEY_STATIONS} sind frei; Premium öffnet diese und alle folgenden Lernstationen.`} /> : <article className="relative min-h-[570px] overflow-hidden rounded-lg border border-border bg-card shadow-sm sm:min-h-[610px]">
+        {!unlocked ? <PremiumLock title={`${station.era} wartet auf dich`} description={`Du siehst alle ${artPathWithWorks.length} Stationen der Reise. Die ersten ${FREE_JOURNEY_STATIONS} sind frei; Premium öffnet diese und alle folgenden Lernstationen.`} /> : <article className="relative min-h-[570px] rounded-lg border border-border bg-card shadow-sm sm:min-h-[610px]">
           {study === 0 && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1.08fr_0.92fr]">
-            <div className="relative min-h-64 bg-muted md:min-h-full">{station.work && <img src={station.work.image} alt={station.work.title} className="absolute inset-0 h-full w-full object-cover" />}</div>
+            <div className="flex min-h-64 items-center justify-center bg-muted p-4 md:min-h-full">{station.work && <MagnifierImage src={station.work.image} alt={station.work.title} className="w-full" />}</div>
             <div className="flex flex-col justify-center p-6 sm:p-9"><BookOpen className="h-6 w-6" /><p className="mt-5 text-[10px] tracking-[0.24em] text-muted-foreground uppercase">{station.years} · {station.place}</p><h3 className="font-display mt-2 text-3xl font-medium sm:text-4xl">{station.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground">{station.lesson}</p></div>
           </div>}
 
           {study === 1 && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1fr_1fr]">
             <div className="flex flex-col justify-center p-6 sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Compass className="h-4 w-4" /> Ankunft</div><h3 className="font-display mt-3 text-3xl font-medium">{station.experience.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground">{station.experience.story}</p><p className="mt-6 text-sm text-muted-foreground">Reiseziel: <span className="text-foreground">{station.place}</span> · {station.years}</p></div>
-            <div className="relative min-h-56 bg-muted md:min-h-full">{station.works[1] && <img src={station.works[1]!.image} alt={station.works[1]!.title} className="absolute inset-0 h-full w-full object-cover" />}</div>
+            <div className="flex min-h-56 items-center justify-center bg-muted p-4 md:min-h-full">{station.works[1] && <MagnifierImage src={station.works[1]!.image} alt={station.works[1]!.title} className="w-full" />}</div>
           </div>}
 
           {study === 2 && <div className="flex min-h-[570px] flex-col justify-center p-6 sm:min-h-[610px] sm:p-10"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><ScrollText className="h-4 w-4" /> Zeit & Wendepunkt</div><h3 className="font-display mt-3 text-3xl font-medium">Was die Welt verändert</h3><p className="mt-5 max-w-2xl leading-relaxed text-muted-foreground">{station.history}</p><p className="mt-6 max-w-2xl border-l-2 border-foreground pl-5 leading-relaxed">{station.turningPoint}</p><div className="mt-8 grid gap-3 sm:grid-cols-3">{[{ label: "Zeitraum", value: station.years }, { label: "Ort", value: station.place }, { label: "Epoche", value: station.era }].map((fact) => <div key={fact.label} className="rounded-lg border border-border p-4"><p className="text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{fact.label}</p><p className="mt-1 text-sm">{fact.value}</p></div>)}</div></div>}
 
-          {study === 3 && <div className="min-h-[570px] p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Palette className="h-4 w-4" /> Farben & Pigmente</div><h3 className="font-display mt-3 text-3xl font-medium">Woraus Bilder gemacht sind</h3><div className="mt-6 flex flex-wrap gap-2">{station.palette.map((color) => <span key={color} className="rounded-full border border-border bg-background px-3 py-1.5 text-xs">{color}</span>)}</div><div className="mt-7 grid gap-x-8 gap-y-6 md:grid-cols-2">{[{ label: "Pigmente & Bindemittel", value: station.pigments }, { label: "Bildträger", value: station.supports }].map((item) => <section key={item.label} className="border-t border-border pt-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">{item.label}</p><p className="mt-2 text-sm leading-relaxed">{item.value}</p></section>)}</div><div className="mt-7 grid grid-cols-3 gap-3">{station.works.slice(0, 3).map((stationWork) => <Link key={stationWork.id} to="/werke/$id" params={{ id: stationWork.id }} className="group min-w-0"><div className="aspect-[4/3] overflow-hidden rounded-md bg-muted"><img src={stationWork.image} alt={stationWork.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></div><p className="mt-2 truncate text-xs">{stationWork.title}</p></Link>)}</div></div>}
+          {study === 3 && <div className="min-h-[570px] p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Palette className="h-4 w-4" /> Farben & Pigmente</div><h3 className="font-display mt-3 text-3xl font-medium">Woraus Bilder gemacht sind</h3><div className="mt-6 flex flex-wrap gap-2">{station.palette.map((color) => <span key={color} className="rounded-full border border-border bg-background px-3 py-1.5 text-xs">{color}</span>)}</div><div className="mt-7 grid gap-x-8 gap-y-6 md:grid-cols-2">{[{ label: "Pigmente & Bindemittel", value: station.pigments }, { label: "Bildträger", value: station.supports }].map((item) => <section key={item.label} className="border-t border-border pt-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">{item.label}</p><p className="mt-2 text-sm leading-relaxed">{item.value}</p></section>)}</div><div className="mt-7 grid grid-cols-3 gap-3">{station.works.slice(0, 3).map((stationWork) => <Link key={stationWork.id} to="/werke/$id" params={{ id: stationWork.id }} className="group min-w-0"><div className="aspect-[4/3] overflow-hidden rounded-md bg-muted p-1.5"><img src={stationWork.image} alt={stationWork.title} loading="lazy" className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.03]" /></div><p className="mt-2 truncate text-xs">{stationWork.title}</p></Link>)}</div></div>}
 
           {study === 4 && <div className="min-h-[570px] p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Brush className="h-4 w-4" /> Werkzeug & Technik</div><h3 className="font-display mt-3 text-3xl font-medium">Pinsel, Griffel, Presse</h3><div className="mt-7 grid gap-x-8 gap-y-6 md:grid-cols-2">{[{ label: "Pinsel", value: station.brushes }, { label: "Werkzeuge", value: station.tools }, { label: "Technik", value: station.technique }, { label: "Bildträger", value: station.supports }].map((item) => <section key={item.label} className="border-t border-border pt-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">{item.label}</p><p className="mt-2 text-sm leading-relaxed">{item.value}</p></section>)}</div><p className="mt-7 rounded-lg bg-muted p-5 text-sm leading-relaxed"><span className="font-medium">Übung:</span> {station.experience.mission}</p></div>}
 
@@ -288,15 +303,15 @@ function ArtPathPage() {
             const artist = station.artistProfiles[study - 6];
             const portrait = station.works[study - 6];
             if (!artist) return <div className="p-8 text-muted-foreground">Künstlerprofil wird vorbereitet.</div>;
-            return <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[0.95fr_1.05fr]"><div className="relative min-h-72 bg-muted md:min-h-full">{portrait && <img src={portrait.image} alt={`Werk von ${artist.name}`} className="absolute inset-0 h-full w-full object-cover" />}</div><div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><UserRound className="h-4 w-4" /> Künstler {study - 5} von 4</div><h3 className="font-display mt-4 text-3xl font-medium sm:text-4xl">{artist.name}</h3><p className="mt-1 text-sm text-muted-foreground">{artist.life} · {artist.origin}</p><p className="mt-5 text-sm leading-relaxed text-muted-foreground">{artist.bio}</p><div className="mt-5 border-l-2 border-foreground pl-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">In dieser Zeit</p><p className="mt-2 text-sm leading-relaxed">{station.artistLens[study - 6]}</p></div>{portrait && <div className="mt-5 rounded-lg border border-border p-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">Blick ins Werk</p><p className="mt-2 text-sm font-medium">{portrait.title} · {portrait.year}</p><p className="mt-1 text-xs leading-relaxed text-muted-foreground">{portrait.technique}</p></div>}<Button asChild variant="outline" className="mt-6 w-fit rounded-full font-normal"><Link to="/maler/$slug" params={{ slug: artist.slug }}>Profil und Werke ansehen</Link></Button></div></div>;
+            return <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[0.95fr_1.05fr]"><div className="flex min-h-72 items-center justify-center bg-muted p-4 md:min-h-full">{portrait && <MagnifierImage src={portrait.image} alt={`Werk von ${artist.name}`} className="w-full" />}</div><div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><UserRound className="h-4 w-4" /> Künstler {study - 5} von 4</div><h3 className="font-display mt-4 text-3xl font-medium sm:text-4xl">{artist.name}</h3><p className="mt-1 text-sm text-muted-foreground">{artist.life} · {artist.origin}</p><p className="mt-5 text-sm leading-relaxed text-muted-foreground">{artist.bio}</p><div className="mt-5 border-l-2 border-foreground pl-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">In dieser Zeit</p><p className="mt-2 text-sm leading-relaxed">{station.artistLens[study - 6]}</p></div>{portrait && <div className="mt-5 rounded-lg border border-border p-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">Blick ins Werk</p><p className="mt-2 text-sm font-medium">{portrait.title} · {portrait.year}</p><p className="mt-1 text-xs leading-relaxed text-muted-foreground">{portrait.technique}</p></div>}<Button asChild variant="outline" className="mt-6 w-fit rounded-full font-normal"><Link to="/maler/$slug" params={{ slug: artist.slug }}>Profil und Werke ansehen</Link></Button></div></div>;
           })()}
 
           {study === 10 && detailWork && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1fr_1fr]">
-            <div className="relative min-h-64 bg-muted md:min-h-full"><img src={detailWork.image} alt={detailWork.title} className="absolute inset-0 h-full w-full object-cover" /></div>
+            <div className="flex min-h-64 items-center justify-center bg-muted p-4 md:min-h-full"><MagnifierImage src={detailWork.image} alt={detailWork.title} className="w-full" /></div>
             <div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Landmark className="h-4 w-4" /> Werk im Detail</div><h3 className="font-display mt-3 text-2xl font-medium sm:text-3xl">{detailWork.title}</h3><p className="mt-1 text-sm text-muted-foreground">{detailWork.painter.name} · {detailWork.year}</p><p className="mt-5 text-sm leading-relaxed text-muted-foreground">{detailWork.description}</p><p className="mt-4 text-sm leading-relaxed"><span className="font-medium">Bedeutung:</span> {detailWork.significance}</p><Button asChild variant="outline" className="mt-6 w-fit rounded-full font-normal"><Link to="/werke/$id" params={{ id: detailWork.id }}>Ganze Werkseite öffnen</Link></Button></div>
           </div>}
 
-          {study === 11 && <div className="min-h-[570px] p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Eye className="h-4 w-4" /> Bilder einprägen</div><h3 className="font-display mt-3 text-3xl font-medium">Vier Werke, vier Namen</h3><p className="mt-3 text-sm text-muted-foreground">Präge dir Bild und Maler ein — gleich musst du zuordnen.</p><div className="mt-6 grid grid-cols-2 gap-4">{station.works.slice(0, 4).map((stationWork) => <figure key={stationWork.id} className="min-w-0"><div className="aspect-[4/3] overflow-hidden rounded-md bg-muted"><img src={stationWork.image} alt={stationWork.title} loading="lazy" className="h-full w-full object-cover" /></div><figcaption className="mt-2 text-xs leading-snug"><span className="font-medium">{stationWork.painter.name}</span><br /><span className="text-muted-foreground">{stationWork.title} · {stationWork.year}</span></figcaption></figure>)}</div><p className="mt-6 rounded-lg bg-path-leaf p-4 text-sm leading-relaxed">{station.mnemonics[0]?.replace(/^Merke:\s*/, "")}</p></div>}
+          {study === 11 && <div className="min-h-[570px] p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Eye className="h-4 w-4" /> Bilder einprägen</div><h3 className="font-display mt-3 text-3xl font-medium">Vier Werke, vier Namen</h3><p className="mt-3 text-sm text-muted-foreground">Präge dir Bild und Maler ein — gleich musst du zuordnen.</p><div className="mt-6 grid grid-cols-2 gap-4">{station.works.slice(0, 4).map((stationWork) => <figure key={stationWork.id} className="min-w-0"><div className="aspect-[4/3] overflow-hidden rounded-md bg-muted p-1.5"><img src={stationWork.image} alt={stationWork.title} loading="lazy" className="h-full w-full object-contain" /></div><figcaption className="mt-2 text-xs leading-snug"><span className="font-medium">{stationWork.painter.name}</span><br /><span className="text-muted-foreground">{stationWork.title} · {stationWork.year}</span></figcaption></figure>)}</div><p className="mt-6 rounded-lg bg-path-leaf p-4 text-sm leading-relaxed">{station.mnemonics[0]?.replace(/^Merke:\s*/, "")}</p></div>}
 
           {entry?.type === "question" && <PracticeCard key={`${station.index}-${entry.quiz.id}`} quiz={entry.quiz} step={entry.step} total={questionTotal} imageUrl={station.works[entry.step % Math.max(1, station.works.length)]?.image ?? station.work?.image} onResult={(correct) => recordAnswer(entry.quiz, correct)} />}
 
@@ -323,8 +338,10 @@ function ArtPathPage() {
           <p className="hidden text-xs text-muted-foreground sm:block">Karte {card + 1} von {sequence.length}</p>
           <Button type="button" disabled={card === sequence.length - 1} onClick={() => changeCard(1)} className="rounded-full font-normal">Weiter <ChevronRight className="h-4 w-4" /></Button>
         </div>}
+        </>}
       </>}
       <LicenseNotice context="Die Reise zeigt ausschließlich Werke, deren Schutzfrist abgelaufen ist." />
+      </div>
     </section>
   </div>;
 }
