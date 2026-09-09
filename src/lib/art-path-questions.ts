@@ -160,9 +160,19 @@ export function stationQuestions(index: number): ArtQuestion[] {
   // 7: Farben und Pigmente
   const paletteAnswer = station.palette[0];
   if (paletteAnswer && others.length >= 2) {
-    const wrong = others
-      .map((item) => item.palette.find((color) => !station.palette.includes(color)))
-      .filter((color): color is string => Boolean(color));
+    const used = new Set(station.palette);
+    const wrong: string[] = [];
+    for (const item of others) {
+      const color = item.palette.find((candidate) => !used.has(candidate));
+      if (color) { used.add(color); wrong.push(color); }
+    }
+    if (wrong.length < 2) {
+      const fallback = artPathWithWorks
+        .filter((item) => item.index !== index)
+        .flatMap((item) => item.palette)
+        .find((color) => !used.has(color));
+      if (fallback) { used.add(fallback); wrong.push(fallback); }
+    }
     if (wrong.length >= 2) {
       questions.push({
         question: `Welche Farbe gehört zur typischen Palette von ${station.era}?`,
