@@ -61,7 +61,26 @@ function buildSequence(practice: ArtQuestion[], repeatIds: string[], transfer: A
   return items;
 }
 
-function PracticeCard({ quiz, step, total, imageUrl, onResult }: { quiz: ArtQuestion; step: number; total: number; imageUrl?: string | undefined; onResult: (correct: boolean) => void }) {
+/** Zeigt, dass zwei Rückmeldungen dasselbe sagen — dann wird nur eine angezeigt. */
+function saysTheSame(a: string, b: string): boolean {
+  const normalize = (text: string) => text.toLowerCase().replace(/[^\p{L}\p{N} ]/gu, "").trim();
+  const one = normalize(a);
+  const two = normalize(b);
+  if (!one || !two) return true;
+  const shorter = one.length <= two.length ? one : two;
+  const longer = one.length <= two.length ? two : one;
+  return longer.includes(shorter.slice(0, Math.min(50, shorter.length)));
+}
+
+function TermNotes({ entries }: { entries: GlossaryEntry[] }) {
+  if (entries.length === 0) return null;
+  return <div className="mt-6 grid gap-3 border-t border-border pt-4">
+    <p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">Kurz erklärt</p>
+    {entries.map((item) => <p key={item.term} className="text-sm leading-relaxed"><span className="font-medium">{item.term}</span> <span className="text-muted-foreground">— {item.text}</span></p>)}
+  </div>;
+}
+
+function PracticeCard({ quiz, step, total, imageUrl, term, onResult }: { quiz: ArtQuestion; step: number; total: number; imageUrl?: string | undefined; term?: GlossaryEntry | undefined; onResult: (correct: boolean) => void }) {
   const [picked, setPicked] = useState("");
   const [unsure, setUnsure] = useState(false);
   const correct = picked === quiz.answer;
@@ -82,16 +101,21 @@ function PracticeCard({ quiz, step, total, imageUrl, onResult }: { quiz: ArtQues
     </div>
   );
 
+  /** Nach der Antwort: genau eine Erklärung — plus ein Begriff, der neu dazukommt. */
+  const lead = correct ? quiz.explanation : (quiz.hint ?? quiz.explanation);
+  const extra = !correct && quiz.hint && !saysTheSame(quiz.hint, quiz.explanation) ? quiz.explanation : "";
+
   const feedback = picked
     ? <div className="animate-in fade-in mt-5 rounded-lg border border-border p-4 text-sm leading-relaxed duration-500">
-        <p className="flex items-start gap-2">{correct ? <Check className="mt-0.5 h-4 w-4 shrink-0" /> : <X className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />}<span>{correct ? quiz.explanation : (quiz.hint ?? quiz.explanation)}</span></p>
-        {!correct && <p className="mt-2 text-muted-foreground">{quiz.explanation}</p>}
-        {(!correct || unsure) && <p className="mt-2 text-xs text-muted-foreground">Diese Frage kommt später noch einmal in anderer Form.</p>}
+        <p className="flex items-start gap-2">{correct ? <Check className="mt-0.5 h-4 w-4 shrink-0" /> : <X className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />}<span>{lead}</span></p>
+        {extra && <p className="mt-2 text-muted-foreground">{extra}</p>}
+        {term && <p className="mt-3 border-t border-border pt-3"><span className="font-medium">{term.term}</span> <span className="text-muted-foreground">— {term.text}</span></p>}
       </div>
     : <Button type="button" variant="ghost" onClick={() => setUnsure((value) => !value)} className={`mt-4 w-fit rounded-full px-3 text-xs font-normal ${unsure ? "bg-muted" : ""}`}>{unsure ? "Als unsicher markiert" : "Ich bin unsicher"}</Button>;
 
-  const hint = <p className="mt-6 text-xs text-muted-foreground">{total > 0 ? `Frage ${step} von ${total} — erst die Abschlussfrage schaltet die nächste Station frei.` : "Transferfrage — sie entscheidet, ob die Station als beherrscht gilt."}</p>;
+  const hint = <p className="mt-6 text-xs text-muted-foreground">{total > 0 ? `Frage ${step} von ${total}` : "Transferfrage — sie entscheidet, ob die Station als beherrscht gilt."}</p>;
   const label = <div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{quiz.kind === "transfer" ? <Sparkles className="h-4 w-4" /> : quiz.compare ? <Images className="h-4 w-4" /> : <HelpCircle className="h-4 w-4" />} {questionKindLabel(quiz.kind)}</div>;
+
 
   if (quiz.compare) {
     return <div className="flex min-h-[570px] flex-col justify-center p-6 sm:min-h-[610px] sm:p-9">
