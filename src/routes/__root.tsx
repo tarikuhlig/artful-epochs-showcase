@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 import { Settings } from "lucide-react";
 import { MobileTabBar } from "@/components/MobileTabBar";
 import { AppTour } from "@/components/AppTour";
+import { CollectionPopups } from "@/components/CollectionPopups";
 import { ProfileSetup } from "@/components/ProfileSetup";
 import { BackButton } from "@/components/BackButton";
 
