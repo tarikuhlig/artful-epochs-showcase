@@ -1,4 +1,7 @@
 # Roadmap
 
-- [x] Handy-Optimierung (iPhone/Android): keine verdeckten Inhalte, größere Tippziele, flüssiges Scrollen
-- [x] Bildnachweis/Urheberrecht dezent verbauen statt plakativ auf jeder Seite (zentrale Seite /rechte + Fußzeile)
+- [ ] Menü reduzieren: Entdecken, Reise, Auktionshaus, Galerie
+- [ ] Studieren + Museen in Entdecken
+- [ ] Profil als kleines Fenster in Galerie + Einstellungen
+- [ ] Reise-Seite schöner gestalten
+- [ ] Reise-Fortschritt automatisch speichern, Wiedereinstieg an letzter Station
