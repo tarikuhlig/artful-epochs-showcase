@@ -406,10 +406,14 @@ function ArtPathPage() {
           </div>
         </div>
 
-        {!focus && <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-          <p className="text-sm leading-relaxed text-muted-foreground">{station.lesson}</p>
-          <Button type="button" onClick={() => { setCard(0); setFocus(true); }} className="mt-6 rounded-full">Station starten <ChevronRight className="h-4 w-4" /></Button>
+        {!focus && <div className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
+          <p className="leading-relaxed text-muted-foreground">{station.lesson}</p>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Button type="button" onClick={resumeJourney} className="h-auto min-h-11 rounded-full px-6">{card > 0 ? `Weiter bei Karte ${card + 1}` : "Station starten"} <ChevronRight className="h-4 w-4" /></Button>
+            {card > 0 && <Button type="button" variant="outline" onClick={() => openStation(activeStation)} className="h-auto min-h-11 rounded-full px-6">Von vorn</Button>}
+          </div>
         </div>}
+
 
         {focus && <>
         <div className="mb-2 flex flex-wrap justify-center gap-1.5" aria-label={`Karte ${card + 1} von ${sequence.length}`}>
