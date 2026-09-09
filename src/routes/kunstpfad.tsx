@@ -134,6 +134,8 @@ function ArtPathPage() {
   const [feedback, setFeedback] = useState<Record<number, "correct" | "wrong">>({});
   const [activeStation, setActiveStation] = useState(0);
   const [card, setCard] = useState(0);
+  /** Isolierter Reise-Flow: die Station läuft in einem eigenen Vollbild-Fenster. */
+  const [focus, setFocus] = useState(false);
   /** Ergebnisse je Station und Frage — Grundlage für Wiederholung und Lernstand. */
   const [results, setResults] = useState<Record<number, Record<string, boolean>>>({});
   const [repeats, setRepeats] = useState<Record<number, string[]>>({});
@@ -187,6 +189,7 @@ function ArtPathPage() {
   function openStation(index: number) {
     setActiveStation(index);
     setCard(0);
+    setFocus(true);
     setError("");
     setNotice("");
   }
@@ -249,7 +252,12 @@ function ArtPathPage() {
       </div>
     </section>
 
-    <section className="mx-auto max-w-4xl px-5 py-10 sm:px-6 md:py-14">
+    <section className={focus ? "fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-background px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(5rem,env(safe-area-inset-bottom))] sm:px-6" : "mx-auto max-w-4xl px-5 py-10 sm:px-6 md:py-14"}>
+      <div className={focus ? "mx-auto w-full max-w-4xl" : ""}>
+      {focus && <div className="mb-5 flex items-center justify-between gap-3">
+        <p className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase">Reise · Station {activeStation + 1} von {artPathWithWorks.length}</p>
+        <Button type="button" variant="outline" size="icon" aria-label="Reise verlassen" onClick={() => setFocus(false)} className="h-10 w-10 rounded-full"><X className="h-4 w-4" /></Button>
+      </div>}
       {error && <p className="mb-6 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">{error}</p>}
       {notice && <p role="status" className="mb-6 rounded-lg border border-border bg-path-leaf p-4 text-sm">{notice}</p>}
       {station && <>
@@ -261,12 +269,18 @@ function ArtPathPage() {
           </div>
         </div>
 
+        {!focus && <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+          <p className="text-sm leading-relaxed text-muted-foreground">{station.lesson}</p>
+          <Button type="button" onClick={() => { setCard(0); setFocus(true); }} className="mt-6 rounded-full">Station starten <ChevronRight className="h-4 w-4" /></Button>
+        </div>}
+
+        {focus && <>
         <div className="mb-2 flex flex-wrap justify-center gap-1.5" aria-label={`Karte ${card + 1} von ${sequence.length}`}>
           {sequence.map((item, index) => <Button key={`${item.type}-${index}`} type="button" variant="ghost" size="icon" aria-label={`Karte ${index + 1} öffnen`} onClick={() => setCard(index)} className="h-7 w-7 rounded-full p-0 hover:bg-transparent"><span className={`h-1.5 rounded-full transition-all ${index === card ? "w-6 bg-foreground" : index < card ? "w-3 bg-muted-foreground" : item.type === "study" ? "w-3 bg-border" : "w-1.5 bg-border"}`} /></Button>)}
         </div>
         <p className="mb-4 text-center text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{entry?.type === "study" ? "Lernen" : entry?.type === "question" ? "Abrufen" : entry?.type === "transfer" ? "Anwenden" : entry?.type === "summary" ? "Bilanz" : "Abschluss"}</p>
 
-        {!unlocked ? <PremiumLock title={`${station.era} wartet auf dich`} description={`Du siehst alle ${artPathWithWorks.length} Stationen der Reise. Die ersten ${FREE_JOURNEY_STATIONS} sind frei; Premium öffnet diese und alle folgenden Lernstationen.`} /> : <article className="relative min-h-[570px] overflow-hidden rounded-lg border border-border bg-card shadow-sm sm:min-h-[610px]">
+        {!unlocked ? <PremiumLock title={`${station.era} wartet auf dich`} description={`Du siehst alle ${artPathWithWorks.length} Stationen der Reise. Die ersten ${FREE_JOURNEY_STATIONS} sind frei; Premium öffnet diese und alle folgenden Lernstationen.`} /> : <article className="relative min-h-[570px] rounded-lg border border-border bg-card shadow-sm sm:min-h-[610px]">
           {study === 0 && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1.08fr_0.92fr]">
             <div className="flex min-h-64 items-center justify-center bg-muted p-4 md:min-h-full">{station.work && <MagnifierImage src={station.work.image} alt={station.work.title} className="w-full" />}</div>
             <div className="flex flex-col justify-center p-6 sm:p-9"><BookOpen className="h-6 w-6" /><p className="mt-5 text-[10px] tracking-[0.24em] text-muted-foreground uppercase">{station.years} · {station.place}</p><h3 className="font-display mt-2 text-3xl font-medium sm:text-4xl">{station.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground">{station.lesson}</p></div>
@@ -324,8 +338,10 @@ function ArtPathPage() {
           <p className="hidden text-xs text-muted-foreground sm:block">Karte {card + 1} von {sequence.length}</p>
           <Button type="button" disabled={card === sequence.length - 1} onClick={() => changeCard(1)} className="rounded-full font-normal">Weiter <ChevronRight className="h-4 w-4" /></Button>
         </div>}
+        </>}
       </>}
       <LicenseNotice context="Die Reise zeigt ausschließlich Werke, deren Schutzfrist abgelaufen ist." />
+      </div>
     </section>
   </div>;
 }
