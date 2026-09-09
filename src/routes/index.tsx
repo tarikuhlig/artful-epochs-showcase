@@ -5,7 +5,9 @@ import { IntroTunnel } from "@/components/IntroTunnel";
 import { PremiumUpsell } from "@/components/PremiumUpsell";
 import { TitleGate } from "@/components/TitleGate";
 import { Button } from "@/components/ui/button";
-import { epochs, allWorks } from "@/lib/art-data";
+import { epochs, allWorks, allPainters } from "@/lib/art-data";
+import { PainterCard } from "@/components/PainterCard";
+
 import { museums } from "@/lib/museums";
 import { artPathWithWorks } from "@/lib/art-path";
 import { useAuth } from "@/hooks/useAuth";
@@ -76,6 +78,9 @@ function HomePage() {
   const tip = DAILY_TIPS[new Date().getDay() % DAILY_TIPS.length];
   const dailyPainter = painterOfTheDay();
   const painterWorks = worksOfPainter(dailyPainter.slug);
+  const dayIndex = Math.floor(Date.now() / 86_400_000);
+  const featuredPainters = Array.from({ length: 6 }, (_, i) => allPainters[(dayIndex * 6 + i * 17) % allPainters.length]).filter((p): p is (typeof allPainters)[number] => Boolean(p));
+
 
   return (
     <div className="min-h-screen bg-background">
