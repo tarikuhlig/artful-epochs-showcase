@@ -59,9 +59,14 @@ export function MagnifierImage({
 
   /** Inhaltsfläche des Bildes im Rahmen (ohne Letterbox-Ränder). */
   const content = useCallback((): Content | null => {
-    const box = image.current?.getBoundingClientRect();
-    const { w, h } = natural.current;
-    if (!box || !w || !h) return null;
+    const el = image.current;
+    const box = el?.getBoundingClientRect();
+    if (!el || !box || !box.width || !box.height) return null;
+    const w = natural.current.w || el.naturalWidth;
+    const h = natural.current.h || el.naturalHeight;
+    // Ohne bekannte Originalmaße die Rahmenfläche nutzen, damit die Lupe trotzdem folgt.
+    if (!w || !h) return { left: box.left, top: box.top, width: box.width, height: box.height };
+    natural.current = { w, h };
     const scale = Math.min(box.width / w, box.height / h);
     const width = w * scale;
     const height = h * scale;
@@ -72,6 +77,7 @@ export function MagnifierImage({
       height,
     };
   }, []);
+
 
   /** Höchster Zoom, der die echte Auflösung nicht überschreitet. */
   const ceiling = useCallback(() => {
@@ -186,8 +192,23 @@ export function MagnifierImage({
   function release(event: React.PointerEvent) {
     pointers.current.delete(event.pointerId);
     if (pointers.current.size < 2) pinchStart.current = null;
+    // Mit der Maus bleibt die Lupe beim Loslassen sichtbar, sie folgt weiter dem Zeiger.
+    if (event.pointerType === "mouse") return;
     if (pointers.current.size === 0) setVisible(false);
   }
+
+  function leave(event: React.PointerEvent) {
+    pointers.current.delete(event.pointerId);
+    pinchStart.current = null;
+    setVisible(false);
+  }
+
+  function enter(event: React.PointerEvent) {
+    if (!active || event.pointerType !== "mouse") return;
+    setVisible(true);
+    schedule(event.clientX, event.clientY, false);
+  }
+
 
   function step(delta: number) {
     setFactor((current) =>
@@ -202,9 +223,11 @@ export function MagnifierImage({
         className={`relative rounded-lg bg-muted ${active ? "cursor-none touch-none select-none" : ""} ${frameClassName}`}
         onPointerDown={pointerDown}
         onPointerMove={pointerMove}
+        onPointerEnter={enter}
         onPointerUp={release}
-        onPointerCancel={release}
-        onPointerLeave={release}
+        onPointerCancel={leave}
+        onPointerLeave={leave}
+
       >
         <img
           ref={image}
