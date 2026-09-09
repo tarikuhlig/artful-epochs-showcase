@@ -84,14 +84,55 @@ function ArtPathPage() {
   const [feedback, setFeedback] = useState<Record<number, "correct" | "wrong">>({});
   const [activeStation, setActiveStation] = useState(0);
   const [card, setCard] = useState(0);
+  /** Ergebnisse je Station und Frage — Grundlage für Wiederholung und Lernstand. */
+  const [results, setResults] = useState<Record<number, Record<string, boolean>>>({});
+  const [repeats, setRepeats] = useState<Record<number, string[]>>({});
   const completed = new Set(progress.map((entry) => entry.station_index));
   const next = progress.length;
   const station = artPathWithWorks[activeStation] ?? artPathWithWorks[0];
   const quiz = stationFinalQuestion(activeStation);
-  const practice = stationQuestions(activeStation);
+  const practice = useMemo(() => stationQuestions(activeStation), [activeStation]);
+  const transfer = useMemo(() => stationTransferQuestion(activeStation), [activeStation]);
+  const summary = useMemo(() => stationSummary(activeStation), [activeStation]);
   const selected = answers[activeStation] ?? "";
   const result = feedback[activeStation];
   const done = completed.has(activeStation);
+
+  const stationResults = results[activeStation] ?? {};
+  const repeatIds = repeats[activeStation] ?? [];
+  const sequence = useMemo(
+    () => buildSequence(practice, repeatIds, transfer),
+    [practice, repeatIds, transfer],
+  );
+  const entry = sequence[Math.min(card, sequence.length - 1)];
+  const questionTotal = sequence.filter((item) => item.type === "question").length;
+  const allPracticeCorrect = practice.length > 0 && practice.every((item) => stationResults[item.id]);
+  const transferCorrect = transfer ? stationResults[transfer.id] === true : false;
+  const mastery: "angesehen" | "gelernt" | "beherrscht" = transferCorrect && allPracticeCorrect
+    ? "beherrscht"
+    : allPracticeCorrect ? "gelernt" : "angesehen";
+  const masteryLabel = mastery === "beherrscht" ? "Beherrscht" : mastery === "gelernt" ? "Gelernt" : "Angesehen";
+  const reviewTopics = Array.from(new Set(
+    [...practice, ...(transfer ? [transfer] : [])]
+      .filter((item) => stationResults[item.id] !== true)
+      .map((item) => item.topic ?? item.question),
+  )).slice(0, 5);
+
+  /** Falsch oder unsicher beantwortete Fragen kehren später in anderer Form zurück. */
+  function recordAnswer(question: ArtQuestion, correct: boolean) {
+    const baseId = question.id.replace(/-wdh$/, "");
+    setResults((current) => ({
+      ...current,
+      [activeStation]: { ...(current[activeStation] ?? {}), [baseId]: correct },
+    }));
+    if (correct) return;
+    if (question.id.endsWith("-wdh")) return;
+    setRepeats((current) => {
+      const list = current[activeStation] ?? [];
+      if (list.includes(baseId)) return current;
+      return { ...current, [activeStation]: [...list, baseId] };
+    });
+  }
 
   function openStation(index: number) {
     setActiveStation(index);
@@ -101,7 +142,7 @@ function ArtPathPage() {
   }
 
   function changeCard(direction: -1 | 1) {
-    setCard((current) => Math.min(CARD_COUNT - 1, Math.max(0, current + direction)));
+    setCard((current) => Math.min(sequence.length - 1, Math.max(0, current + direction)));
   }
 
   async function finish(index: number, answer: string) {
