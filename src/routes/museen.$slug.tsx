@@ -39,7 +39,7 @@ function MuseumPage() {
   const info = getVisitInfo(museum.slug);
   const { hasAccess } = usePremiumAccess();
   const free = hasAccess || isFreeMuseum(museum.slug);
-  useTrackDiscovery("museum", museum.slug, free);
+  useTrackDiscovery("museum", museum.slug, { enabled: free });
 
 
   return (

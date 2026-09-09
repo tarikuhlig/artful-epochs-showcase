@@ -40,11 +40,14 @@ export function useQuizResults() {
   });
 }
 
+type TrackDiscoveryOptions = { enabled?: boolean; silent?: boolean };
+
 /** Merkt sich automatisch, dass der angemeldete Nutzer etwas angesehen hat. */
-export function useTrackDiscovery(kind: DiscoveryKind, slug: string, enabled = true) {
+export function useTrackDiscovery(kind: DiscoveryKind, slug: string, options?: TrackDiscoveryOptions) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const userId = user?.id;
+  const { enabled = true, silent = false } = options ?? {};
 
   useEffect(() => {
     if (!userId || !enabled) return;
@@ -56,13 +59,15 @@ export function useTrackDiscovery(kind: DiscoveryKind, slug: string, enabled = t
       .then(({ data }) => {
         if (cancelled) return;
         // Nur wenn wirklich eine neue Zeile entstand, ist es ein neuer Sammlungseintrag.
-        if (data && data.length > 0) emitCollected({ kind, slug });
+        // Mit `silent` lässt sich das Popup unterdrücken, z. B. beim passiven Betrachten
+        // eines Malers außerhalb der Reise, wo die Belohnung bewusst im Lernfluss erfolgt.
+        if (data && data.length > 0 && !silent) emitCollected({ kind, slug });
         void queryClient.invalidateQueries({ queryKey: ["discoveries", userId] });
       });
     return () => {
       cancelled = true;
     };
-  }, [userId, kind, slug, enabled, queryClient]);
+  }, [userId, kind, slug, enabled, silent, queryClient]);
 
 }
 

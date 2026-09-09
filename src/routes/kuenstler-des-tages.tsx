@@ -38,7 +38,8 @@ function DailyArtistPage() {
   const archive = recentPainters(6, today);
   const hero = works[0];
 
-  useTrackDiscovery("painter", painter.slug);
+  // Künstler des Tages soll kein Sammel-Popup triggern — das passiert in der Reise.
+  useTrackDiscovery("painter", painter.slug, { silent: true });
 
   return (
     <div className="min-h-screen bg-background">

@@ -30,7 +30,7 @@ function EpochPage() {
   const epoch = Route.useLoaderData();
   const { hasAccess } = usePremiumAccess();
   const free = hasAccess || isFreeEpoch(epoch.slug);
-  useTrackDiscovery("epoch", epoch.slug, free);
+  useTrackDiscovery("epoch", epoch.slug, { enabled: free });
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
