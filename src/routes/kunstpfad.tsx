@@ -23,6 +23,7 @@ import { FREE_JOURNEY_STATIONS, isFreeJourneyStation } from "@/lib/premium-acces
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { allWorks } from "@/lib/art-data";
 import { emitCollected } from "@/lib/collection-events";
+import { StationGame } from "@/components/StationGame";
 
 export const Route = createFileRoute("/kunstpfad")({
   head: () => ({ meta: [
