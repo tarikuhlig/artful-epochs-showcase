@@ -175,6 +175,24 @@ function ArtPathPage() {
   const result = feedback[activeStation];
   const done = completed.has(activeStation);
 
+  /**
+   * Begriffe dieser Station — jeder wird genau einmal erklärt und der Reihe nach
+   * auf die Karten verteilt, damit jeder Klick neuen Inhalt bringt.
+   */
+  const stationTerms = useMemo(() => {
+    const source = artPathWithWorks[activeStation];
+    if (!source) return [] as GlossaryEntry[];
+    return explainTerms([
+      source.place, source.lesson, source.turningPoint, source.experience.story, source.experience.mission,
+      source.history, source.pigments, source.supports, source.tools, source.brushes, source.technique,
+      ...source.artistLens, ...source.mnemonics,
+    ], new Set(), 20);
+  }, [activeStation]);
+  /** Zwei Begriffe je Lernkarte, danach je einer als Zugabe nach den Fragen. */
+  const termsForStudy = (slot: number) => stationTerms.slice(slot * 2, slot * 2 + 2);
+  const questionTerm = (step: number) => stationTerms[12 + ((step - 1) % Math.max(1, stationTerms.length - 12))];
+
+
   const stationResults = results[activeStation] ?? {};
   const repeatIds = repeats[activeStation] ?? [];
   const sequence = useMemo(
