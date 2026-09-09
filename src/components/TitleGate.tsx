@@ -2,6 +2,7 @@ import { useState } from "react";
 import provenanceLogo from "@/assets/provenance-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
+import { setStaySignedIn } from "@/lib/session-persistence";
 
 /** Titelbild mit Anmeldung — erscheint beim Öffnen der App, vor dem Intro. */
 export function TitleGate({ onDone }: { onDone: () => void }) {
@@ -10,12 +11,14 @@ export function TitleGate({ onDone }: { onDone: () => void }) {
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [busy, setBusy] = useState(false);
+  const [stay, setStay] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError(null);
+    setStaySignedIn(stay);
     try {
       if (mode === "signup") {
         const { data, error: err } = await supabase.auth.signUp({
