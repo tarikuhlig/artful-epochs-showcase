@@ -140,7 +140,7 @@ export function MagnifierImage({
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
-  }, [active, ceiling]);
+  }, [active]);
 
   function pointerDown(event: React.PointerEvent) {
     if (!active) return;
