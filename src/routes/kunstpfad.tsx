@@ -65,6 +65,7 @@ function buildSequence(practice: ArtQuestion[], repeatIds: string[], transfer: A
     const original = practice.find((item) => item.id === id);
     if (original) items.push({ type: "question", quiz: repeatVariant(original, position + 1), step: ++step });
   });
+  items.push({ type: "game" });
   if (transfer) items.push({ type: "transfer" });
   items.push({ type: "summary" });
   items.push({ type: "final" });
