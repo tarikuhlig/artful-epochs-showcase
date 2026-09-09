@@ -77,8 +77,9 @@ export function stationFinalQuestion(index: number): ArtQuestion | undefined {
   const station = artPathWithWorks[index];
   if (!station) return undefined;
   const others = otherStations(index);
-  const answer = short(station.mnemonics[0] ?? station.turningPoint);
-  const wrong = others.map((item) => short(item.mnemonics[0] ?? item.turningPoint));
+  const mnemonicText = station.mnemonics[0]?.text ?? station.turningPoint;
+  const answer = short(mnemonicText);
+  const wrong = others.map((item) => short(item.mnemonics[0]?.text ?? item.turningPoint));
   if (wrong.length < 2) return undefined;
   return {
     id: `final-${index}`,
