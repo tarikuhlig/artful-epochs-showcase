@@ -35,6 +35,15 @@ function StudyPage() {
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
 
+  const today = todayISO();
+  const { user } = useAuth();
+  const award = useServerFn(awardStudyCard);
+  const { data: rewards, refetch: refetchRewards } = useStudyRewards(today);
+  const invalidateFarm = useInvalidateFarm();
+  const queryClient = useQueryClient();
+  const rewardedToday = rewards?.cards_rewarded ?? 0;
+  const coinsToday = rewards?.coins_awarded ?? 0;
+
   const pool = useMemo(() => studyPool(epochSlug), [epochSlug]);
 
   useEffect(() => {
@@ -110,6 +119,8 @@ function StudyPage() {
         <p>{right} von {seen} richtig</p>
         <p className="text-muted-foreground">Serie: {streak} · Beste Serie: {bestStreak}</p>
         <p className="text-muted-foreground">Kartenpool: {pool.length} Werke</p>
+        {user ? <p className="flex items-center gap-2"><img src={coin} alt="" className="h-5 w-5" />{coinsToday} heute · {rewardedToday}/{STUDY_CARDS_PER_DAY} gewertete Karten</p>
+          : <p className="text-muted-foreground">Angemeldet gibt es {STUDY_CARD_REWARD} Coins je richtiger Karte.</p>}
         <Button type="button" variant="ghost" size="sm" onClick={resetStats} className="ml-auto rounded-full font-normal"><RotateCcw className="h-4 w-4" /> Zurücksetzen</Button>
       </div>
 
