@@ -235,6 +235,38 @@ function ArtPathPage() {
     });
   }
 
+  /** Letzten Stand laden: gespeicherte Karte oder die erste offene Station. */
+  useEffect(() => {
+    if (restored) return;
+    let station = Math.min(progress.length, artPathWithWorks.length - 1);
+    let savedCard = 0;
+    try {
+      const raw = window.localStorage.getItem(RESUME_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as { station?: number; card?: number };
+        if (typeof parsed.station === "number") {
+          station = Math.min(Math.max(0, parsed.station), artPathWithWorks.length - 1);
+          savedCard = Math.max(0, parsed.card ?? 0);
+        }
+      }
+    } catch {
+      /* kein gespeicherter Stand */
+    }
+    setActiveStation(station);
+    setCard(savedCard);
+    setRestored(true);
+  }, [restored, progress.length]);
+
+  /** Fortschritt automatisch merken — der Nutzer steigt genau hier wieder ein. */
+  useEffect(() => {
+    if (!restored) return;
+    try {
+      window.localStorage.setItem(RESUME_KEY, JSON.stringify({ station: activeStation, card }));
+    } catch {
+      /* Speicher nicht verfügbar */
+    }
+  }, [restored, activeStation, card]);
+
   function openStation(index: number) {
     setActiveStation(index);
     setCard(0);
@@ -242,6 +274,14 @@ function ArtPathPage() {
     setError("");
     setNotice("");
   }
+
+  /** Weiterlernen an der zuletzt geöffneten Karte. */
+  function resumeJourney() {
+    setFocus(true);
+    setError("");
+    setNotice("");
+  }
+
 
   function changeCard(direction: -1 | 1) {
     setCard((current) => Math.min(sequence.length - 1, Math.max(0, current + direction)));
