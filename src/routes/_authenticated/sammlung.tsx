@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { artRank, artRankClasses } from "@/lib/art-rarity";
 import { PremiumLock } from "@/components/PremiumLock";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
+import { LicenseNotice } from "@/components/LicenseNotice";
 
 export const Route = createFileRoute("/_authenticated/sammlung")({
   head: () => ({
@@ -210,7 +211,7 @@ function CollectionPage() {
           <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3">{orderedOwned.map((item) => { const work = allWorks.find((candidate) => candidate.id === item.item_slug); if (!work) return null; const selected = compareIds.includes(item.id); const featured = featuredIds.includes(work.id); const rank = artRank(item.purchase_price); return <article key={item.id} draggable onDragStart={() => setDraggedId(item.id)} onDragEnd={() => setDraggedId(null)} onDragOver={(event) => event.preventDefault()} onDrop={() => moveArtwork(item.id)} className={`group relative cursor-grab rounded-md border p-2 transition-colors active:cursor-grabbing ${selected ? "border-coin bg-coin-soft" : "border-transparent"}`}>
             <div className="absolute top-4 left-4 z-10 flex h-8 w-8 items-center justify-center rounded-md bg-background/90 shadow-sm" aria-label="Bild verschieben"><GripVertical className="h-4 w-4" /></div>
             <button type="button" onClick={() => toggleCompare(item.id)} className="absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-md bg-background/90 shadow-sm" aria-label={selected ? "Aus Vergleich entfernen" : "Für Vergleich auswählen"}>{selected ? <Check className="h-4 w-4 text-coin" /> : <Scale className="h-4 w-4" />}</button>
-            <Link to="/werke/$id" params={{ id: work.id }}><div className="aspect-[4/3] overflow-hidden rounded-md border-[6px] border-coin/50 bg-muted shadow-md"><img src={work.image} alt={work.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></div><p className="mt-3 font-medium">{work.title}</p><p className="text-xs text-muted-foreground">{work.painter.name} · {item.purchase_price} Coins</p></Link>
+            <Link to="/werke/$id" params={{ id: work.id }}><div className="aspect-[4/3] overflow-hidden rounded-md border-[6px] border-coin/50 bg-muted shadow-md"><img src={work.image} alt={work.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></div><p className="mt-3 font-medium">{work.title}</p><p className="text-xs text-muted-foreground">{work.painter.name} · {item.kind === "journey" ? "auf der Reise erlernt" : `${item.purchase_price} Coins`}</p></Link>
             <div className="mt-3 flex items-center justify-between gap-2"><span className={`border px-2 py-1 text-[9px] tracking-[0.16em] uppercase ${artRankClasses(rank)}`}>{rank}</span><Button type="button" variant={featured ? "default" : "outline"} size="sm" className="rounded-full" onClick={() => toggleFeatured(work.id)}><Star className={featured ? "fill-current" : ""} />{featured ? "Ausgestellt" : "Ausstellen"}</Button></div>
           </article>; })}</div>
           {compareIds.length === 2 && <section className="mt-10 border-t border-border pt-8"><div className="flex items-center justify-between gap-3"><div><p className="text-xs tracking-widest text-muted-foreground uppercase">Direkter Vergleich</p><h3 className="font-display mt-1 text-2xl font-medium">Zwei Werke, ein Blick</h3></div><Button variant="ghost" size="icon" onClick={() => setCompareIds([])} aria-label="Vergleich schließen"><X /></Button></div><div className="mt-5 grid grid-cols-2 gap-4 md:gap-8">{compareIds.map((id) => { const item = owned.find((entry) => entry.id === id); const work = item ? allWorks.find((candidate) => candidate.id === item.item_slug) : undefined; if (!work) return null; return <div key={id} className="min-w-0"><div className="aspect-[4/3] overflow-hidden rounded-md bg-muted"><img src={work.image} alt={work.title} className="h-full w-full object-contain" /></div><h4 className="mt-3 font-display text-lg font-medium">{work.title}</h4><p className="text-sm text-muted-foreground">{work.painter.name} · {work.year}</p><dl className="mt-4 space-y-2 text-sm"><div><dt className="text-xs text-muted-foreground">Technik</dt><dd>{work.technique}</dd></div><div><dt className="text-xs text-muted-foreground">Stil</dt><dd>{work.styles.join(" · ")}</dd></div><div><dt className="text-xs text-muted-foreground">Museum</dt><dd>{work.museum || "Privatsammlung / unbekannt"}</dd></div></dl></div>; })}</div></section>}
@@ -236,7 +237,9 @@ function CollectionPage() {
             </Link>
           );
         })}
-      </div></div>
+      </div>
+      <LicenseNotice context="Deine Sammlung enthält ausschließlich gemeinfreie Werke." /></div>
+
 
       <h2 className="font-display mt-14 mb-4 text-2xl font-medium">Maler</h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
