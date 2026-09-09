@@ -78,6 +78,7 @@ function ArtPathPage() {
   const invalidateFarm = useInvalidateFarm();
   const [busy, setBusy] = useState<number | null>(null);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [feedback, setFeedback] = useState<Record<number, "correct" | "wrong">>({});
   const [activeStation, setActiveStation] = useState(0);
@@ -113,7 +114,7 @@ function ArtPathPage() {
       const result = await completePathStation({ data: { station: index, answer } });
       setFeedback((current) => ({ ...current, [index]: "correct" }));
       const gained = (result as { unlocked?: number } | null)?.unlocked ?? 0;
-      setError(gained > 0
+      setNotice(gained > 0
         ? `Station geschafft — ${gained} studierte Werke wurden deiner Sammlung hinzugefügt.`
         : "Station geschafft — die nächste Epoche ist offen.");
       await refetch(); invalidateFarm();
