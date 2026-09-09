@@ -78,3 +78,67 @@ export function useCardQuizRounds(date: string) {
     },
   });
 }
+
+export function useDailyLessons(date: string) {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["daily_lessons", user?.id, date],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("daily_lessons")
+        .select("kind, score, coin_reward")
+        .eq("lesson_date", date);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
+export function useStudyRewards(date: string) {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["study_rewards", user?.id, date],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("study_rewards")
+        .select("cards_rewarded, coins_awarded")
+        .eq("reward_date", date)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+/** Gesamtwert aller Auktionslose — Basis für „was fehlt mir noch zur Vollsammlung?“. */
+export function useAuctionTotals() {
+  return useQuery({
+    queryKey: ["auction_totals"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("auction_offers").select("work_slug, price");
+      if (error) throw error;
+      const offers = data ?? [];
+      return { count: offers.length, total: offers.reduce((sum, row) => sum + row.price, 0), offers };
+    },
+  });
+}
+
+/** Alle bisher gewerteten Studierkarten (über alle Tage). */
+export function useStudyTotals() {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["study_rewards_total", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("study_rewards").select("cards_rewarded, coins_awarded");
+      if (error) throw error;
+      const rows = data ?? [];
+      return {
+        cards: rows.reduce((sum, row) => sum + row.cards_rewarded, 0),
+        coins: rows.reduce((sum, row) => sum + row.coins_awarded, 0),
+      };
+    },
+  });
+}

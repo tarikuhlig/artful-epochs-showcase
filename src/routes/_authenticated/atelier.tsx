@@ -8,7 +8,9 @@ import { allPainters, allWorks } from "@/lib/art-data";
 import { journeys } from "@/lib/journeys";
 import { museums } from "@/lib/museums";
 import { artPathWithWorks } from "@/lib/art-path";
-import { useArtPathProgress, useOwnedItems } from "@/lib/economy";
+import { useArtPathProgress, useAuctionTotals, useCardQuizRounds, useDailyLessons, useOwnedItems, useStudyRewards, useStudyTotals } from "@/lib/economy";
+import { DAILY_DAILY_MAX, STUDY_CARDS_PER_DAY, STUDY_DAILY_MAX } from "@/lib/coin-economy";
+import { DailyLesson } from "@/components/DailyLesson";
 import {
   POINTS_PER_DISCOVERY,
   harvestToday,
@@ -161,7 +163,14 @@ function AtelierPage() {
         </div>
       </section>
 
-      {access.hasAccess ? <DailyCoinChallenge /> : <div className="mt-10 space-y-6"><PremiumLock title="Tägliche Coin-Challenge freischalten" description="Mit Premium löst du täglich drei Kunstfragen, verdienst bis zu 60 Coins und kannst sie im Auktionshaus für deine Galerie einsetzen." /><PremiumUpsell /></div>}
+      <LearningProgress />
+
+      <div className="mt-10 grid gap-6 lg:grid-cols-2">
+        <DailyLesson kind="work" />
+        <DailyLesson kind="artist" />
+      </div>
+
+      {access.hasAccess ? <div className="mt-10"><DailyCoinChallenge /></div> : <div className="mt-10 space-y-6"><PremiumLock title="Tägliche Coin-Challenge freischalten" description="Mit Premium löst du täglich drei Kunstfragen, verdienst bis zu 50 Coins und kannst sie im Auktionshaus für deine Galerie einsetzen." /><PremiumUpsell /></div>}
 
       <div className="mt-10"><CardQuiz /></div>
 
@@ -242,5 +251,66 @@ function Stat({
       </p>
       <p className="font-display mt-2 text-2xl font-medium">{value}</p>
     </div>
+  );
+}
+
+/** Lernfortschritt: Stationen, Studierkarten und was bis zur Vollsammlung fehlt. */
+function LearningProgress() {
+  const { data: pathProgress = [] } = useArtPathProgress();
+  const { data: owned = [] } = useOwnedItems();
+  const { data: stats } = useUserStats();
+  const today = todayISO();
+  const { data: studyToday } = useStudyRewards(today);
+  const { data: studyTotals } = useStudyTotals();
+  const { data: quizRounds = [] } = useCardQuizRounds(today);
+  const { data: lessons = [] } = useDailyLessons(today);
+  const { data: auction } = useAuctionTotals();
+
+  const ownedSlugs = new Set(owned.map((item) => item.item_slug));
+  const missing = (auction?.offers ?? []).filter((offer) => !ownedSlugs.has(offer.work_slug));
+  const missingCoins = missing.reduce((sum, offer) => sum + offer.price, 0);
+  const stillNeeded = Math.max(0, missingCoins - (stats?.coins ?? 0));
+  const perDay = STUDY_DAILY_MAX + DAILY_DAILY_MAX;
+  const openStations = artPathWithWorks.length - pathProgress.length;
+  const openStationCoins = artPathWithWorks
+    .filter((station) => !pathProgress.some((entry) => entry.station_index === station.index))
+    .reduce((sum, station) => sum + station.coinReward, 0);
+  const days = Math.ceil(Math.max(0, stillNeeded - openStationCoins) / perDay);
+
+  const earnedToday =
+    (studyToday?.coins_awarded ?? 0) +
+    quizRounds.reduce((sum, round) => sum + round.coin_reward, 0) +
+    lessons.reduce((sum, lesson) => sum + lesson.coin_reward, 0);
+
+  return (
+    <section className="mt-10 rounded-xl border border-border p-6 sm:p-8">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Lernfortschritt</p>
+          <h2 className="font-display mt-2 text-2xl font-medium">Was du gelernt hast</h2>
+        </div>
+        <p className="flex items-center gap-2 text-sm"><img src={coin} alt="" className="h-6 w-6" />{earnedToday} heute verdient · bis {perDay} täglich möglich</p>
+      </div>
+
+      <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Stat icon={<Sparkles className="h-4 w-4" />} label="Reise-Stationen" value={`${pathProgress.length}/${artPathWithWorks.length}`} />
+        <Stat icon={<Layers className="h-4 w-4" />} label="Studierte Karten" value={`${studyTotals?.cards ?? 0}`} />
+        <Stat icon={<Layers className="h-4 w-4" />} label="Karten heute" value={`${studyToday?.cards_rewarded ?? 0}/${STUDY_CARDS_PER_DAY}`} />
+        <Stat icon={<Images className="h-4 w-4" />} label="Werke in der Sammlung" value={`${owned.length}`} />
+      </div>
+
+      <div className="mt-6 grid gap-3 text-sm sm:grid-cols-2">
+        <p className="rounded-lg bg-muted p-4">
+          Noch offen: <strong>{openStations} Stationen</strong> mit zusammen {openStationCoins.toLocaleString("de-DE")} Coins.
+        </p>
+        <p className="rounded-lg bg-coin-soft p-4">
+          {missing.length === 0
+            ? "Du besitzt bereits jedes Werk aus dem Auktionshaus."
+            : stillNeeded === 0
+              ? `Dein Guthaben reicht für alle ${missing.length} fehlenden Werke.`
+              : <>Für die {missing.length} fehlenden Werke brauchst du noch <strong>{stillNeeded.toLocaleString("de-DE")} Coins</strong> — mit der Reise und rund {days} Lerntagen ist das geschafft.</>}
+        </p>
+      </div>
+    </section>
   );
 }

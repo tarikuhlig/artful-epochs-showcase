@@ -131,6 +131,39 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_lessons: {
+        Row: {
+          coin_reward: number
+          created_at: string
+          id: string
+          kind: string
+          lesson_date: string
+          score: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          coin_reward: number
+          created_at?: string
+          id?: string
+          kind: string
+          lesson_date?: string
+          score: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          coin_reward?: number
+          created_at?: string
+          id?: string
+          kind?: string
+          lesson_date?: string
+          score?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       discoveries: {
         Row: {
           created_at: string
@@ -260,6 +293,36 @@ export type Database = {
         }
         Relationships: []
       }
+      study_rewards: {
+        Row: {
+          cards_rewarded: number
+          coins_awarded: number
+          created_at: string
+          id: string
+          reward_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cards_rewarded?: number
+          coins_awarded?: number
+          created_at?: string
+          id?: string
+          reward_date?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cards_rewarded?: number
+          coins_awarded?: number
+          created_at?: string
+          id?: string
+          reward_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean
@@ -367,6 +430,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_study_card_for_user: {
+        Args: { target_date: string; target_user: string }
+        Returns: {
+          awarded: number
+          cards_today: number
+          coins: number
+        }[]
+      }
       complete_art_path_station: {
         Args: { target_station: number }
         Returns: {
@@ -400,6 +471,18 @@ export type Database = {
           awarded: number
           coins: number
           score: number
+        }[]
+      }
+      complete_daily_lesson_for_user: {
+        Args: {
+          target_date: string
+          target_kind: string
+          target_score: number
+          target_user: string
+        }
+        Returns: {
+          awarded: number
+          coins: number
         }[]
       }
       grant_studied_artworks_for_user: {

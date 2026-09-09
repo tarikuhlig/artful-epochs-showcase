@@ -20,13 +20,11 @@ function findPainter(name: string): CatalogPainter | undefined {
 }
 
 /**
- * Coin-Ökonomie: Die Summe aller Stationsbelohnungen (30 Stationen)
- * deckt bewusst den Gesamtpreis aller Auktionslose ab — wer die ganze
- * Reise lernt, kann am Ende jedes Werk im Auktionshaus erwerben.
+ * Coin-Ökonomie: Die Reise trägt 50 % des Gesamtbudgets (21.000 Coins).
  * Muss mit `complete_art_path_station_for_user` in der Datenbank übereinstimmen.
  */
-export const STATION_REWARD = 1200;
-export const MILESTONE_REWARD = 2000;
+export const STATION_REWARD = 650;
+export const MILESTONE_REWARD = 900;
 
 export const artPath: ArtPathStation[] = stationContent.map((content, index) => ({
   ...content,

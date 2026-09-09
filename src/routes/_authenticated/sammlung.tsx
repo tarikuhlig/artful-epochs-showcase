@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useDiscoveries } from "@/lib/progress";
 import { epochs, allPainters, allWorks } from "@/lib/art-data";
+import { CollectionQuiz } from "@/components/CollectionQuiz";
 import { useOwnedItems } from "@/lib/economy";
 import { Button } from "@/components/ui/button";
 import { artRank, artRankClasses } from "@/lib/art-rarity";
@@ -217,6 +218,9 @@ function CollectionPage() {
           {compareIds.length === 2 && <section className="mt-10 border-t border-border pt-8"><div className="flex items-center justify-between gap-3"><div><p className="text-xs tracking-widest text-muted-foreground uppercase">Direkter Vergleich</p><h3 className="font-display mt-1 text-2xl font-medium">Zwei Werke, ein Blick</h3></div><Button variant="ghost" size="icon" onClick={() => setCompareIds([])} aria-label="Vergleich schließen"><X /></Button></div><div className="mt-5 grid grid-cols-2 gap-4 md:gap-8">{compareIds.map((id) => { const item = owned.find((entry) => entry.id === id); const work = item ? allWorks.find((candidate) => candidate.id === item.item_slug) : undefined; if (!work) return null; return <div key={id} className="min-w-0"><div className="aspect-[4/3] overflow-hidden rounded-md bg-muted"><img src={work.image} alt={work.title} className="h-full w-full object-contain" /></div><h4 className="mt-3 font-display text-lg font-medium">{work.title}</h4><p className="text-sm text-muted-foreground">{work.painter.name} · {work.year}</p><dl className="mt-4 space-y-2 text-sm"><div><dt className="text-xs text-muted-foreground">Technik</dt><dd>{work.technique}</dd></div><div><dt className="text-xs text-muted-foreground">Stil</dt><dd>{work.styles.join(" · ")}</dd></div><div><dt className="text-xs text-muted-foreground">Museum</dt><dd>{work.museum || "Privatsammlung / unbekannt"}</dd></div></dl></div>; })}</div></section>}
         </>}
       </section>
+
+      <div className="mt-10"><CollectionQuiz ownedSlugs={owned.map((item) => item.item_slug)} /></div>
+
 
       <h2 className="font-display mt-16 mb-4 text-2xl font-medium">Epochen</h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

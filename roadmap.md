@@ -44,3 +44,11 @@
 - [x] Coin-Guthaben ausschließlich im Galerie-Dashboard zeigen, nicht in der oberen Leiste
 - [x] Reise-Epochen um vertiefte Biografien sowie Farben, Pigmente, Materialien und Techniken ergänzen
 - [x] Echte Monats-/Jahresabos, Premiumstatus und Admin-Testzugang fertig verbinden und prüfen
+- [x] Coin-Budget aufteilen: Reise 50 %, Studierkarten 35 %, Tagesinhalte 15 %
+- [x] Tageswerk und Tageskünstler mit Lernstoff und je zwei Quizfragen ausstatten
+- [ ] Dashboard: studierte Stationen/Karten und fehlende Coins bis zur Vollsammlung anzeigen
+- [ ] Karten-Quiz über die eigenen gesammelten Werke in der Sammlung
+- [x] Dashboard: studierte Stationen/Karten und fehlende Coins bis zur Vollsammlung anzeigen
+- [x] Karten-Quiz über die eigenen gesammelten Werke in der Sammlung
+- [x] Tageswerk-/Tageskünstler-Karten mit Stoff und je zwei Fragen im Dashboard
+- [x] Studierkarten geben Coins (serverseitig gedeckelt)

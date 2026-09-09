@@ -99,3 +99,45 @@ export const completeCardQuizRound = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return result?.[0] ?? null;
   });
+
+export const completeDailyLesson = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    kind: z.enum(["work", "artist"]),
+    answers: z.array(z.string()).length(2),
+  }).parse(data))
+  .handler(async ({ data, context }) => {
+    const today = new Date().toISOString().slice(0, 10);
+    if (data.date !== today) throw new Error("Diese Tageskarte ist nicht mehr aktuell.");
+    const { dailyLesson } = await import("@/lib/daily-lessons");
+    const lesson = dailyLesson(data.kind, data.date);
+    const score = lesson.questions.reduce(
+      (total, question, index) => total + (data.answers[index] === question.answer ? 1 : 0),
+      0,
+    );
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: result, error } = await supabaseAdmin.rpc("complete_daily_lesson_for_user", {
+      target_user: context.userId,
+      target_date: data.date,
+      target_kind: data.kind,
+      target_score: score,
+    });
+    if (error) throw new Error(error.message);
+    return { ...(result?.[0] ?? {}), score };
+  });
+
+export const awardStudyCard = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({ date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/) }).parse(data))
+  .handler(async ({ data, context }) => {
+    const today = new Date().toISOString().slice(0, 10);
+    if (data.date !== today) throw new Error("Ungültiges Lerndatum.");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: result, error } = await supabaseAdmin.rpc("award_study_card_for_user", {
+      target_user: context.userId,
+      target_date: data.date,
+    });
+    if (error) throw new Error(error.message);
+    return result?.[0] ?? null;
+  });

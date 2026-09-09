@@ -1,10 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { useQueryClient } from "@tanstack/react-query";
 import { Check, GraduationCap, RotateCcw, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LicenseNotice } from "@/components/LicenseNotice";
 import { STUDY_MODES, drawStudyCard, studyEpochs, studyPool, type StudyCard, type StudyMode } from "@/lib/study";
 import { allWorks } from "@/lib/art-data";
+import { useAuth } from "@/hooks/useAuth";
+import { useStudyRewards } from "@/lib/economy";
+import { awardStudyCard } from "@/lib/economy.functions";
+import { STUDY_CARDS_PER_DAY, STUDY_CARD_REWARD } from "@/lib/coin-economy";
+import { todayISO, useInvalidateFarm } from "@/lib/farm";
+import coin from "@/assets/provenance-coin.png";
 
 export const Route = createFileRoute("/studieren")({
   head: () => ({ meta: [
@@ -27,6 +35,15 @@ function StudyPage() {
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
 
+  const today = todayISO();
+  const { user } = useAuth();
+  const award = useServerFn(awardStudyCard);
+  const { data: rewards, refetch: refetchRewards } = useStudyRewards(today);
+  const invalidateFarm = useInvalidateFarm();
+  const queryClient = useQueryClient();
+  const rewardedToday = rewards?.cards_rewarded ?? 0;
+  const coinsToday = rewards?.coins_awarded ?? 0;
+
   const pool = useMemo(() => studyPool(epochSlug), [epochSlug]);
 
   useEffect(() => {
@@ -39,19 +56,25 @@ function StudyPage() {
     setPicked("");
   }
 
-  function choose(option: string) {
+  async function choose(option: string) {
     if (picked || !card) return;
     setPicked(option);
     setSeen((value) => value + 1);
-    if (option === card.answer) {
-      setRight((value) => value + 1);
-      setStreak((value) => {
-        const next = value + 1;
-        setBestStreak((best) => Math.max(best, next));
-        return next;
-      });
-    } else {
-      setStreak(0);
+    if (option !== card.answer) { setStreak(0); return; }
+    setRight((value) => value + 1);
+    setStreak((value) => {
+      const next = value + 1;
+      setBestStreak((best) => Math.max(best, next));
+      return next;
+    });
+    if (!user) return;
+    try {
+      await award({ data: { date: today } });
+      await refetchRewards();
+      invalidateFarm();
+      await queryClient.invalidateQueries({ queryKey: ["user_stats"] });
+    } catch {
+      /* Coins sind ein Bonus — das Lernen läuft auch ohne Gutschrift weiter. */
     }
   }
 
@@ -96,6 +119,8 @@ function StudyPage() {
         <p>{right} von {seen} richtig</p>
         <p className="text-muted-foreground">Serie: {streak} · Beste Serie: {bestStreak}</p>
         <p className="text-muted-foreground">Kartenpool: {pool.length} Werke</p>
+        {user ? <p className="flex items-center gap-2"><img src={coin} alt="" className="h-5 w-5" />{coinsToday} heute · {rewardedToday}/{STUDY_CARDS_PER_DAY} gewertete Karten</p>
+          : <p className="text-muted-foreground">Angemeldet gibt es {STUDY_CARD_REWARD} Coins je richtiger Karte.</p>}
         <Button type="button" variant="ghost" size="sm" onClick={resetStats} className="ml-auto rounded-full font-normal"><RotateCcw className="h-4 w-4" /> Zurücksetzen</Button>
       </div>
 
