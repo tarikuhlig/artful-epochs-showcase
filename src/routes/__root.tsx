@@ -21,6 +21,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { PremiumBanner } from "@/components/PremiumUpsell";
+import { CoinBadge } from "@/components/CoinBadge";
 
 function NotFoundComponent() {
   return (
