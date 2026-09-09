@@ -1,5 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+/** Speicherort für den zuletzt geöffneten Reisepunkt. */
+const RESUME_KEY = "provenance:journey";
+
 import { BookOpen, Brush, Check, ChevronLeft, ChevronRight, Coins, Compass, Eye, HelpCircle, Images, Landmark, Lightbulb, Lock, Palette, ScrollText, Sparkles, UserRound, X } from "lucide-react";
 import { artPathWithWorks } from "@/lib/art-path";
 import { useArtPathProgress } from "@/lib/economy";
