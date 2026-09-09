@@ -1,8 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { artPathQuizzes } from "@/lib/art-path-quiz";
+import { stationFinalQuestion } from "@/lib/art-path-questions";
 import { dailyChallenge } from "@/lib/daily-coin-challenge";
+import { CARD_QUIZ_CARDS, CARD_QUIZ_ROUNDS_PER_DAY, cardQuizRound } from "@/lib/card-quiz";
 
 async function requirePremium(context: { supabase: any; userId: string }) {
   const token = process.env["VITE_PAYMENTS_CLIENT_TOKEN"] ?? "";
@@ -13,10 +14,10 @@ async function requirePremium(context: { supabase: any; userId: string }) {
 
 export const completePathStation = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ station: z.number().int().min(0).max(11), answer: z.string().trim().min(1).max(120) }).parse(data))
+  .inputValidator((data) => z.object({ station: z.number().int().min(0).max(29), answer: z.string().trim().min(1).max(200) }).parse(data))
   .handler(async ({ data, context }) => {
     if (data.station >= 2) await requirePremium(context);
-    const quiz = artPathQuizzes[data.station];
+    const quiz = stationFinalQuestion(data.station);
     if (!quiz || data.answer !== quiz.answer) throw new Error("Die Antwort ist noch nicht richtig.");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: result, error } = await supabaseAdmin.rpc("complete_art_path_station_for_user", {
@@ -55,6 +56,31 @@ export const completeDailyCoinChallenge = createServerFn({ method: "POST" })
     const { data: result, error } = await supabaseAdmin.rpc("complete_daily_coin_challenge_for_user", {
       target_user: context.userId,
       target_date: data.date,
+      target_score: score,
+    });
+    if (error) throw new Error(error.message);
+    return result?.[0] ?? null;
+  });
+
+export const completeCardQuizRound = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    round: z.number().int().min(0).max(CARD_QUIZ_ROUNDS_PER_DAY - 1),
+    answers: z.array(z.string()).length(CARD_QUIZ_CARDS),
+  }).parse(data))
+  .handler(async ({ data, context }) => {
+    await requirePremium(context);
+    const today = new Date().toISOString().slice(0, 10);
+    if (data.date !== today) throw new Error("Diese Runde ist nicht mehr aktuell.");
+    const cards = cardQuizRound(data.date, data.round);
+    if (cards.length !== CARD_QUIZ_CARDS) throw new Error("Die Runde konnte nicht geladen werden.");
+    const score = cards.reduce((total, card, index) => total + (data.answers[index] === card.answer ? 1 : 0), 0);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: result, error } = await supabaseAdmin.rpc("complete_card_quiz_round_for_user", {
+      target_user: context.userId,
+      target_date: data.date,
+      target_round: data.round,
       target_score: score,
     });
     if (error) throw new Error(error.message);
