@@ -219,41 +219,7 @@ function SiteHeader() {
           )}
         </nav>
 
-        <button
-          type="button"
-          onClick={() => setOpen((o) => !o)}
-          aria-label={open ? "Menü schließen" : "Menü öffnen"}
-          aria-expanded={open}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-input text-foreground transition-colors hover:bg-accent md:hidden"
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
       </div>
-
-      {open && (
-        <nav className="max-h-[calc(100dvh-3.5rem)] overflow-y-auto border-t border-border bg-background px-4 pt-2 pb-[calc(1rem+env(safe-area-inset-bottom))] text-base md:hidden">
-          {NAV.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              activeOptions={{ exact: item.exact ?? false }}
-              onClick={() => setOpen(false)}
-              className="block rounded-xl px-4 py-3 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              activeProps={{ className: "bg-accent text-foreground" }}
-            >
-              {item.label}
-            </Link>
-          ))}
-          {user ? (
-            <>
-              <Link to="/atelier" onClick={() => setOpen(false)} className="mt-2 block rounded-full bg-primary px-4 py-3 text-center text-primary-foreground">Galerie</Link>
-              <Link to="/einstellungen" onClick={() => setOpen(false)} className="mt-2 block rounded-full border border-input px-4 py-3 text-center">Einstellungen</Link>
-            </>
-          ) : (
-            <Link to="/auth" onClick={() => setOpen(false)} className="mt-2 block rounded-full bg-primary px-4 py-3 text-center text-primary-foreground">Anmelden</Link>
-          )}
-        </nav>
-      )}
     </header>
   );
 }
