@@ -87,14 +87,14 @@ export function MobileTabBar() {
             <Map className="h-5 w-5" />
             Reise
           </Link>
-          <Link to="/studieren" className={itemClass} activeProps={activeClass}>
-            <GraduationCap className="h-5 w-5" />
-            Studieren
+          <Link to="/auktionshaus" className={itemClass} activeProps={activeClass}>
+            <Gavel className="h-5 w-5" />
+            Auktion
           </Link>
           {user ? (
-          <Link to="/profil" className={itemClass} activeProps={activeClass}>
-            <UserRound className="h-5 w-5" />
-            Profil
+          <Link to="/atelier" className={itemClass} activeProps={activeClass}>
+            <Images className="h-5 w-5" />
+            Galerie
           </Link>
           ) : (
             <Link to="/auth" className={itemClass} activeProps={activeClass}>
@@ -102,6 +102,7 @@ export function MobileTabBar() {
               Anmelden
             </Link>
           )}
+
           <button type="button" onClick={() => setOpen((value) => !value)} className={itemClass}>
             <MoreHorizontal className="h-5 w-5" />
             Mehr
