@@ -149,7 +149,7 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 const NAV: {
-  to: "/" | "/kunstpfad" | "/auktionshaus" | "/atelier";
+  to: "/" | "/kunstpfad" | "/auktionshaus" | "/sammlung";
   label: string;
   exact?: boolean;
   authOnly?: boolean;
@@ -157,8 +157,9 @@ const NAV: {
   { to: "/", label: "Entdecken", exact: true },
   { to: "/kunstpfad", label: "Reise" },
   { to: "/auktionshaus", label: "Auktionshaus" },
-  { to: "/atelier", label: "Galerie", authOnly: true },
+  { to: "/sammlung", label: "Galerie", authOnly: true },
 ];
+
 
 
 
@@ -269,6 +270,8 @@ function RootComponent() {
       <MobileTabBar />
       <ProfileSetup />
       <AppTour />
+      <CollectionPopups />
+
     </QueryClientProvider>
   );
 }
