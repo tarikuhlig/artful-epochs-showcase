@@ -148,6 +148,7 @@ export function OwnPhotos() {
           Noch keine eigenen Fotos — lade dein erstes Museumsfoto hoch.
         </p>
       )}
+      <UnlockDialog unlock={unlock} onClose={() => setUnlock(null)} />
     </section>
   );
 }
