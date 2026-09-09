@@ -22,8 +22,8 @@ export type StationContent = {
   technique: string;
   /** Ein Satz je Künstler, in Reihenfolge der artists. */
   artistLens: string[];
-  /** Drei Merksätze, die im Quiz abgefragt werden. */
-  mnemonics: string[];
+  /** Drei Merksätze, die im Quiz abgefragt werden — zusätzlich mit vertiefendem Text. */
+  mnemonics: { text: string; detail: string }[];
 };
 
 export const stationContent: StationContent[] = [
@@ -50,10 +50,19 @@ export const stationContent: StationContent[] = [
       "Ambrogio Lorenzetti malt im Rathaus von Siena Stadt und Land als politisches Lehrbild.",
     ],
     mnemonics: [
-      "Merke: Fresko heißt Malen auf nassem Kalk — Korrekturen sind unmöglich.",
-      "Merke: Giotto ersetzt den Goldgrund durch Raum, Körper und Schatten.",
-      "Merke: Siena bleibt elegant und golden, Florenz wird plastisch und erdverbunden.",
-    ],
+    {
+      text: "Merke: Fresko heißt Malen auf nassem Kalk — Korrekturen sind unmöglich.",
+      detail: "Der Kalkputz muss noch feucht sein, damit sich Pigment und Wand dauerhaft verbinden. Trocknet die Wand, kann der Maler den Fehler nur noch überdecken oder neu verputzen. Deshalb plant er jeden Tag genau, was in den nächsten Stunden zu schaffen ist.",
+    },
+    {
+      text: "Merke: Giotto ersetzt den Goldgrund durch Raum, Körper und Schatten.",
+      detail: "Vor Giotto schwebten Heilige vor goldenem Hintergrund, jenseits von Zeit und Raum. Giotto stellt sie auf festen Boden, lässt sie einander zuwenden und Schatten werfen — damit wird die Szene zu einem erlebten Moment.",
+    },
+    {
+      text: "Merke: Siena bleibt elegant und golden, Florenz wird plastisch und erdverbunden.",
+      detail: "Sienesische Maler wie Duccio und Simone Martini bewahren die byzantinische Pracht aus Gold und geschwungenen Linien. Florentiner Maler unter Giotto setzen dagegen auf plastische Körper, echte Räume und irdische Schwere.",
+    }
+  ],
   },
   {
     title: "Höfische Pracht und erster Realismus",
@@ -78,10 +87,19 @@ export const stationContent: StationContent[] = [
       "Robert Campin stellt heilige Szenen in bürgerliche Wohnräume mit Kaminen und Kupferkesseln.",
     ],
     mnemonics: [
-      "Merke: Internationale Gotik = eleganter Hofstil quer durch Europa.",
-      "Merke: Konrad Witz malt 1444 die erste porträthafte Landschaft (Genfer See).",
-      "Merke: Gold steht für Heiligkeit — beobachtete Details für die neue Wirklichkeit.",
-    ],
+    {
+      text: "Merke: Internationale Gotik = eleganter Hofstil quer durch Europa.",
+      detail: "Höfe in Burgund, Frankreich, Prag und Köln tauschen Künstler, Musterbücher und Ideen aus. Der Stil ist überall erkennbar: schlanke Figuren, kostbare Stoffe, filigrane Details — unabhängig vom Auftraggeber.",
+    },
+    {
+      text: "Merke: Konrad Witz malt 1444 die erste porträthafte Landschaft (Genfer See).",
+      detail: "In der 'Wunderbaren Fischmadonna' spiegelt sich der Genfer See so genau, dass man die Stelle heute noch identifizieren kann. Damit wird die Landschaft nicht nur Kulisse, sondern realer Schauplatz.",
+    },
+    {
+      text: "Merke: Gold steht für Heiligkeit — beobachtete Details für die neue Wirklichkeit.",
+      detail: "Goldgrund und Strahlenkranz signalisieren göttliche Gegenwart. Doch neben dem Symbolischen tauchen plötzlich botanisch genaue Blumen, erkennbare Seen und individuelle Gesichter auf — die Welt wird beobachtbar.",
+    }
+  ],
   },
   {
     title: "Das Bild wird Wirklichkeit",
@@ -106,10 +124,19 @@ export const stationContent: StationContent[] = [
       "Antonello da Messina bringt die niederländische Öltechnik nach Italien und verbindet sie mit klarer Geometrie.",
     ],
     mnemonics: [
-      "Merke: Öl trocknet langsam — deshalb sind Lasuren, Glanz und feinste Details möglich.",
-      "Merke: Alltagsdinge sind Symbole (Kerze = Gottes Gegenwart, Hund = Treue).",
-      "Merke: Antonello ist die Brücke, über die Öl von Flandern nach Venedig gelangt.",
-    ],
+    {
+      text: "Merke: Öl trocknet langsam — deshalb sind Lasuren, Glanz und feinste Details möglich.",
+      detail: "Tempera trocknet innerhalb Minuten und erlaubt keine Korrektur. Öl hingegen bleibt stunden- oder tagelang nass, sodass Farben verwischt, übereinandergelagert und bis zur Trocknung bearbeitet werden können.",
+    },
+    {
+      text: "Merke: Alltagsdinge sind Symbole (Kerze = Gottes Gegenwart, Hund = Treue).",
+      detail: "Ein Hund im Hochzeitsbild bedeutet Treue, eine erloschene Kerze das Ende des Lebens, eine Zitrone gleichzeitig Süße und Bitterkeit. Diese verborgene Sprache macht das Bild zu einem geistigen Rätsel.",
+    },
+    {
+      text: "Merke: Antonello ist die Brücke, über die Öl von Flandern nach Venedig gelangt.",
+      detail: "Antonello da Messina lernt die niederländische Öltechnik und bringt sie nach Italien. Venedig übernimmt sie, weil Öl auf Leinwand in der feuchten Lagunenluft besser hält als Tempera auf Holz.",
+    }
+  ],
   },
   {
     title: "Der gebaute Raum",
@@ -134,10 +161,19 @@ export const stationContent: StationContent[] = [
       "Fra Filippo Lippi, Mönch mit Skandalgeschichte, malt Madonnen mit unerhört menschlicher Zärtlichkeit.",
     ],
     mnemonics: [
-      "Merke: Zentralperspektive = ein Fluchtpunkt, in dem alle Tiefenlinien zusammenlaufen.",
-      "Merke: Masaccio bringt Licht von einer festen Quelle — Körper werfen echte Schatten.",
-      "Merke: Fresko in Florenz, Tempera auf Pappelholz für Altäre.",
-    ],
+    {
+      text: "Merke: Zentralperspektive = ein Fluchtpunkt, in dem alle Tiefenlinien zusammenlaufen.",
+      detail: "Brunelleschi demonstrierte das Prinzip am Florentiner Baptisterium: Parallele Linien schienen in einem einzigen Punkt zu verschwinden. Damit wurde der Bildraum mathematisch berechenbar.",
+    },
+    {
+      text: "Merke: Masaccio bringt Licht von einer festen Quelle — Körper werfen echte Schatten.",
+      detail: "In der Brancacci-Kapelle fällt das Licht immer von derselben Seite ein. Figuren werfen konsistente Schatten auf Boden und Wand, wodurch sie plastisch und im Raum verankert wirken.",
+    },
+    {
+      text: "Merke: Fresko in Florenz, Tempera auf Pappelholz für Altäre.",
+      detail: "Die Wahl des Bildträgers ist keine Modefrage: Feuchte Kirchenwände tragen Fresko, tragbare Altärtafeln brauchen leichtes Holz mit Kreidegrund. Jeder Träger bestimmt, wie die Farbe aufgetragen wird.",
+    }
+  ],
   },
   {
     title: "Ordnung, Licht und Hof",
@@ -162,10 +198,19 @@ export const stationContent: StationContent[] = [
       "Cosimo Tura arbeitet in Ferrara scharfkantig, nervös und beinahe metallisch.",
     ],
     mnemonics: [
-      "Merke: Piero = Mathematik und ruhiges, gleichmäßiges Licht.",
-      "Merke: Mantegna = extreme Verkürzung und Antikenbegeisterung.",
-      "Merke: Venedig malt auf Leinwand, weil Feuchtigkeit Holz und Putz zerstört.",
-    ],
+    {
+      text: "Merke: Piero = Mathematik und ruhiges, gleichmäßiges Licht.",
+      detail: "Piero della Francesca ordnet Figuren, Architektur und Landschaft nach Proportionen. Sein Licht ist klar und gleichmäßig, ohne dramatische Schatten — das Bild wirkt wie ein geometrischer Beweis.",
+    },
+    {
+      text: "Merke: Mantegna = extreme Verkürzung und Antikenbegeisterung.",
+      detail: "Mantegna malt Christus so von unten, dass die Füße riesig und der Körper verkürzt erscheinen. Diese Verkürzung beweist virtuoses Raumdenken und die Bewunderung römischer Reliefs.",
+    },
+    {
+      text: "Merke: Venedig malt auf Leinwand, weil Feuchtigkeit Holz und Putz zerstört.",
+      detail: "In der feuchten Lagunenluft biegen sich Holztafeln und bröckelt der Kalkputz. Leinwand auf Keilrahmen ist leichter, günstiger und widerstandsfähiger — und lässt zudem größere Formate zu.",
+    }
+  ],
   },
   {
     title: "Der Mensch im Mittelpunkt",
@@ -190,10 +235,19 @@ export const stationContent: StationContent[] = [
       "Filippino Lippi bringt fantastische, nervöse Details in die klare Florentiner Ordnung.",
     ],
     mnemonics: [
-      "Merke: Mythologie wird bildwürdig — Antike als neues Vorbild.",
-      "Merke: Botticellis Kraft liegt in der Linie, nicht im Schatten.",
-      "Merke: Werkstätten sind Schulen — Verrocchio unterrichtet Leonardo, Ghirlandaio Michelangelo.",
-    ],
+    {
+      text: "Merke: Mythologie wird bildwürdig — Antike als neues Vorbild.",
+      detail: "Unter dem Einfluss von Humanismus und Medici-Förderung rücken Venus, Mars und die Musen neben Heilige und Märtyrer. Die Antike wird nicht nur zitiert, sondern als lebendige Bildsprache neu erfunden.",
+    },
+    {
+      text: "Merke: Botticellis Kraft liegt in der Linie, nicht im Schatten.",
+      detail: "Botticelli modelliert Körper und Stoffe durch fließende Konturen statt durch Licht-Schatten-Modellierung. Seine Figuren wirken fast zweidimensional, rhythmisch und zeitlos.",
+    },
+    {
+      text: "Merke: Werkstätten sind Schulen — Verrocchio unterrichtet Leonardo, Ghirlandaio Michelangelo.",
+      detail: "Junge Künstler lernen jahrelang im Atelier eines Meisters, indem sie Grundierungen auftragen, Details malen und Skizzen anfertigen. Aus diesen Werkstätten gingen einige der bedeutendsten Maler der Renaissance hervor.",
+    }
+  ],
   },
   {
     title: "Fantasie und Menschentheater",
@@ -218,10 +272,19 @@ export const stationContent: StationContent[] = [
       "Joachim Patinir erfindet die Weltlandschaft, in der die biblische Figur winzig wird.",
     ],
     mnemonics: [
-      "Merke: Luftperspektive = braun vorn, grün in der Mitte, blau hinten.",
-      "Merke: Patinir macht die Landschaft zum Hauptthema, die Erzählung zur Nebensache.",
-      "Merke: Bruegels Bilder liest man wie ein Buch voller Sprichwörter.",
-    ],
+    {
+      text: "Merke: Luftperspektive = braun vorn, grün in der Mitte, blau hinten.",
+      detail: "Die Luft zwischen Betrachter und Horizont filtert das Licht. Deshalb erscheinen nahe Dinge warm und scharf, mittlere in Grüntönen und ferne Berge blau und verschwommen — eine Beobachtung, die schon Leonardo beschrieb.",
+    },
+    {
+      text: "Merke: Patinir macht die Landschaft zum Hauptthema, die Erzählung zur Nebensache.",
+      detail: "Bei Patinir wird die biblische Figur winzig in eine riesige, detailliert gemalte Welt gesetzt. Zum ersten Mal ist nicht das Heilige, sondern die Natur der wahre Protagonist des Bildes.",
+    },
+    {
+      text: "Merke: Bruegels Bilder liest man wie ein Buch voller Sprichwörter.",
+      detail: "Jede Figur, jede Geste und jedes Tier in Bruegels Bauern- und Jahreszeitenszenen entspricht einem bekannten Sprichwort. Das Bild ist eine moralische Komödie, die der Betrachter Wort für Wort entschlüsseln kann.",
+    }
+  ],
   },
   {
     title: "Der Künstler als Schöpfer",
@@ -246,10 +309,19 @@ export const stationContent: StationContent[] = [
       "Hans Baldung malt Hexen, Tod und Sinnlichkeit — die dunkle Seite der Renaissance.",
     ],
     mnemonics: [
-      "Merke: Holzschnitt druckt die stehengebliebenen Stege, Kupferstich die eingegrabenen Linien.",
-      "Merke: Dürers Monogramm 'AD' ist eines der ersten Künstlerzeichen Europas.",
-      "Merke: Die Presse macht Bilder erstmals massenhaft verfügbar.",
-    ],
+    {
+      text: "Merke: Holzschnitt druckt die stehengebliebenen Stege, Kupferstich die eingegrabenen Linien.",
+      detail: "Beim Holzschnitt werden die nicht bedruckten Stellen weggeschnitten; die erhabenen Linien nehmen die Farbe auf. Beim Kupferstich gräbt der Stichel Furchen in die Platte, die beim Druck mit Tinte gefüllt werden.",
+    },
+    {
+      text: "Merke: Dürers Monogramm 'AD' ist eines der ersten Künstlerzeichen Europas.",
+      detail: "Albrecht Dürer signierte seine Werke konsequent mit einem stilisierten 'AD' und ließ sogar einen gerichtlichen Nachweis seiner Urheberschaft führen. Damit wird der Künstler bewusst zur Marke.",
+    },
+    {
+      text: "Merke: Die Presse macht Bilder erstmals massenhaft verfügbar.",
+      detail: "Ein einzelnes Kupfer- oder Holzplateau kann Hunderte gleichwertige Abzüge liefern. Drucke reisen schneller als Gemälde und verbreiten Stile, Ideen und Künstlerrenommee über Landesgrenzen hinweg.",
+    }
+  ],
   },
   {
     title: "Wissen wird Kunst",
@@ -274,10 +346,19 @@ export const stationContent: StationContent[] = [
       "Pietro Perugino, Raffaels Lehrer, entwickelt die ruhige, symmetrische Bildordnung dieser Zeit.",
     ],
     mnemonics: [
-      "Merke: Sfumato = weiche Übergänge ohne Kontur (Leonardo).",
-      "Merke: Fresko wird in Tagwerken (giornate) gemalt — sichtbar an den Putzkanten.",
-      "Merke: Die Schule von Athen zeigt Philosophie als Architektur des Denkens.",
-    ],
+    {
+      text: "Merke: Sfumato = weiche Übergänge ohne Kontur (Leonardo).",
+      detail: "Leonardo trägt zahllose hauchdünne Farbschichten übereinander, bis Konturen wie Rauch verschwinden. Lippen und Wangen werden nicht gezeichnet, sondern in Farbübergängen aufgelöst.",
+    },
+    {
+      text: "Merke: Fresko wird in Tagwerken (giornate) gemalt — sichtbar an den Putzkanten.",
+      detail: "Da der Kalkputz nur an einem Tag bemalt werden kann, arbeitet der Maler in Abschnitten. An den Übergängen entstehen feine Kanten, die heute noch den Arbeitsrhythmus der Renaissance sichtbar machen.",
+    },
+    {
+      text: "Merke: Die Schule von Athen zeigt Philosophie als Architektur des Denkens.",
+      detail: "Raffael gruppiert die großen Denker um zwei Zentralfiguren: Plato zeigt zur Ideenwelt hinauf, Aristoteles zur irdischen Erfahrung hinab. Die Baukörper selbst werden zum Symbol für Ordnung und Wissen.",
+    }
+  ],
   },
   {
     title: "Die Macht der Farbe",
@@ -302,10 +383,19 @@ export const stationContent: StationContent[] = [
       "Paolo Veronese inszeniert Festmähler in prächtiger Architektur — bis die Inquisition nachfragt.",
     ],
     mnemonics: [
-      "Merke: Florenz = disegno (Zeichnung), Venedig = colorito (Farbe).",
-      "Merke: Leinwand statt Holz, weil die Lagunenluft feucht ist.",
-      "Merke: Tizians Spätwerk zeigt den Pinselstrich offen — Vorbild für Rubens und Rembrandt.",
-    ],
+    {
+      text: "Merke: Florenz = disegno (Zeichnung), Venedig = colorito (Farbe).",
+      detail: "Florentiner Künstler planen das Bild durch Zeichnung und Konstruktion; für sie ist die Idee oberstes Prinzip. Venezianer Maler entwickeln die Form erst beim Malen auf der Leinwand durch Farbschichten.",
+    },
+    {
+      text: "Merke: Leinwand statt Holz, weil die Lagunenluft feucht ist.",
+      detail: "Feuchtigkeit lässt Holztafeln sich verziehen und Kalkputz bröckeln. Leinwand ist flexibel, leicht und preiswert; sie eignet sich besonders für die riesigen Altargemälde der venezianischen Kirchen.",
+    },
+    {
+      text: "Merke: Tizians Spätwerk zeigt den Pinselstrich offen — Vorbild für Rubens und Rembrandt.",
+      detail: "Im Alter malt Tizian immer freier; Konturen lösen sich auf, Farbe wird zum Hauptträger des Ausdrucks. Diese Freiheit inspiriert spätere Maler, den sichtbaren Pinselstrich als eigenständiges Mittel zu nutzen.",
+    }
+  ],
   },
   {
     title: "Das Gesicht der Macht",
@@ -330,10 +420,19 @@ export const stationContent: StationContent[] = [
       "Andrea del Sarto gilt in Florenz als 'fehlerloser Maler' mit weichem, gedämpftem Kolorit.",
     ],
     mnemonics: [
-      "Merke: Nach der Reformation wird das Porträt zur wichtigsten Gattung im Norden.",
-      "Merke: Holbein arbeitet nach exakten Kreidestudien — nicht frei aus dem Kopf.",
-      "Merke: Attribute (Buch, Handschuh, Schädel) erzählen Beruf, Rang und Vergänglichkeit.",
-    ],
+    {
+      text: "Merke: Nach der Reformation wird das Porträt zur wichtigsten Gattung im Norden.",
+      detail: "Wo religiöse Bilder verboten oder verkleinert werden, verliert der Altar seinen Vorrang. Adlige und Bürger bestellen stattdessen Porträts als diplomatische Geschenke und Statusdokumente.",
+    },
+    {
+      text: "Merke: Holbein arbeitet nach exakten Kreidestudien — nicht frei aus dem Kopf.",
+      detail: "Holbein zeichnete seine Modelle mit farbigen Kreiden direkt nach dem Leben und notierte Farbproben am Rand. Erst im Atelier übertrug er diese Studien präzise auf die Tafel.",
+    },
+    {
+      text: "Merke: Attribute (Buch, Handschuh, Schädel) erzählen Beruf, Rang und Vergänglichkeit.",
+      detail: "Ein Federkiel weist auf einen Gelehrten hin, ein Totenschädel an einem Stillleben erinnert an die Vergänglichkeit, ein bestimmter Handschuh kennzeichnet den Stand. Attribute sind stumme Biografien.",
+    }
+  ],
   },
   {
     title: "Die schöne Übertreibung",
@@ -358,10 +457,19 @@ export const stationContent: StationContent[] = [
       "El Greco verbindet byzantinische Herkunft und venezianische Farbe zu flammenden, langgezogenen Figuren.",
     ],
     mnemonics: [
-      "Merke: Manierismus = bewusste Übertreibung nach der Hochrenaissance.",
-      "Merke: Cangianti-Farben wechseln in der Falte den Farbton.",
-      "Merke: Figura serpentinata = spiralig gedrehte Körperhaltung.",
-    ],
+    {
+      text: "Merke: Manierismus = bewusste Übertreibung nach der Hochrenaissance.",
+      detail: "Nach der vermeintlich vollendeten Harmonie von Raffael und Michelangelo setzen Künstler bewusst auf Verzerrung, Künstlichkeit und Eleganz. Der Körper wird länger, der Raum enger, die Farbe unnatürlicher.",
+    },
+    {
+      text: "Merke: Cangianti-Farben wechseln in der Falte den Farbton.",
+      detail: "Statt Schatten durch Schwarz abdunkeln, wechseln manieristische Maler die Farbe in den Falten — etwa von Gelb zu Grün oder von Rosa zu Silber. Das Gewand wirkt dadurch schillernd und unecht.",
+    },
+    {
+      text: "Merke: Figura serpentinata = spiralig gedrehte Körperhaltung.",
+      detail: "Die Figur windet sich wie eine Schlange und bietet von jeder Seite eine andere Ansicht. Diese Drehung macht den Körper dynamisch, elegant und künstlich zugleich.",
+    }
+  ],
   },
   {
     title: "Licht wird Drama",
@@ -386,10 +494,19 @@ export const stationContent: StationContent[] = [
       "Georges de La Tour reduziert die Szene auf eine einzige Kerze und stille, geometrische Ruhe.",
     ],
     mnemonics: [
-      "Merke: Chiaroscuro = Modellieren durch Hell-Dunkel; Tenebrismus = extremer Dunkelgrund.",
-      "Merke: Caravaggio malt ohne Zeichnung direkt auf die dunkle Grundierung.",
-      "Merke: Ein Lichtkegel führt den Blick zum entscheidenden Moment.",
-    ],
+    {
+      text: "Merke: Chiaroscuro = Modellieren durch Hell-Dunkel; Tenebrismus = extremer Dunkelgrund.",
+      detail: "Chiaroscuro formt Körper allmählich aus Licht und Schatten. Tenebrismus, besonders bei Caravaggio, taucht fast das ganze Bild in Schwarz und lässt nur einen grellen Lichtkegel die Handlung zeigen.",
+    },
+    {
+      text: "Merke: Caravaggio malt ohne Zeichnung direkt auf die dunkle Grundierung.",
+      detail: "Caravaggio ritzt nur wenige Linien in einen braunen Grund und malt die Figuren direkt mit Licht und Farbe heraus. Diese Unmittelbarkeit macht seine Szenen unwirklich real.",
+    },
+    {
+      text: "Merke: Ein Lichtkegel führt den Blick zum entscheidenden Moment.",
+      detail: "Im Dunkel des Bildes öffnet sich ein einziger heller Bereich wie auf einer Bühne. Dort liegt die Handlung, der Blick des Betrachters wird gezwungen, genau diesen Punkt zu sehen.",
+    }
+  ],
   },
   {
     title: "Bewegung und Repräsentation",
@@ -414,10 +531,19 @@ export const stationContent: StationContent[] = [
       "Domenichino hält in Bologna und Rom an klassischer Klarheit gegen das Caravaggio-Fieber fest.",
     ],
     mnemonics: [
-      "Merke: Barockkomposition lebt von Diagonale und Bewegung statt Symmetrie.",
-      "Merke: Die Ölskizze ist Rubens' Entwurfswerkzeug für Großaufträge.",
-      "Merke: Las Meninas zeigt den Maler im Bild — Malerei über das Sehen.",
-    ],
+    {
+      text: "Merke: Barockkomposition lebt von Diagonale und Bewegung statt Symmetrie.",
+      detail: "Renaissance-Kompositionen ruhen oft in ruhiger Symmetrie. Barocke Bilder setzen auf schräge Linien, wirbelnde Gewänder und Figuren, die aus dem Bildrand zu fallen drohen — Bewegung wird zum Inhalt.",
+    },
+    {
+      text: "Merke: Die Ölskizze ist Rubens' Entwurfswerkzeug für Großaufträge.",
+      detail: "Rubens fertigte kleine, lebhafte Ölskizzen an, um Komposition, Licht und Farbe zu erproben. Aufträge bestätigten die Kunden oft erst nach dieser Skizze, bevor die riesige Leinwand begonnen wurde.",
+    },
+    {
+      text: "Merke: Las Meninas zeigt den Maler im Bild — Malerei über das Sehen.",
+      detail: "Velázquez steht selbst vor einer riesigen Leinwand und blickt zum Betrachter. Im Hintergrund spiegelt sich das Königspaar, das eigentlich das Motiv sein könnte — das Bild wird zum Spiel aus Blicken.",
+    }
+  ],
   },
   {
     title: "Menschen im Halbdunkel",
@@ -442,10 +568,19 @@ export const stationContent: StationContent[] = [
       "Carel Fabritius, Rembrandt-Schüler, erforscht helles Licht und Perspektive — er stirbt jung bei der Delfter Pulverexplosion.",
     ],
     mnemonics: [
-      "Merke: Impasto = dick aufgetragene Farbe, die Licht physisch reflektiert.",
-      "Merke: Radierung entsteht durch Säure, Kupferstich durch den Stichel.",
-      "Merke: Die Nachtwache ist kein Nachtbild — nur alter Firnis hatte sie verdunkelt.",
-    ],
+    {
+      text: "Merke: Impasto = dick aufgetragene Farbe, die Licht physisch reflektiert.",
+      detail: "Rembrandt trug Farbe so dick auf, dass sie Schatten wirft und Licht reflektiert. Ein Kragen oder eine Stirnleiste wird dadurch zur plastischen, begehbaren Oberfläche.",
+    },
+    {
+      text: "Merke: Radierung entsteht durch Säure, Kupferstich durch den Stichel.",
+      detail: "Bei der Radierung deckt der Künstler die Platte mit wachsfester Grundierung ab, kratzt das Motiv frei und taucht sie in Säure. Beim Kupferstich gräbt er jede Linie selbst mit dem Stichel.",
+    },
+    {
+      text: "Merke: Die Nachtwache ist kein Nachtbild — nur alter Firnis hatte sie verdunkelt.",
+      detail: "Jahrhundertelang verdunkelte ein gelb gewordener Firnis das Gemälde. Als man ihn in der Moderne entfernte, entstand der Eindruck eines nächtlichen Szenarios — ursprünglich spielt sie bei Tageslicht.",
+    }
+  ],
   },
   {
     title: "Die Ruhe des Alltags",
@@ -470,10 +605,19 @@ export const stationContent: StationContent[] = [
       "Pieter Saenredam malt weiß getünchte Kirchenräume als reine Studien von Licht und Proportion.",
     ],
     mnemonics: [
-      "Merke: Vermeers Licht kommt fast immer von links durch ein Fenster.",
-      "Merke: Pointillés = perlenartige Lichttupfen auf Brot, Perlen und Metall.",
-      "Merke: Blaue Schatten entstehen durch teures Ultramarin, nicht durch Schwarz.",
-    ],
+    {
+      text: "Merke: Vermeers Licht kommt fast immer von links durch ein Fenster.",
+      detail: "In fast allen Interieurs von Vermeer fällt das Tageslicht von links ein und trifft auf eine weiße Wand. Diese Regelmäßigkeit ist ein Merkmal seines Ateliers und seiner kompositorischen Gewohnheit.",
+    },
+    {
+      text: "Merke: Pointillés = perlenartige Lichttupfen auf Brot, Perlen und Metall.",
+      detail: "Vermeer setzte winzige, pastose Farbpunkte, die wie Perlen wirken. Sie simulieren das Glitzern von Licht auf glatten Oberflächen und verleihen Dingen eine stoffliche Präsenz.",
+    },
+    {
+      text: "Merke: Blaue Schatten entstehen durch teures Ultramarin, nicht durch Schwarz.",
+      detail: "Vermeer mischte teures Lapislazuli-Blau in seine Schatten, statt Schwarz zu verwenden. Das macht sein Halblicht kühl und leuchtend zugleich — ein Luxus, den sich nur wenige Maler leisten konnten.",
+    }
+  ],
   },
   {
     title: "Dinge, Wetter und Vergänglichkeit",
@@ -498,10 +642,19 @@ export const stationContent: StationContent[] = [
       "Jacob van Ruisdael macht den Himmel zur Hauptperson — zwei Drittel des Bildes sind Wolken.",
     ],
     mnemonics: [
-      "Merke: Vanitas = Symbole der Vergänglichkeit (Schädel, Uhr, erloschene Kerze).",
-      "Merke: Bei Ruisdael nimmt der Himmel meist zwei Drittel der Bildhöhe ein.",
-      "Merke: Die geschälte Zitrone steht für Schönheit mit bitterem Kern.",
-    ],
+    {
+      text: "Merke: Vanitas = Symbole der Vergänglichkeit (Schädel, Uhr, erloschene Kerze).",
+      detail: "Niederländische Stillleben erinnern den Betrachter an Tod, Zeit und Eitelkeit. Jeder Gegenstand ist eine Mahnung: Der Blumenstrauß verwelkt, die Uhr tickt, der Schädel bleibt.",
+    },
+    {
+      text: "Merke: Bei Ruisdael nimmt der Himmel meist zwei Drittel der Bildhöhe ein.",
+      detail: "Ruisdael öffnet den Blick nach oben und macht Wolken, Licht und Wetter zum eigentlichen Drama. Die Erde wird klein, der Himmel zum Protagonisten.",
+    },
+    {
+      text: "Merke: Die geschälte Zitrone steht für Schönheit mit bitterem Kern.",
+      detail: "In Stillleben symbolisiert die Zitrone die zweifache Natur des Lebens: süß äußerlich, bitter im Kern. Sie ist ein Vanitas-Symbol für vergängliche Schönheit und irdischen Reichtum.",
+    }
+  ],
   },
   {
     title: "Die geordnete Natur",
@@ -526,10 +679,19 @@ export const stationContent: StationContent[] = [
       "Paulus Potter macht ein junges Rind in Lebensgröße zum Hauptdarsteller.",
     ],
     mnemonics: [
-      "Merke: Repoussoir = dunkler Randabschluss, der Tiefe erzeugt.",
-      "Merke: Ideale Landschaft = Antike, Abendlicht, drei Bildbühnen.",
-      "Merke: Claude Lorrain malt als Erster direkt in die Sonne.",
-    ],
+    {
+      text: "Merke: Repoussoir = dunkler Randabschluss, der Tiefe erzeugt.",
+      detail: "Ein dunkler Baum oder Fels am linken oder rechten Bildrand schiebt den Blick in die Tiefe. Diese 'Stoßvorrichtung' rahmt die Landschaft und verstärkt die räumliche Wirkung.",
+    },
+    {
+      text: "Merke: Ideale Landschaft = Antike, Abendlicht, drei Bildbühnen.",
+      detail: "Poussin und Claude konstruierten Landschaften aus Vordergrund, Mittelgrund und Ferne. Darin tauchen antike Ruinen, Hirten und ein gleichmäßiges, goldenes Abendlicht auf.",
+    },
+    {
+      text: "Merke: Claude Lorrain malt als Erster direkt in die Sonne.",
+      detail: "Claude Lorrain richtete den Blick gegen das Licht und ließ Bäume, Figuren und Ruinen in den Sonnenschein treten. Dieser Gegenlicht-Effekt wurde zum Vorbild für die Landschaftsmalerei der folgenden Jahrhunderte.",
+    }
+  ],
   },
   {
     title: "Leichtigkeit und Puder",
@@ -554,10 +716,19 @@ export const stationContent: StationContent[] = [
       "Rosalba Carriera macht das Pastellporträt zur europäischen Mode und arbeitet für Höfe von Paris bis Dresden.",
     ],
     mnemonics: [
-      "Merke: Fête galante = elegantes Gartenfest als eigene Bildgattung (Watteau).",
-      "Merke: Pastell ist reines Pigment in Stäbchenform — samtig, aber empfindlich.",
-      "Merke: Rokoko = klein, hell, privat; Barock = groß, dunkel, öffentlich.",
-    ],
+    {
+      text: "Merke: Fête galante = elegantes Gartenfest als eigene Bildgattung (Watteau).",
+      detail: "Watteau erfand die 'fête galante': Musikanten, verliebte Paare und Schäferspiele in einem Park. Hinter der Leichtigkeit liegt oft eine leise Melancholie des Abschieds.",
+    },
+    {
+      text: "Merke: Pastell ist reines Pigment in Stäbchenform — samtig, aber empfindlich.",
+      detail: "Pastellkreiden bestehen aus wenig Bindemittel und viel Pigment. Sie erzeugen samtige, leuchtende Oberflächen, sind aber so brüchig, dass sie fixiert oder unter Glas geschützt werden müssen.",
+    },
+    {
+      text: "Merke: Rokoko = klein, hell, privat; Barock = groß, dunkel, öffentlich.",
+      detail: "Während Barockbilder oft für Kirchen und Paläste entstanden und mit dramatischem Licht arbeiten, sind Rokoko-Szenen für kleine Salons gedacht: hell, zart, intimer Ton.",
+    }
+  ],
   },
   {
     title: "Der prüfende Blick",
@@ -582,10 +753,19 @@ export const stationContent: StationContent[] = [
       "Maurice Quentin de La Tour trifft im Pastell den Ausdruck eines Lächelns wie kein Zweiter.",
     ],
     mnemonics: [
-      "Merke: Der Pariser Salon macht Kunstkritik und Publikum wichtig.",
-      "Merke: Hogarths Serien sind Bildergeschichten mit Moral — und als Druck bezahlbar.",
-      "Merke: Chardins Wirkung entsteht erst aus Betrachtungsabstand.",
-    ],
+    {
+      text: "Merke: Der Pariser Salon macht Kunstkritik und Publikum wichtig.",
+      detail: "Ab 1737 öffnet der jährliche Pariser Salon die Akademieausstellung für die Öffentlichkeit. Erstmals entscheidet ein anonymes Publikum und schreibende Kritiker mit über den Ruf eines Künstlers.",
+    },
+    {
+      text: "Merke: Hogarths Serien sind Bildergeschichten mit Moral — und als Druck bezahlbar.",
+      detail: "Hogarth erzählte in mehrteiligen Bildserien vom Aufstieg und Fall seiner Helden. Die Drucke waren erschwinglich und erreichten ein breites Publikum — Kunst als gesellschaftliche Satire.",
+    },
+    {
+      text: "Merke: Chardins Wirkung entsteht erst aus Betrachtungsabstand.",
+      detail: "Chardin setzte kleine, körnige Farbtupfen, die aus der Nähe wie Krümel wirken. Erst aus einiger Entfernung verschmelzen sie im Auge zu glänzendem Brot, Porzellan oder zarter Haut.",
+    }
+  ],
   },
   {
     title: "Strenge Linie, große Geste",
@@ -610,10 +790,19 @@ export const stationContent: StationContent[] = [
       "Anton Raphael Mengs formuliert in Rom die Theorie des neuen Klassizismus.",
     ],
     mnemonics: [
-      "Merke: Klassizismus = Antike als moralisches Vorbild, Linie vor Farbe.",
-      "Merke: 'Edle Einfalt und stille Größe' stammt von Winckelmann.",
-      "Merke: David nutzt Kunst als politisches Werkzeug.",
-    ],
+    {
+      text: "Merke: Klassizismus = Antike als moralisches Vorbild, Linie vor Farbe.",
+      detail: "Nach den Ausgrabungen von Pompeji und Herculaneum galt die Antike als Inbegriff von Tugend und Maß. Klassizistische Maler bevorzugten klare Kontur und glatte Oberflächen gegenüber farbiger Malerei.",
+    },
+    {
+      text: "Merke: 'Edle Einfalt und stille Größe' stammt von Winckelmann.",
+      detail: "Johann Joachim Winckelmann formulierte in den 1750er Jahren das Ideal griechischer Kunst. Der Satz wurde zum Programm eines ganzen Jahrhunderts und legitimierte den Rückgriff auf die Antike.",
+    },
+    {
+      text: "Merke: David nutzt Kunst als politisches Werkzeug.",
+      detail: "Jacques-Louis David malte zuerst für die Revolution, dann für Napoleon. Seine Bilder inszenierten Schwüre, Tode und Krönungen als politische Ikonen und verbreiteten die offizielle Geschichte.",
+    }
+  ],
   },
   {
     title: "Die Nachtseite der Vernunft",
@@ -638,10 +827,19 @@ export const stationContent: StationContent[] = [
       "Antoine-Jean Gros zeigt Napoleon zwischen Pestkranken — Heldentum mit Rissen.",
     ],
     mnemonics: [
-      "Merke: Aquatinta erzeugt Grauflächen, Radierung erzeugt Linien.",
-      "Merke: 'Der Schlaf der Vernunft gebiert Ungeheuer' — Goyas Titel für die Kehrseite der Aufklärung.",
-      "Merke: Der Dritte Mai zeigt Opfer individuell, Täter anonym.",
-    ],
+    {
+      text: "Merke: Aquatinta erzeugt Grauflächen, Radierung erzeugt Linien.",
+      detail: "Bei der Aquatinta bestäubt man die Platte mit Harz, bevor die Säure eingreift. So entstehen flächige Graustufen statt Linien — perfekt für Himmel, Schatten und düstere Stimmungen.",
+    },
+    {
+      text: "Merke: 'Der Schlaf der Vernunft gebiert Ungeheuer' — Goyas Titel für die Kehrseite der Aufklärung.",
+      detail: "Goyas Radierfolge 'Los Caprichos' kritisiert Aberglauben, Korruption und Dummheit. Der Titelblatt-Satz warnt: Wenn die Vernunft ruht, erwachen Albträume und Missstände.",
+    },
+    {
+      text: "Merke: Der Dritte Mai zeigt Opfer individuell, Täter anonym.",
+      detail: "In Goyas berühmtem Bild liegt der erschossene Spanier mit ausgebreiteten Armen im Vordergrund — individuell, verletzlich, menschlich. Die französischen Schützen dagegen sind eine anonyme, mechanische Masse.",
+    }
+  ],
   },
   {
     title: "Das Ich vor der Natur",
@@ -666,10 +864,19 @@ export const stationContent: StationContent[] = [
       "Karl Friedrich Schinkel malt Architekturvisionen, die Baukunst und Traumbild verbinden.",
     ],
     mnemonics: [
-      "Merke: Rückenfigur = Einladung, mit der Figur mitzuschauen.",
-      "Merke: Preußischblau ist das erste synthetische moderne Pigment (ab 1706).",
-      "Merke: Romantische Landschaften sind komponiert, nicht abgemalt.",
-    ],
+    {
+      text: "Merke: Rückenfigur = Einladung, mit der Figur mitzuschauen.",
+      detail: "Caspar David Friedrich stellt oft einen Menschen mit dem Rücken zum Betrachter vor eine Landschaft. Der Betrachter projiziert sich in diese Figur und schaut gleichsam über ihre Schulter mit.",
+    },
+    {
+      text: "Merke: Preußischblau ist das erste synthetische moderne Pigment (ab 1706).",
+      detail: "Preußischblau entstand eigentlich durch einen Zufall bei der Farbenherstellung. Es war billiger als echtes Ultramarin und ermöglichte tiefes Blau in großflächigen Landschaften.",
+    },
+    {
+      text: "Merke: Romantische Landschaften sind komponiert, nicht abgemalt.",
+      detail: "Friedrich und seine Zeitgenossen zeichneten einzelne Felsen, Bäume und Wolken in der Natur, setzten sie aber im Atelier zu einer idealen, seelischen Landschaft neu zusammen.",
+    }
+  ],
   },
   {
     title: "Wetter, Dampf und Geschwindigkeit",
@@ -694,10 +901,19 @@ export const stationContent: StationContent[] = [
       "Samuel Palmer malt englische Täler als visionäre, fast leuchtende Fruchtbarkeit.",
     ],
     mnemonics: [
-      "Merke: Constable datiert seine Wolkenstudien wie ein Wetterbericht.",
-      "Merke: Turner nimmt die Auflösung der Form vorweg — Licht schlägt Kontur.",
-      "Merke: Die Farbtube (1841) macht Malen im Freien überhaupt praktikabel.",
-    ],
+    {
+      text: "Merke: Constable datiert seine Wolkenstudien wie ein Wetterbericht.",
+      detail: "Constable malte in den 1820er Jahren über hundert Wolkenbilder und notierte Datum, Uhrzeit und Windrichtung. Für ihn war die Natur ein dynamisches System, kein statisches Dekor.",
+    },
+    {
+      text: "Merke: Turner nimmt die Auflösung der Form vorweg — Licht schlägt Kontur.",
+      detail: "In Turners späten Werken verschwinden Schiffe, Brücken und Menschen in Farbnebel und Licht. Der Gegenstand wird zweitrangig; Atmosphäre und Energie übernehmen die Komposition.",
+    },
+    {
+      text: "Merke: Die Farbtube (1841) macht Malen im Freien überhaupt praktikabel.",
+      detail: "Vor der Zinn-Farbtube mussten Maler Farben in Blasen oder Tierhäuten transportieren. Die Tube hält die Farbe frisch, ist leicht und erlaubt das Arbeiten unter freiem Himmel.",
+    }
+  ],
   },
   {
     title: "Leidenschaft gegen Regel",
@@ -722,10 +938,19 @@ export const stationContent: StationContent[] = [
       "Honoré Daumier zeichnet in Tausenden Lithografien die Gesellschaft — und geht dafür ins Gefängnis.",
     ],
     mnemonics: [
-      "Merke: Ingres = Linie, Delacroix = Farbe. Der Streit prägt das 19. Jahrhundert.",
-      "Merke: Komplementärfarben verstärken sich gegenseitig.",
-      "Merke: Lithografie druckt fettige Zeichnung vom Stein — Massenmedium der Karikatur.",
-    ],
+    {
+      text: "Merke: Ingres = Linie, Delacroix = Farbe. Der Streit prägt das 19. Jahrhundert.",
+      detail: "Die französische Akademie debattierte, ob Zeichnung (disegno) oder Farbe (colorito) vorrangig sei. Ingres vertrat die kontrollierte Linie, Delacroix die befreite, emotionale Farbe.",
+    },
+    {
+      text: "Merke: Komplementärfarben verstärken sich gegenseitig.",
+      detail: "Rot neben Grün, Blau neben Orange oder Gelb neben Violett leuchten stärker, wenn sie direkt aneinandergrenzen. Delacroix und später die Impressionisten nutzten diesen Effekt gezielt.",
+    },
+    {
+      text: "Merke: Lithografie druckt fettige Zeichnung vom Stein — Massenmedium der Karikatur.",
+      detail: "Auf dem Kalkstein zeichnet der Künstler mit fettiger Kreide; anschließend wird der Stein angefeuchtet und eingefärbt. Fettige Stellen nehmen die Farbe auf — so entstehen schnelle, viele Abzüge, ideal für Zeitungen und Karikaturen.",
+    }
+  ],
   },
   {
     title: "Die Würde der Arbeit",
@@ -750,10 +975,19 @@ export const stationContent: StationContent[] = [
       "Adolph Menzel zeigt in Berlin die Fabrik als neue Kathedrale der Arbeit.",
     ],
     mnemonics: [
-      "Merke: Realismus zeigt die Gegenwart in der Größe des Historienbildes.",
-      "Merke: Courbet arbeitet oft mit dem Spachtel statt mit dem Pinsel.",
-      "Merke: Die Fotografie (ab 1839) verändert, wozu Malerei noch gebraucht wird.",
-    ],
+    {
+      text: "Merke: Realismus zeigt die Gegenwart in der Größe des Historienbildes.",
+      detail: "Courbet und Millet malten Arbeiter, Bauern und Steinbrecher in Abmessungen, die früher Königen und Heiligen vorbehalten waren. Sie beanspruchten Würde und Bedeutung für das alltägliche Leben.",
+    },
+    {
+      text: "Merke: Courbet arbeitet oft mit dem Spachtel statt mit dem Pinsel.",
+      detail: "Mit dem Palettmesser schob Courbet dicke Farbschichten auf die Leinwand. So entstehen raue, materielle Oberflächen, die Erde, Stein und Stoff physisch spürbar machen.",
+    },
+    {
+      text: "Merke: Die Fotografie (ab 1839) verändert, wozu Malerei noch gebraucht wird.",
+      detail: "Als die Fotografie Szenen exakt festhalten konnte, musste die Malerei neue Aufgaben finden: Stimmung, subjektive Wahrnehmung, Farbtheorie und Interpretation statt bloßer Wiedergabe.",
+    }
+  ],
   },
   {
     title: "Der flüchtige Eindruck",
@@ -778,10 +1012,19 @@ export const stationContent: StationContent[] = [
       "Édouard Manet fordert den Salon mit modernen Motiven und flacher Malweise heraus.",
     ],
     mnemonics: [
-      "Merke: Der Name stammt von Monets 'Impression, Sonnenaufgang' (1872) — ursprünglich Spott.",
-      "Merke: Impressionisten meiden Schwarz; Schatten sind blau oder violett.",
-      "Merke: Flachpinsel + Farbtube = Malerei im Freien.",
-    ],
+    {
+      text: "Merke: Der Name stammt von Monets 'Impression, Sonnenaufgang' (1872) — ursprünglich Spott.",
+      detail: "Ein Kritiker griff 1874 den Titel von Monets Hafenbild auf und nannte die Künstler spöttisch 'Impressionisten'. Der Schimpfname wurde bald zum Programm einer Bewegung.",
+    },
+    {
+      text: "Merke: Impressionisten meiden Schwarz; Schatten sind blau oder violett.",
+      detail: "Weil Schatten im Freien von reflektiertem Himmellicht durchflutet sind, erscheinen sie farbig. Impressionisten mischten Schatten aus Komplementärfarben statt Schwarz und erreichten so Leuchtkraft.",
+    },
+    {
+      text: "Merke: Flachpinsel + Farbtube = Malerei im Freien.",
+      detail: "Der kurze, flache Pinsel erlaubt schnelle, trennscharfe Striche; die Farbtube macht die Palette mobil. Zusammen ermöglichten sie das Arbeiten vor dem Motiv in Wald, Hafen und Garten.",
+    }
+  ],
   },
   {
     title: "Farbe wird Gefühl und Ordnung",
@@ -806,10 +1049,19 @@ export const stationContent: StationContent[] = [
       "Georges Seurat verwandelt Farbtheorie in ein geduldiges System aus Punkten.",
     ],
     mnemonics: [
-      "Merke: Pointillismus = reine Farbpunkte, die das Auge mischt (Seurat).",
-      "Merke: Cézanne = Struktur, van Gogh = Ausdruck, Gauguin = Symbol, Seurat = System.",
-      "Merke: Cloisonnismus (Gauguin) umrandet Farbflächen wie Bleiglas.",
-    ],
+    {
+      text: "Merke: Pointillismus = reine Farbpunkte, die das Auge mischt (Seurat).",
+      detail: "Seurat legte Tausende kleine, ungemischte Farbtupfen nebeneinander. Aus der Distanz verschmelzen sie im Auge des Betrachters zu leuchtenden Tönen und feinen Graustufen.",
+    },
+    {
+      text: "Merke: Cézanne = Struktur, van Gogh = Ausdruck, Gauguin = Symbol, Seurat = System.",
+      detail: "Nach dem Impressionismus spaltete sich die Malerei in vier Wege: Cézanne suchte hinter der Erscheinung die Form, van Gogh die Emotion, Gauguin das Symbol und Seurat die wissenschaftliche Ordnung.",
+    },
+    {
+      text: "Merke: Cloisonnismus (Gauguin) umrandet Farbflächen wie Bleiglas.",
+      detail: "Gauguin und seine Zeitgenossen begrenzten Farbflächen mit dunklen Konturen, ähnlich wie in Glasmalerei. Figuren und Hintergründe wurden flächig, dekorativ und symbolisch aufgeladen.",
+    }
+  ],
   },
   {
     title: "Der Schrei der Moderne",
@@ -834,10 +1086,19 @@ export const stationContent: StationContent[] = [
       "Ferdinand Hodler ordnet Figuren im 'Parallelismus' zu rhythmischen Reihen.",
     ],
     mnemonics: [
-      "Merke: Secession = Auszug junger Künstler aus der Akademie (Wien 1897).",
-      "Merke: Munchs 'Der Schrei' existiert in mehreren Fassungen und Techniken.",
-      "Merke: Klimts Goldene Periode nutzt echtes Blattgold auf Leinwand.",
-    ],
+    {
+      text: "Merke: Secession = Auszug junger Künstler aus der Akademie (Wien 1897).",
+      detail: "Klimt und andere Künstler verließen die konservative Wiener Künstlerhaus-Gemeinschaft, um modernere, freiere Ausstellungen zu zeigen. Ihr Ausstellungsbau wurde zum Symbol des neuen Kunstwillens.",
+    },
+    {
+      text: "Merke: Munchs 'Der Schrei' existiert in mehreren Fassungen und Techniken.",
+      detail: "Munch malte, zeichnete und druckte den Schrei mehrfach zwischen 1893 und 1910. Jede Fassung variiert Farbe, Technik und Stimmung — das Motiv wird zum wiederkehrenden Lebensfries.",
+    },
+    {
+      text: "Merke: Klimts Goldene Periode nutzt echtes Blattgold auf Leinwand.",
+      detail: "In Werken wie 'Der Kuss' und 'Adele Bloch-Bauer' klebte Klimt echtes Blattgold auf die Leinwand und verband es mit Ornament und Figur. Das Gold erinnert an byzantinische Mosaiken und veredelt die Darstellung.",
+    }
+  ],
   },
   {
     title: "Die Befreiung vom Gegenstand",
@@ -862,9 +1123,18 @@ export const stationContent: StationContent[] = [
       "László Moholy-Nagy bringt Fotografie, Licht und Material als Werkzeuge in die Kunstlehre.",
     ],
     mnemonics: [
-      "Merke: Bauhaus 1919 Weimar – 1925 Dessau – 1933 geschlossen.",
-      "Merke: Mondrian nutzt nur Rot, Gelb, Blau, Schwarz, Weiß und rechte Winkel.",
-      "Merke: Fotogramm = Bild ohne Kamera, direkt auf Fotopapier belichtet.",
-    ],
+    {
+      text: "Merke: Bauhaus 1919 Weimar – 1925 Dessau – 1933 geschlossen.",
+      detail: "Das Bauhaus vereinte Kunst, Handwerk und Technik unter einem Dach. Wegen politischen Drucks zog es von Weimar nach Dessau und wurde 1933 von den Nationalsozialisten geschlossen; viele Lehrende emigrierten in die USA.",
+    },
+    {
+      text: "Merke: Mondrian nutzt nur Rot, Gelb, Blau, Schwarz, Weiß und rechte Winkel.",
+      detail: "Mondrian reduzierte die Welt auf horizontale und vertikale Linien sowie die drei Primärfarben plus Schwarz, Grau und Weiß. Sein Ziel war eine universelle, harmonische Ordnung jenseits der sichtbaren Natur.",
+    },
+    {
+      text: "Merke: Fotogramm = Bild ohne Kamera, direkt auf Fotopapier belichtet.",
+      detail: "Moholy-Nagy legte Gegenstände auf Fotopapier und belichtete sie von oben. Die Schatten und Konturen entstanden direkt als abstrakte, lichtgezeichnete Formen.",
+    }
+  ],
   },
 ];

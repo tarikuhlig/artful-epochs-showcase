@@ -77,8 +77,9 @@ export function stationFinalQuestion(index: number): ArtQuestion | undefined {
   const station = artPathWithWorks[index];
   if (!station) return undefined;
   const others = otherStations(index);
-  const answer = short(station.mnemonics[0] ?? station.turningPoint);
-  const wrong = others.map((item) => short(item.mnemonics[0] ?? item.turningPoint));
+  const mnemonicText = station.mnemonics[0]?.text ?? station.turningPoint;
+  const answer = short(mnemonicText);
+  const wrong = others.map((item) => short(item.mnemonics[0]?.text ?? item.turningPoint));
   if (wrong.length < 2) return undefined;
   return {
     id: `final-${index}`,
@@ -162,14 +163,14 @@ export function stationQuestions(index: number): ArtQuestion[] {
 
   // Merksatz 2
   if (station.mnemonics[1] && others.length >= 2) {
-    const answer = short(station.mnemonics[1]);
+    const answer = short(station.mnemonics[1].text);
     questions.push({
       id: `merke-2-${index}`,
       kind: "fakt",
       question: "Welche Aussage hast du auf den Merkkarten dieser Station gelernt?",
-      options: shuffle([answer, short(others[0]!.mnemonics[1] ?? others[0]!.turningPoint), short(others[1]!.mnemonics[1] ?? others[1]!.turningPoint)], index + 31),
+      options: shuffle([answer, short(others[0]!.mnemonics[1]?.text ?? others[0]!.turningPoint), short(others[1]!.mnemonics[1]?.text ?? others[1]!.turningPoint)], index + 31),
       answer,
-      explanation: station.mnemonics[1],
+      explanation: station.mnemonics[1].text,
       hint: `Die anderen Sätze gehören zu anderen Epochen — prüfe, ob Ort und Jahreszahl zu ${station.place} (${station.years}) passen.`,
       topic: "Merksätze der Epoche",
     });
@@ -259,14 +260,14 @@ export function stationQuestions(index: number): ArtQuestion[] {
 
   // Merksatz 3
   if (station.mnemonics[2] && others.length >= 2) {
-    const answer = short(station.mnemonics[2]);
+    const answer = short(station.mnemonics[2].text);
     questions.push({
       id: `merke-3-${index}`,
       kind: "verstaendnis",
       question: "Und zum Schluss: Welcher Merksatz stimmt?",
-      options: shuffle([answer, short(others[0]!.mnemonics[2] ?? others[0]!.lesson), short(others[1]!.mnemonics[2] ?? others[1]!.lesson)], index + 71),
+      options: shuffle([answer, short(others[0]!.mnemonics[2]?.text ?? others[0]!.lesson), short(others[1]!.mnemonics[2]?.text ?? others[1]!.lesson)], index + 71),
       answer,
-      explanation: station.mnemonics[2],
+      explanation: station.mnemonics[2].text,
       hint: `Prüfe jede Aussage gegen das, was in ${station.years} technisch und gesellschaftlich möglich war.`,
       topic: "Merksätze der Epoche",
     });
