@@ -91,18 +91,7 @@ export function MagnifierImage({
         )}
       </div>
 
-      <div className="mt-3 flex items-center justify-between gap-3">
-        {active ? (
-          <p className="text-xs text-muted-foreground">
-            {isTouch
-              ? "Bewege den Finger — die Lupe schwebt darüber."
-              : "Bewege die Maus über das Bild."}
-          </p>
-        ) : (
-          <span className="text-xs text-muted-foreground">
-            Details genauer betrachten
-          </span>
-        )}
+      <div className="mt-3 flex items-center justify-end">
         <button
           type="button"
           onClick={() => {
