@@ -11,6 +11,7 @@ import coin from "@/assets/provenance-coin.png";
 import { PremiumLock } from "@/components/PremiumLock";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { purchaseAuctionOffer } from "@/lib/economy.functions";
+import { LicenseNotice } from "@/components/LicenseNotice";
 
 export const Route = createFileRoute("/_authenticated/auktionshaus")({
   head: () => ({ meta: [
@@ -67,6 +68,7 @@ function AuctionPage() {
           </div>
         </article>;
       })}</div>
+      <LicenseNotice context="Im Auktionshaus werden nur gemeinfreie Werke gehandelt." />
     </div>
   </main>;
 }

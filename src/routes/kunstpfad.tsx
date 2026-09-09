@@ -10,6 +10,7 @@ import coin from "@/assets/provenance-coin.png";
 import { stationFinalQuestion, stationQuestions, type ArtQuestion } from "@/lib/art-path-questions";
 import { Button } from "@/components/ui/button";
 import { PremiumLock } from "@/components/PremiumLock";
+import { LicenseNotice } from "@/components/LicenseNotice";
 import { FREE_JOURNEY_STATIONS, isFreeJourneyStation } from "@/lib/premium-access";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 
@@ -213,6 +214,7 @@ function ArtPathPage() {
           <Button type="button" disabled={card === CARD_COUNT - 1} onClick={() => changeCard(1)} className="rounded-full font-normal">Weiter <ChevronRight className="h-4 w-4" /></Button>
         </div>}
       </>}
+      <LicenseNotice context="Die Reise zeigt ausschließlich Werke, deren Schutzfrist abgelaufen ist." />
     </section>
   </div>;
 }

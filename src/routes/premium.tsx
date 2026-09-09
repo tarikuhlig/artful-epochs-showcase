@@ -7,6 +7,7 @@ import { FREE_SHARE_LABEL, MONTHLY_PRICE, YEARLY_PRICE } from "@/lib/premium-acc
 import { useAuth } from "@/hooks/useAuth";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { openPaddleCheckout } from "@/lib/paddle";
+import { LicenseNotice } from "@/components/LicenseNotice";
 
 export const Route = createFileRoute("/premium")({
   head: () => ({ meta: [
@@ -66,6 +67,7 @@ function PremiumPage() {
       </div>
        {error && <p role="alert" className="mt-5 text-center text-sm text-destructive">{error}</p>}
       <div className="mt-8 text-center"><Button asChild variant="ghost" className="rounded-full"><Link to="/">Erst kostenlos entdecken</Link></Button></div>
+      <LicenseNotice context="Premium schaltet Lern-, Sammel- und Spielfunktionen frei." />
     </section>
   </main>;
 }
