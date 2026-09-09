@@ -2,6 +2,7 @@ import { useState } from "react";
 import provenanceLogo from "@/assets/provenance-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
+import { setStaySignedIn } from "@/lib/session-persistence";
 
 /** Titelbild mit Anmeldung — erscheint beim Öffnen der App, vor dem Intro. */
 export function TitleGate({ onDone }: { onDone: () => void }) {
@@ -10,12 +11,14 @@ export function TitleGate({ onDone }: { onDone: () => void }) {
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [busy, setBusy] = useState(false);
+  const [stay, setStay] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError(null);
+    setStaySignedIn(stay);
     try {
       if (mode === "signup") {
         const { data, error: err } = await supabase.auth.signUp({
@@ -58,6 +61,7 @@ export function TitleGate({ onDone }: { onDone: () => void }) {
 
   async function handleOAuth(provider: "google" | "apple") {
     setError(null);
+    setStaySignedIn(stay);
     const result = await lovable.auth.signInWithOAuth(provider, {
       redirect_uri: window.location.origin,
     });
@@ -114,7 +118,22 @@ export function TitleGate({ onDone }: { onDone: () => void }) {
           >
             Mit Apple fortfahren
           </button>
+          <p className="text-center text-xs text-muted-foreground">
+            Apple lässt die Anmeldung in der Vorschau oft nicht zu — öffne die App dafür in einem
+            eigenen Browser-Tab.
+          </p>
         </div>
+
+        <label className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+          <input
+            type="checkbox"
+            checked={stay}
+            onChange={(event) => setStay(event.target.checked)}
+            className="h-4 w-4 rounded border-input"
+          />
+          Angemeldet bleiben
+        </label>
+
 
         <div className="my-6 flex items-center gap-3 text-xs tracking-widest text-muted-foreground uppercase">
           <span className="h-px flex-1 bg-border" />

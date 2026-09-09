@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { enforceSessionPersistence, markSessionActive } from "@/lib/session-persistence";
 
 export function useAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    void enforceSessionPersistence();
     const { data } = supabase.auth.onAuthStateChange((_event, next) => {
+      if (next) markSessionActive();
       setSession(next);
       setLoading(false);
     });
