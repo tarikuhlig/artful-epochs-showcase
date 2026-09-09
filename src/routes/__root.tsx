@@ -8,7 +8,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, Settings, X } from "lucide-react";
 
 import appCss from "../styles.css?url";
 import provenanceLogo from "../assets/provenance-logo.png";
@@ -16,6 +16,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
+import { PremiumBanner } from "@/components/PremiumUpsell";
 
 function NotFoundComponent() {
   return (
@@ -190,13 +191,21 @@ function SiteHeader() {
             </Link>
           ))}
           {user ? (
-            <div className="ml-2">
+            <div className="ml-2 flex items-center gap-1">
               <Link
                 to="/atelier"
                 className="inline-flex items-center rounded-full border border-input bg-background px-4 py-2 text-foreground transition-colors hover:bg-accent"
                 activeProps={{ className: "bg-accent" }}
               >
                 Galerie
+              </Link>
+              <Link
+                to="/einstellungen"
+                aria-label="Einstellungen"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-input text-foreground transition-colors hover:bg-accent"
+                activeProps={{ className: "bg-accent" }}
+              >
+                <Settings className="h-4 w-4" />
               </Link>
             </div>
           ) : (
@@ -235,7 +244,10 @@ function SiteHeader() {
             </Link>
           ))}
           {user ? (
-            <Link to="/atelier" onClick={() => setOpen(false)} className="mt-2 block rounded-full bg-primary px-4 py-3 text-center text-primary-foreground">Galerie</Link>
+            <>
+              <Link to="/atelier" onClick={() => setOpen(false)} className="mt-2 block rounded-full bg-primary px-4 py-3 text-center text-primary-foreground">Galerie</Link>
+              <Link to="/einstellungen" onClick={() => setOpen(false)} className="mt-2 block rounded-full border border-input px-4 py-3 text-center">Einstellungen</Link>
+            </>
           ) : (
             <Link to="/auth" onClick={() => setOpen(false)} className="mt-2 block rounded-full bg-primary px-4 py-3 text-center text-primary-foreground">Anmelden</Link>
           )}
@@ -274,6 +286,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <PaymentTestModeBanner />
       <SiteHeader />
+      <PremiumBanner />
       <main>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
