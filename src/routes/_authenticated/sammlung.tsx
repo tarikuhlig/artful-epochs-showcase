@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Check, Coins, GripVertical, ImagePlus, Lock, Scale, Star, UserRound, X } from "lucide-react";
+import { Check, Coins, GripVertical, ImagePlus, Lock, Scale, Settings, Star, UserRound, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useDiscoveries } from "@/lib/progress";
@@ -9,11 +9,14 @@ import { epochs, allPainters, allWorks } from "@/lib/art-data";
 import { CollectionQuiz } from "@/components/CollectionQuiz";
 import { useOwnedItems } from "@/lib/economy";
 import { Button } from "@/components/ui/button";
+import { CoinBadge } from "@/components/CoinBadge";
+import { POINTS_PER_DISCOVERY, levelFor, levelTitle, useUserStats } from "@/lib/farm";
 import { artRank, artRankClasses } from "@/lib/art-rarity";
 import { PremiumLock } from "@/components/PremiumLock";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { LicenseNotice } from "@/components/LicenseNotice";
 import { OwnPhotos } from "@/components/OwnPhotos";
+
 
 export const Route = createFileRoute("/_authenticated/sammlung")({
   head: () => ({
@@ -51,7 +54,11 @@ function CollectionPage() {
   const queryClient = useQueryClient();
   const { data: discoveries = [] } = useDiscoveries();
   const { data: owned = [] } = useOwnedItems();
+  const { data: stats } = useUserStats();
+  const totalPoints = (stats?.points ?? 0) + (discoveries.length ?? 0) * POINTS_PER_DISCOVERY;
+  const level = levelFor(totalPoints);
   const [galleryOrder, setGalleryOrder] = useState<string[]>([]);
+
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [compareIds, setCompareIds] = useState<string[]>([]);
   const [username, setUsername] = useState("");
