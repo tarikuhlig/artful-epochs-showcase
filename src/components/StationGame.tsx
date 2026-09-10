@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Check, Gamepad2, RotateCcw, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Work } from "@/lib/art-data";
@@ -28,7 +28,7 @@ function yearOf(work: Work): number {
  * danach die gleichen Werke zeitlich ordnen. Beides lässt sich nur mit
  * dem Wissen aus den vorherigen Karten lösen.
  */
-export function StationGame({ works, seed, era }: { works: Work[]; seed: number; era: string }) {
+export function StationGame({ works, seed, era, onSolved }: { works: Work[]; seed: number; era: string; onSolved?: () => void }) {
   const pool = works.slice(0, 4);
   const painters = useMemo(() => shuffle(pool.map((work) => work.painter.name), seed + 3), [pool, seed]);
   const shuffled = useMemo(() => shuffle(pool, seed + 7), [pool, seed]);
@@ -59,7 +59,13 @@ export function StationGame({ works, seed, era }: { works: Work[]; seed: number;
   const correctOrder = [...pool].sort((a, b) => yearOf(a) - yearOf(b)).map((work) => work.id);
   const orderRight = checked && order.length === pool.length && order.every((id, index) => id === correctOrder[index]);
 
-  if (pool.length < 2) {
+  /** Erst wenn das Rätsel geprüft (oder gar nicht spielbar) ist, geht die Reise weiter. */
+  const tooFewWorks = pool.length < 2;
+  useEffect(() => {
+    if (checked || tooFewWorks) onSolved?.();
+  }, [checked, tooFewWorks, onSolved]);
+
+  if (tooFewWorks) {
     return <div className="flex min-h-[570px] items-center justify-center p-8 text-muted-foreground sm:min-h-[610px]">Für diese Station wird das Spiel noch vorbereitet.</div>;
   }
 

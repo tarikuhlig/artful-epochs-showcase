@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 /** Speicherort für den zuletzt geöffneten Reisepunkt. */
 const RESUME_KEY = "provenance:journey";
@@ -181,6 +181,8 @@ function ArtPathPage() {
   /** Ergebnisse je Station und Frage — Grundlage für Wiederholung und Lernstand. */
   const [results, setResults] = useState<Record<number, Record<string, boolean>>>({});
   const [repeats, setRepeats] = useState<Record<number, string[]>>({});
+  /** Karten mit Rätsel, die bereits beantwortet wurden — je Station. */
+  const [solvedCards, setSolvedCards] = useState<Record<number, number[]>>({});
   const completed = new Set(progress.map((entry) => entry.station_index));
   const next = progress.length;
 
@@ -231,8 +233,22 @@ function ArtPathPage() {
       .map((item) => item.topic ?? item.question),
   )).slice(0, 5);
 
+  /** Beantwortete bzw. gespielte Karten je Station — ohne sie geht es nicht weiter. */
+  const solvedList = solvedCards[activeStation] ?? [];
+  const markCardSolved = useCallback((index: number) => {
+    setSolvedCards((current) => {
+      const list = current[activeStation] ?? [];
+      if (list.includes(index)) return current;
+      return { ...current, [activeStation]: [...list, index] };
+    });
+  }, [activeStation]);
+  const markGameSolved = useCallback(() => markCardSolved(card), [markCardSolved, card]);
+  const needsAnswer = entry?.type === "question" || entry?.type === "transfer" || entry?.type === "game";
+  const canAdvance = !needsAnswer || solvedList.includes(card);
+
   /** Falsch oder unsicher beantwortete Fragen kehren später in anderer Form zurück. */
   function recordAnswer(question: ArtQuestion, correct: boolean) {
+    markCardSolved(card);
     const baseId = question.id.replace(/-wdh$/, "");
     setResults((current) => ({
       ...current,
@@ -442,9 +458,10 @@ function ArtPathPage() {
               const itemDone = completed.has(item.index);
               const itemUnlocked = itemDone || item.index === next;
               const free = hasAccess || isFreeJourneyStation(item.index);
+              const locked = !itemUnlocked;
               return <li key={item.index} className="flex items-center gap-2">
-                <Button type="button" variant="outline" onClick={() => openStation(item.index)} aria-current={activeStation === item.index ? "step" : undefined} className={`h-9 rounded-full px-3 text-xs font-normal ${itemDone ? "border-foreground bg-foreground text-background hover:bg-foreground/90 hover:text-background" : activeStation === item.index ? "border-foreground bg-background text-foreground" : "border-border bg-muted/50 text-muted-foreground"}`}>
-                  {(!free || !itemUnlocked) && <Lock className="h-3 w-3" />}{item.index + 1}. {item.era}
+                <Button type="button" variant="outline" disabled={locked} aria-label={locked ? `${item.index + 1}. ${item.era} — noch gesperrt` : undefined} title={locked ? "Schließe zuerst die vorherige Station ab." : undefined} onClick={() => { if (!locked) openStation(item.index); }} aria-current={activeStation === item.index ? "step" : undefined} className={`h-9 rounded-full px-3 text-xs font-normal ${itemDone ? "border-foreground bg-foreground text-background hover:bg-foreground/90 hover:text-background" : activeStation === item.index ? "border-foreground bg-background text-foreground" : "border-border bg-muted/50 text-muted-foreground"} ${locked ? "opacity-60" : ""}`}>
+                  {(!free || locked) && <Lock className="h-3 w-3" />}{item.index + 1}. {item.era}
                 </Button>
                 {item.index < artPathWithWorks.length - 1 && <span aria-hidden="true" className="text-border">→</span>}
               </li>;
@@ -483,7 +500,7 @@ function ArtPathPage() {
 
         {focus && <>
         <div className="mb-2 flex flex-wrap justify-center gap-1.5" aria-label={`Karte ${card + 1} von ${sequence.length}`}>
-          {sequence.map((item, index) => <Button key={`${item.type}-${index}`} type="button" variant="ghost" size="icon" aria-label={`Karte ${index + 1} öffnen`} onClick={() => setCard(index)} className="h-7 w-7 rounded-full p-0 hover:bg-transparent"><span className={`h-1.5 rounded-full transition-all ${index === card ? "w-6 bg-foreground" : index < card ? "w-3 bg-muted-foreground" : item.type === "study" ? "w-3 bg-border" : "w-1.5 bg-border"}`} /></Button>)}
+          {sequence.map((item, index) => <Button key={`${item.type}-${index}`} type="button" variant="ghost" size="icon" disabled={index > card && !canAdvance} aria-label={`Karte ${index + 1} öffnen`} onClick={() => setCard(index > card && !canAdvance ? card : index)} className="h-7 w-7 rounded-full p-0 hover:bg-transparent"><span className={`h-1.5 rounded-full transition-all ${index === card ? "w-6 bg-foreground" : index < card ? "w-3 bg-muted-foreground" : item.type === "study" ? "w-3 bg-border" : "w-1.5 bg-border"}`} /></Button>)}
         </div>
         <p className="mb-4 text-center text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{entry?.type === "study" ? "Lernen" : entry?.type === "question" ? "Abrufen" : entry?.type === "game" ? "Spielen" : entry?.type === "transfer" ? "Anwenden" : entry?.type === "summary" ? "Bilanz" : "Abschluss"}</p>
 
@@ -589,7 +606,7 @@ function ArtPathPage() {
 
           {entry?.type === "question" && <PracticeCard key={`${station.index}-${entry.quiz.id}`} quiz={entry.quiz} step={entry.step} total={questionTotal} imageUrl={station.works[entry.step % Math.max(1, station.works.length)]?.image ?? station.work?.image} term={questionTerm(entry.step)} onResult={(correct) => recordAnswer(entry.quiz, correct)} />}
 
-          {entry?.type === "game" && <StationGame key={`${station.index}-game`} works={station.works} seed={station.index + 1} era={station.era} />}
+          {entry?.type === "game" && <StationGame key={`${station.index}-game`} works={station.works} seed={station.index + 1} era={station.era} onSolved={markGameSolved} />}
 
           {entry?.type === "transfer" && transfer && <PracticeCard key={`${station.index}-transfer`} quiz={transfer} step={0} total={0} onResult={(correct) => recordAnswer(transfer, correct)} />}
 
@@ -612,7 +629,10 @@ function ArtPathPage() {
         {unlocked && <div className="mt-5 flex items-center justify-between gap-3">
           <Button type="button" variant="outline" disabled={card === 0} onClick={() => changeCard(-1)} className="rounded-full font-normal"><ChevronLeft className="h-4 w-4" /> Zurück</Button>
           <p className="hidden text-xs text-muted-foreground sm:block">Karte {card + 1} von {sequence.length}</p>
-          <Button type="button" disabled={card === sequence.length - 1} onClick={() => changeCard(1)} className="rounded-full font-normal">Weiter <ChevronRight className="h-4 w-4" /></Button>
+          <div className="flex flex-col items-end gap-1">
+            <Button type="button" disabled={card === sequence.length - 1 || !canAdvance} onClick={() => changeCard(1)} className="rounded-full font-normal">Weiter <ChevronRight className="h-4 w-4" /></Button>
+            {!canAdvance && <span className="text-[11px] text-muted-foreground">{entry?.type === "game" ? "Erst das Rätsel prüfen" : "Erst die Frage beantworten"}</span>}
+          </div>
         </div>}
         </>}
       </>}
