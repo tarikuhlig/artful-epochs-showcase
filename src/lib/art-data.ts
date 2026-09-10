@@ -1555,7 +1555,8 @@ const baseWorkData: WorkData[] = [
 // ---------- Hydrated model (kept compatible with existing routes) ----------
 
 export type Painter = PainterData & { works: WorkData[] };
-export type Work = Omit<WorkData, "painter"> & { painter: Painter; epoch: Epoch };
+/** `uid` ist die global eindeutige Kennung eines Werks (Maler + Werk-ID). */
+export type Work = Omit<WorkData, "painter"> & { uid: string; painter: Painter; epoch: Epoch };
 export type Epoch = EpochData & { painters: Painter[] };
 
 export const epochData: EpochData[] = [...baseEpochData, ...extraEpochs];
