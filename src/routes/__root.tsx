@@ -169,9 +169,16 @@ const NAV: {
 function BrandHeader() {
   return (
     <div className="hidden border-b border-border bg-background pt-[env(safe-area-inset-top)] md:block">
-      <div className="mx-auto flex max-w-6xl items-center justify-center px-4 py-5 sm:py-6">
-        <Link to="/" aria-label="Provenance Startseite" className="inline-flex">
-          <ProvenanceLogo compact className="text-[2.25rem] sm:text-[2.5rem]" />
+      <div className="mx-auto flex max-w-6xl flex-col items-center px-4 py-8 sm:py-10">
+        <Link to="/" aria-label="Provenance Startseite" className="group inline-flex flex-col items-center">
+          <div className="flex items-center gap-5">
+            <span className="hidden h-px w-10 bg-gradient-to-r from-transparent via-border to-foreground/20 sm:block" />
+            <ProvenanceLogo compact className="text-[2.75rem] leading-none sm:text-[3.25rem]" />
+            <span className="hidden h-px w-10 bg-gradient-to-l from-transparent via-border to-foreground/20 sm:block" />
+          </div>
+          <span className="mt-2.5 text-[11px] font-medium uppercase tracking-[0.22em] text-muted-foreground transition-colors group-hover:text-foreground">
+            Kunstgeschichte entdecken
+          </span>
         </Link>
       </div>
     </div>
