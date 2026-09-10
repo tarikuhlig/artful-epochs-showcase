@@ -397,79 +397,111 @@ function ArtPathPage() {
   const study = entry?.type === "study" ? entry.study : -1;
 
   return <div className="min-h-screen bg-background">
-    <section className="bg-background">
-      <div className="mx-auto max-w-6xl px-5 py-12 sm:px-6 md:py-16">
-        <div className="grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
-          <div>
-            <p className="text-xs tracking-[0.25em] text-muted-foreground uppercase">Die große Kunstreise</p>
-            <h1 className="font-display mt-3 text-4xl font-medium md:text-6xl">Von Epoche zu Epoche</h1>
-            <p className="mt-4 max-w-xl leading-relaxed text-muted-foreground">
-              {artPathWithWorks.length} Stationen von der Gotik bis zum Bauhaus. Dein Fortschritt wird automatisch gespeichert — du steigst immer dort wieder ein, wo du aufgehört hast.
-            </p>
+    {/* Top progress bar */}
+    <div className="h-1 w-full bg-muted">
+      <div className="h-full bg-foreground transition-all duration-700" style={{ width: `${Math.max(2, (progress.length / artPathWithWorks.length) * 100)}%` }} />
+    </div>
 
-            <div className="mt-8 max-w-md">
-              <div className="flex items-end justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <img src={coin} alt="Provenance Coin" width={1024} height={1024} className="h-10 w-10" />
-                  <div>
-                    <p className="font-display text-xl font-medium">{progress.reduce((sum, p) => sum + p.coin_reward, 0)} Coins verdient</p>
-                    <p className="text-sm text-muted-foreground">{progress.length} von {artPathWithWorks.length} Stationen</p>
-                  </div>
-                </div>
-                <span className="text-sm text-muted-foreground">{Math.round((progress.length / artPathWithWorks.length) * 100)} %</span>
-              </div>
-              <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-muted">
-                <div className="h-full rounded-full bg-foreground transition-all duration-700" style={{ width: `${Math.max(2, (progress.length / artPathWithWorks.length) * 100)}%` }} />
-              </div>
-            </div>
+    <main className="mx-auto max-w-4xl px-5 pt-8 pb-12 sm:px-6 md:pt-12 md:pb-16">
+      {/* Header context */}
+      <header className="border-b border-border pb-6">
+        <div className="flex items-end justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground">Die große Kunstreise</p>
+            <h1 className="font-display mt-2 text-3xl font-medium md:text-4xl">{station.era}</h1>
+            <p className="mt-1 truncate text-sm text-muted-foreground">{station.work?.title} · {station.work?.painter.name}</p>
+          </div>
+          <span className="hidden shrink-0 rounded-full border border-border bg-muted/50 px-3 py-1.5 text-[10px] font-medium text-muted-foreground sm:inline-block">
+            Station {activeStation + 1} von {artPathWithWorks.length}
+          </span>
+        </div>
+      </header>
 
-            <div className="mt-7 flex flex-wrap items-center gap-3">
-              <Button type="button" onClick={resumeJourney} className="h-auto min-h-11 rounded-full px-6">
-                {progress.length > 0 || card > 0 ? "Reise fortsetzen" : "Reise beginnen"} <ChevronRight className="h-4 w-4" />
-              </Button>
-              <span className="text-sm text-muted-foreground">
-                {progress.length > 0 || card > 0
-                  ? `Du bist bei Station ${activeStation + 1} · ${station?.era}${card > 0 ? ` · Karte ${card + 1}` : ""}`
-                  : `Station ${activeStation + 1} · ${station?.era}`}
+      {/* Station navigator */}
+      <nav aria-label="Epochenfolge" className="relative py-6">
+        <div className="flex items-start gap-2 overflow-x-auto pb-3" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          {artPathWithWorks.map((item, idx) => {
+            const itemDone = completed.has(item.index);
+            const itemUnlocked = itemDone || item.index === next;
+            const itemFree = hasAccess || isFreeJourneyStation(item.index);
+            const locked = !itemUnlocked;
+            const active = activeStation === item.index;
+            return (
+              <div key={item.index} className="flex items-start">
+                <button
+                  type="button"
+                  disabled={locked}
+                  onClick={() => { if (!locked) openStation(item.index); }}
+                  aria-label={locked ? `${item.index + 1}. ${item.era} — gesperrt` : `${item.index + 1}. ${item.era} öffnen`}
+                  aria-current={active ? "step" : undefined}
+                  className={`flex flex-col items-center gap-2 group ${locked ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
+                >
+                  <span className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold transition-colors ${active ? 'bg-foreground text-background' : itemDone ? 'border-2 border-foreground text-foreground' : 'border border-border text-muted-foreground group-hover:border-foreground/40'}`}>
+                    {itemDone ? <Check className="h-4 w-4" /> : locked && !itemFree ? <Lock className="h-3 w-3" /> : String(item.index + 1).padStart(2, '0')}
+                  </span>
+                  <span className={`max-w-[100px] text-center text-[10px] leading-tight whitespace-nowrap ${active ? 'font-semibold text-foreground' : 'font-medium text-muted-foreground'}`}>
+                    {item.era}
+                  </span>
+                </button>
+                {idx < artPathWithWorks.length - 1 && (
+                  <span aria-hidden="true" className="mx-2 mt-4 block h-[2px] w-6 bg-border" />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </nav>
+
+      {/* Hero image */}
+      {station && (
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-muted">
+          <img
+            src={detailWork?.image || station.work?.image}
+            alt={detailWork?.title || station.work?.title || station.era}
+            loading="lazy"
+            className="aspect-[16/9] w-full object-cover"
+          />
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/50 to-transparent p-5 sm:p-6">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded bg-background/90 px-2 py-1 text-[10px] font-semibold text-foreground backdrop-blur-sm">
+                {station.years}
               </span>
+              <span className={`rounded px-2 py-1 text-[10px] font-semibold backdrop-blur-sm ${done ? 'bg-path-leaf/90 text-foreground' : 'bg-background/90 text-foreground'}`}>
+                {masteryLabel}
+              </span>
+              {!unlocked && (
+                <span className="inline-flex items-center gap-1 rounded bg-background/90 px-2 py-1 text-[10px] font-semibold text-foreground backdrop-blur-sm">
+                  <Lock className="h-3 w-3" /> Premium
+                </span>
+              )}
             </div>
           </div>
+        </div>
+      )}
 
-          {station && (
-            <div className="overflow-hidden rounded-2xl bg-muted">
-              <img
-                src={station.work?.image}
-                alt={station.work?.title ?? station.era}
-                loading="lazy"
-                className="aspect-[4/3] w-full object-cover"
-              />
-              <div className="bg-card p-5">
-                <p className="text-[10px] tracking-[0.24em] text-muted-foreground uppercase">{station.years}</p>
-                <p className="font-display mt-1 text-xl font-medium">{station.era}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{station.work?.title} · {station.work?.painter.name}</p>
-              </div>
-            </div>
+      {/* Description card + CTAs */}
+      <div className="mt-6 rounded-2xl border border-border bg-muted/30 p-6 sm:p-8">
+        <p className="leading-relaxed text-foreground/80">
+          <GlossaryText text={station.lesson} />
+        </p>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <Button type="button" onClick={resumeJourney} className="h-auto min-h-11 flex-1 rounded-xl px-6">
+            {card > 0 ? `Weiter bei Karte ${card + 1}` : progress.length > 0 || card > 0 ? "Reise fortsetzen" : "Reise beginnen"}
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+          {card > 0 && (
+            <Button type="button" variant="outline" onClick={() => openStation(activeStation)} className="h-auto min-h-11 rounded-xl px-6">
+              Von vorn
+            </Button>
           )}
         </div>
-
-        <nav aria-label="Epochenfolge" className="mt-12 overflow-x-auto pb-2">
-          <ol className="flex min-w-max items-center gap-2">
-            {artPathWithWorks.map((item) => {
-              const itemDone = completed.has(item.index);
-              const itemUnlocked = itemDone || item.index === next;
-              const free = hasAccess || isFreeJourneyStation(item.index);
-              const locked = !itemUnlocked;
-              return <li key={item.index} className="flex items-center gap-2">
-                <Button type="button" variant="outline" disabled={locked} aria-label={locked ? `${item.index + 1}. ${item.era} — noch gesperrt` : undefined} title={locked ? "Schließe zuerst die vorherige Station ab." : undefined} onClick={() => { if (!locked) openStation(item.index); }} aria-current={activeStation === item.index ? "step" : undefined} className={`h-9 rounded-full px-3 text-xs font-normal ${itemDone ? "border-foreground bg-foreground text-background hover:bg-foreground/90 hover:text-background" : activeStation === item.index ? "border-foreground bg-background text-foreground" : "border-border bg-muted/50 text-muted-foreground"} ${locked ? "opacity-60" : ""}`}>
-                  {(!free || locked) && <Lock className="h-3 w-3" />}{item.index + 1}. {item.era}
-                </Button>
-                {item.index < artPathWithWorks.length - 1 && <span aria-hidden="true" className="text-border">→</span>}
-              </li>;
-            })}
-          </ol>
-        </nav>
       </div>
-    </section>
+
+      {/* Footer meta / license */}
+      <div className="mt-8 text-center">
+        <LicenseNotice context="Die Reise zeigt ausschließlich Werke, deren Schutzfrist abgelaufen ist." />
+      </div>
+    </main>
 
 
     <section className={focus ? "fixed inset-0 z-[70] overflow-y-auto overscroll-contain bg-background px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-6" : "mx-auto max-w-4xl px-5 py-10 sm:px-6 md:py-14"}>
