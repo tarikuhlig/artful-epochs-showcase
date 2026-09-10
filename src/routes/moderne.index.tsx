@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { modernArtists, modernWorkCount } from "@/lib/modern-artists";
 import { RightsNotice } from "@/components/RightsNotice";
 import { ProtectedArtPlaceholder } from "@/components/ProtectedArtPlaceholder";
+import { artistImageUrl, findArtistImageSource } from "@/lib/artist-image-sources";
 
 export const Route = createFileRoute("/moderne/")({
   head: () => ({
