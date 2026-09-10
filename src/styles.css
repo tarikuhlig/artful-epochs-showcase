@@ -21,30 +21,31 @@
 @theme {
   --font-display: "Archivo", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-logo: "Bodoni Moda", "Times New Roman", ui-serif, serif;
 }
 
 @keyframes tunnel-fly {
   0% {
-    transform: translate(-50%, -50%) translate3d(calc(var(--tx) * 0.35), calc(var(--ty) * 0.35), -1500px)
+    transform: translate(-50%, -50%) translate3d(calc(var(--tx) * 0.24), calc(var(--ty) * 0.24), -1700px)
       rotate(var(--rot));
     opacity: 0;
   }
-  14% {
+  12% {
     opacity: 1;
   }
-  78% {
-    opacity: 0.75;
+  66% {
+    opacity: 0.9;
   }
   100% {
     transform: translate(-50%, -50%)
-      translate3d(calc(var(--tx) * 1.9), calc(var(--ty) * 1.9), 620px)
+      translate3d(calc(var(--tx) * 2.15), calc(var(--ty) * 2.15), 760px)
       rotate(var(--rot));
     opacity: 0;
   }
 }
 
 @utility tunnel-tile {
-  animation: tunnel-fly var(--dur, 18s) linear infinite;
+  animation: tunnel-fly 2.35s cubic-bezier(0.72, 0, 1, 0.42) both;
   animation-delay: var(--delay, 0s);
   will-change: transform, opacity;
 }
@@ -277,26 +278,9 @@
   }
 }
 
-@keyframes intro-float {
-  0% {
-    transform: translateY(18px) scale(0.94);
-    opacity: 0;
-  }
-  22% {
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(-10px) scale(1.02);
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-}
-
 @keyframes intro-veil-out {
   0%,
-  72% {
+  91% {
     opacity: 1;
     visibility: visible;
   }
@@ -306,36 +290,65 @@
   }
 }
 
-@keyframes intro-logo-in {
+@keyframes intro-wordmark-in {
   0% {
-    transform: translateY(20px) scale(0.93);
+    transform: scale(0.94);
     opacity: 0;
   }
-  25% {
+  52% {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+  66% {
     opacity: 1;
   }
-  60% {
-    transform: translateY(-8px) scale(1.02);
+  78% {
+    transform: scale(1);
+    opacity: 1;
   }
   100% {
-    transform: translateY(0) scale(1);
+    transform: scale(0.36);
+    opacity: 0;
+  }
+}
+
+@keyframes intro-tondo-in {
+  0%,
+  73% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  84% {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
     opacity: 1;
   }
 }
 
 .intro-veil {
-  animation: intro-veil-out 3s ease-in forwards;
+  animation: intro-veil-out 4s ease-in forwards;
 }
 
-.intro-logo {
-  animation: intro-logo-in 3s ease-in-out both;
+.intro-wordmark {
+  animation: intro-wordmark-in 4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.intro-tondo {
+  animation: intro-tondo-in 4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .intro-veil {
-    animation-duration: 1s;
+    animation: intro-veil-out 4s linear forwards;
   }
-  .intro-logo {
+  .intro-wordmark {
+    display: none;
+  }
+  .intro-tondo {
     animation: none;
+    opacity: 1;
   }
 }

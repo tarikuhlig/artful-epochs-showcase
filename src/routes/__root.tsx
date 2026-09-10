@@ -14,9 +14,9 @@ import { AppTour } from "@/components/AppTour";
 import { CollectionPopups } from "@/components/CollectionPopups";
 import { ProfileSetup } from "@/components/ProfileSetup";
 import { BackButton } from "@/components/BackButton";
+import { ProvenanceLogo } from "@/components/ProvenanceLogo";
 
 import appCss from "../styles.css?url";
-import provenanceLogo from "../assets/provenance-logo.png";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -129,6 +129,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap",
       },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -173,13 +177,7 @@ function SiteHeader() {
     <header className="sticky top-0 z-50 hidden border-b border-border bg-background/85 pt-[env(safe-area-inset-top)] backdrop-blur-md md:block">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:h-16 sm:px-6">
         <Link to="/" className="flex items-center">
-          <img
-            src={provenanceLogo}
-            alt="Provenance"
-            width={1920}
-            height={640}
-            className="h-8 w-auto sm:h-9"
-          />
+          <ProvenanceLogo compact />
         </Link>
 
         <nav className="hidden items-center gap-1 text-sm font-medium md:flex">
