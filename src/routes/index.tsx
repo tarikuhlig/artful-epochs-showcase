@@ -15,7 +15,6 @@ import { useArtPathProgress } from "@/lib/economy";
 import { workOfTheDay } from "@/lib/farm";
 import { painterOfTheDay, worksOfPainter } from "@/lib/daily-artist";
 import coin from "@/assets/provenance-coin.png";
-import { CoinBadge } from "@/components/CoinBadge";
 
 export const Route = createFileRoute("/")({
   head: () => ({
