@@ -458,9 +458,10 @@ function ArtPathPage() {
               const itemDone = completed.has(item.index);
               const itemUnlocked = itemDone || item.index === next;
               const free = hasAccess || isFreeJourneyStation(item.index);
+              const locked = !itemUnlocked;
               return <li key={item.index} className="flex items-center gap-2">
-                <Button type="button" variant="outline" onClick={() => openStation(item.index)} aria-current={activeStation === item.index ? "step" : undefined} className={`h-9 rounded-full px-3 text-xs font-normal ${itemDone ? "border-foreground bg-foreground text-background hover:bg-foreground/90 hover:text-background" : activeStation === item.index ? "border-foreground bg-background text-foreground" : "border-border bg-muted/50 text-muted-foreground"}`}>
-                  {(!free || !itemUnlocked) && <Lock className="h-3 w-3" />}{item.index + 1}. {item.era}
+                <Button type="button" variant="outline" disabled={locked} aria-label={locked ? `${item.index + 1}. ${item.era} — noch gesperrt` : undefined} title={locked ? "Schließe zuerst die vorherige Station ab." : undefined} onClick={() => { if (!locked) openStation(item.index); }} aria-current={activeStation === item.index ? "step" : undefined} className={`h-9 rounded-full px-3 text-xs font-normal ${itemDone ? "border-foreground bg-foreground text-background hover:bg-foreground/90 hover:text-background" : activeStation === item.index ? "border-foreground bg-background text-foreground" : "border-border bg-muted/50 text-muted-foreground"} ${locked ? "opacity-60" : ""}`}>
+                  {(!free || locked) && <Lock className="h-3 w-3" />}{item.index + 1}. {item.era}
                 </Button>
                 {item.index < artPathWithWorks.length - 1 && <span aria-hidden="true" className="text-border">→</span>}
               </li>;
