@@ -149,6 +149,32 @@ function HomePage() {
         </div>
       </section>
 
+      <section className="mx-auto max-w-6xl px-6 pb-14">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Kuratierte Touren</p>
+            <h2 className="font-display mt-2 text-3xl font-medium">Kunst einmal anders erzählt</h2>
+            <p className="mt-2 max-w-xl text-sm text-muted-foreground">Ein Abend mit Leonardo, starke Frauen quer durch die Epochen, Malerei bei Kerzenlicht — jede Tour führt in wenigen Stationen durch eine eigene Geschichte.</p>
+          </div>
+          <Link to="/reisen" className="font-display inline-flex items-center gap-2 text-base">Alle {journeys.length} Touren <ArrowRight className="h-4 w-4" /></Link>
+        </div>
+        <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {featuredTours.map((tour) => (
+            <Link key={tour.slug} to="/reisen/$slug" params={{ slug: tour.slug }} className="group overflow-hidden rounded-xl border border-border">
+              <div className="aspect-[16/10] overflow-hidden bg-muted">
+                {tour.image ? <img src={tour.image} alt={tour.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /> : null}
+              </div>
+              <div className="p-5">
+                <p className="text-[10px] tracking-[0.24em] text-muted-foreground uppercase">{tour.kind} · {tour.era}</p>
+                <h3 className="font-display mt-1 text-xl font-medium">{tour.title}</h3>
+                <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{tour.subtitle}</p>
+                <span className="font-display mt-4 inline-flex items-center gap-2 text-sm">{tour.stops.length} Stationen <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       <section className="bg-card">
         <div className="mx-auto max-w-6xl px-6 py-14">
           <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Wähle deinen Einstieg</p>
