@@ -45,25 +45,35 @@ function ModerneIndex() {
 
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {modernArtists.map((artist) => (
-          <Link
+          <article
             key={artist.slug}
-            to="/moderne/$slug"
-            params={{ slug: artist.slug }}
-            className="group rounded-xl border border-border bg-card p-6 transition-shadow hover:shadow-lg"
+            className="group overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-lg"
           >
-            <p className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase">
-              {artist.movement}
-            </p>
-            <h2 className="font-display mt-2 text-2xl font-medium">{artist.name}</h2>
-            <p className="text-sm text-muted-foreground">
-              {artist.life} · {artist.origin}
-            </p>
-            <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{artist.significance}</p>
-            <span className="mt-4 inline-flex items-center gap-2 text-sm font-medium">
-              {artist.works.length} Hauptwerke
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </span>
-          </Link>
+            <ProtectedArtPlaceholder
+              className="aspect-[16/9]"
+              label="Museums-Ansicht verfügbar"
+              target={{
+                url: artist.works[0]?.museumUrl ?? "",
+                artist: artist.name,
+                title: artist.works[0] ? `${artist.works[0].title} (${artist.works[0].year})` : undefined,
+                rightsHolder: artist.works[0]?.rightsHolder,
+              }}
+            />
+            <Link to="/moderne/$slug" params={{ slug: artist.slug }} className="block p-6">
+              <p className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase">
+                {artist.movement}
+              </p>
+              <h2 className="font-display mt-2 text-2xl font-medium">{artist.name}</h2>
+              <p className="text-sm text-muted-foreground">
+                {artist.life} · {artist.origin}
+              </p>
+              <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{artist.significance}</p>
+              <span className="mt-4 inline-flex items-center gap-2 text-sm font-medium">
+                {artist.works.length} Hauptwerke
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </span>
+            </Link>
+          </article>
         ))}
       </div>
 
