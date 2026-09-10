@@ -90,9 +90,11 @@ export function TitleGate({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="fixed inset-0 z-[110] overflow-y-auto bg-background">
-      <div className="mx-auto flex min-h-full max-w-md flex-col justify-center px-6 py-12">
-        <ProvenanceLogo className="mx-auto text-[clamp(3.25rem,16vw,5rem)]" />
-        <p className="mt-4 text-center text-sm text-muted-foreground">
+      <div className="mx-auto flex min-h-full w-full max-w-lg flex-col justify-center px-6 py-12">
+        <div className="flex min-h-28 w-full items-center justify-center sm:min-h-36">
+          <ProvenanceLogo className="mx-auto text-[clamp(5rem,22vw,8.5rem)]" />
+        </div>
+        <p className="mt-2 text-center text-sm text-muted-foreground">
           Maler, Epochen und Meisterwerke entdecken — melde dich an, um deinen Fortschritt zu
           speichern.
         </p>

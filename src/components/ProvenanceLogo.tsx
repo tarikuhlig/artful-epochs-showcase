@@ -6,7 +6,7 @@ type ProvenanceLogoProps = {
   mark?: boolean;
 };
 
-/** Feine Editorial-Wortmarke, abgeleitet aus klassischer Didone-Typografie. */
+/** Großzügige Lamour-Wortmarke für Intro, Anmeldung und Kopfzeile. */
 export function ProvenanceLogo({ className, compact = false, mark = false }: ProvenanceLogoProps) {
   return (
     <span
@@ -16,8 +16,8 @@ export function ProvenanceLogo({ className, compact = false, mark = false }: Pro
         mark
           ? "text-[clamp(5rem,21vw,8.5rem)] leading-none"
           : compact
-            ? "text-[2rem] leading-none"
-            : "text-[clamp(3.25rem,13vw,7.5rem)] leading-[0.72]",
+            ? "text-[2.35rem] leading-none"
+            : "text-[clamp(4.5rem,18vw,11rem)] leading-[0.9]",
         className,
       )}
     >
