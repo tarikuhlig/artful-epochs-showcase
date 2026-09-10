@@ -89,10 +89,7 @@ function HomePage() {
       <section className="relative overflow-hidden bg-background">
         <div className="relative mx-auto grid max-w-6xl gap-10 px-6 py-12 lg:grid-cols-[0.88fr_1.12fr] lg:items-center lg:py-16">
           <div>
-            <div className="flex flex-wrap items-center gap-3">
-              <p className="text-[11px] tracking-[0.32em] text-muted-foreground uppercase">Deine Welt der Kunst</p>
-              <CoinBadge />
-            </div>
+            <p className="text-[11px] tracking-[0.32em] text-muted-foreground uppercase">Deine Welt der Kunst</p>
             <h1 className="font-display mt-4 max-w-xl text-5xl leading-[0.98] font-medium md:text-6xl">Jeden Tag ein neues Bild sehen.</h1>
             <p className="mt-5 max-w-lg text-base leading-relaxed text-muted-foreground">Reise durch Jahrhunderte, begegne Künstlern und lerne Meisterwerke mit neuen Augen zu betrachten.</p>
             <div className="mt-7 flex flex-wrap gap-3">
