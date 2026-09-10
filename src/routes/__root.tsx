@@ -274,7 +274,7 @@ function RootComponent() {
       <AppTour />
       <CollectionPopups />
       <Toaster position="bottom-center" />
-
+      </ExternalArtProvider>
     </QueryClientProvider>
   );
 }
