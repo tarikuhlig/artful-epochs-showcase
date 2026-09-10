@@ -3,7 +3,7 @@
 - [x] Neues Provenance-Logo und beschleunigtes 4-Sekunden-Tondo-Intro
 - [x] Lamour-Logo und klar getrenntes, ruhigeres Intro ohne Bild-/Textüberlagerung
 - [x] Deutsch/englisch doppelt geführte Gemälde im Katalog zusammenführen
-- [ ] Lamour-Wortmarke größer und luftiger anordnen
+- [x] Lamour-Wortmarke größer und luftiger anordnen
 - [x] Reise komplett durchspielen und hängende Epochen-Frage beheben
 - [x] Reise-Startansicht verschönern (Designrichtung: Modern gallery minimalist)
 - [x] Premium-Zugang für yanik.olle@gmail.com freischalten

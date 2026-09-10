@@ -46,8 +46,8 @@ export function IntroTunnel({ onDone }: { onDone: () => void }) {
           }
         />
       ))}
-      <div className="intro-wordmark absolute inset-0 z-10 flex items-center justify-center px-5">
-        <ProvenanceLogo className="max-w-full" />
+      <div className="intro-wordmark absolute inset-0 z-10 flex items-center justify-center px-3 sm:px-8">
+        <ProvenanceLogo className="max-w-[96vw] text-[clamp(5rem,20vw,12rem)]" />
       </div>
     </div>
   );
