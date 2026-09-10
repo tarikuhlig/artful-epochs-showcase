@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 /** Speicherort für den zuletzt geöffneten Reisepunkt. */
 const RESUME_KEY = "provenance:journey";
