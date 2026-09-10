@@ -1568,9 +1568,41 @@ export const painterData: PainterData[] = painterCandidates.filter(
   (p, i) => painterCandidates.findIndex((o) => o.slug === p.slug) === i,
 );
 const workCandidates: WorkData[] = [...baseWorkData, ...extraWorks, ...extraWorks2, ...extraWorks3];
-export const workData: WorkData[] = workCandidates.filter(
-  (w, i) => workCandidates.findIndex((o) => o.id === w.id) === i,
-);
+
+const translatedDuplicateIds: Record<string, string> = {
+  "arnolfini-portraet": "arnolfini-hochzeit",
+  "the-fighting-temeraire": "die-kaempfende-temeraire",
+  "die-erschiessung-der-aufstaendischen": "der-dritte-mai",
+  "bal-du-moulin-de-la-galette": "moulin-de-la-galette",
+  "bar-in-den-folies-bergere-manet": "bar-in-den-folies-bergere",
+  "the-child-s-bath": "das-bad-des-kindes",
+  "sternennacht-gogh": "sternennacht",
+  "vision-nach-der-predigt-jakobs-kampf-mit-dem-engel": "vision-nach-der-predigt",
+  "badende-in-asnieres": "badende-von-asnieres",
+  "composition-vii": "komposition-vii",
+  "adele-bloch-bauer-i": "adele-bloch-bauer",
+};
+
+function normalizedWorkTitle(title: string) {
+  return title
+    .toLocaleLowerCase("de")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+/** Kuratierte deutsche Einträge stehen zuerst und gewinnen vor importierten Dubletten. */
+export const workData: WorkData[] = workCandidates.filter((work, index, candidates) => {
+  const canonicalId = translatedDuplicateIds[work.id] ?? work.id;
+  const titleKey = `${work.painter}::${normalizedWorkTitle(work.title)}`;
+
+  return candidates.findIndex((candidate) => {
+    const candidateId = translatedDuplicateIds[candidate.id] ?? candidate.id;
+    const candidateTitleKey = `${candidate.painter}::${normalizedWorkTitle(candidate.title)}`;
+    return candidateId === canonicalId || candidateTitleKey === titleKey;
+  }) === index;
+});
 
 const painters: Painter[] = painterData.map((p) => ({
   ...p,
