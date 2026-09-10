@@ -77,19 +77,18 @@ export function stationFinalQuestion(index: number): ArtQuestion | undefined {
   const station = artPathWithWorks[index];
   if (!station) return undefined;
   const others = otherStations(index);
-  const mnemonicText = station.mnemonics[0]?.text ?? station.turningPoint;
-  const answer = short(mnemonicText);
-  const wrong = others.map((item) => short(item.mnemonics[0]?.text ?? item.turningPoint));
+  const answer = short(station.turningPoint, 150);
+  const wrong = others.map((item) => short(item.turningPoint, 150));
   if (wrong.length < 2) return undefined;
   return {
     id: `final-${index}`,
     kind: "verstaendnis",
-    question: `Abschlussfrage: Welcher Merksatz gehört zu ${station.era}?`,
+    question: `Abschlussfrage: Was verändert ${station.era} dauerhaft an der Malerei?`,
     options: shuffle([answer, wrong[0] as string, wrong[1] as string], index + 101),
     answer,
-    explanation: `${station.era} (${station.years}): ${station.turningPoint}`,
-    hint: `Denk an den Wendepunkt dieser Station: ${short(station.turningPoint, 150)}`,
-    topic: "Merksätze der Epoche",
+    explanation: station.mnemonics[0]?.detail ?? station.history,
+    hint: `Frag dich, was in ${station.place} (${station.years}) zum ersten Mal möglich wird — nicht, was schon vorher üblich war.`,
+    topic: "Wendepunkt der Epoche",
   };
 }
 
