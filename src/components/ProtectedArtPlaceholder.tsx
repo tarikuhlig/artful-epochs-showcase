@@ -37,7 +37,9 @@ export function ProtectedArtPlaceholder({
       <span className="absolute inset-0 bg-background/25" />
       <span className="relative flex h-full w-full flex-col items-center justify-center gap-2 px-6 text-center">
         <Eye className="h-5 w-5 text-muted-foreground" />
-        <span className="text-[10px] tracking-[0.22em] text-muted-foreground uppercase">{label}</span>
+        <span className="text-[10px] tracking-[0.22em] text-muted-foreground uppercase">
+          {clickable ? label : "Abbildung geschützt"}
+        </span>
         {target.title && <span className="max-w-xs text-xs text-muted-foreground">{target.title}</span>}
       </span>
     </button>
