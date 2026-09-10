@@ -38,6 +38,8 @@ function ExternalArtModal({ target, onClose }: { target: ExternalArtTarget; onCl
   const [visible, setVisible] = useState(false);
   const frameRef = useRef<HTMLIFrameElement>(null);
 
+
+
   useEffect(() => {
     const raf = requestAnimationFrame(() => setVisible(true));
     const onKey = (event: KeyboardEvent) => {
@@ -96,6 +98,11 @@ function ExternalArtModal({ target, onClose }: { target: ExternalArtTarget; onCl
           </button>
         </div>
 
+        <p className="border-b border-border px-5 py-2 text-[11px] text-muted-foreground">
+          Bleibt die Fläche leer, erlaubt das Museum keine Anzeige in der App — dann oben direkt
+          öffnen.
+        </p>
+
         <iframe
           ref={frameRef}
           src={target.url}
@@ -104,6 +111,7 @@ function ExternalArtModal({ target, onClose }: { target: ExternalArtTarget; onCl
           referrerPolicy="no-referrer"
           className="h-full w-full flex-1 border-0 bg-background"
         />
+
       </div>
     </div>
   );

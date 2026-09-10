@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { modernArtists, modernWorkCount } from "@/lib/modern-artists";
 import { RightsNotice } from "@/components/RightsNotice";
 import { ProtectedArtPlaceholder } from "@/components/ProtectedArtPlaceholder";
+import { artistImageUrl, findArtistImageSource } from "@/lib/artist-image-sources";
 
 export const Route = createFileRoute("/moderne/")({
   head: () => ({
@@ -45,21 +46,41 @@ function ModerneIndex() {
       </div>
 
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {modernArtists.map((artist) => (
+        {modernArtists.map((artist) => {
+          const source = findArtistImageSource(artist.slug);
+          const ownImage = artistImageUrl(artist.slug);
+          return (
           <article
             key={artist.slug}
             className="group overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-lg"
           >
-            <ProtectedArtPlaceholder
-              className="aspect-[16/9]"
-              label="Museums-Ansicht verfügbar"
-              target={{
-                url: artist.works[0]?.museumUrl ?? "",
-                artist: artist.name,
-                title: artist.works[0] ? `${artist.works[0].title} (${artist.works[0].year})` : undefined,
-                rightsHolder: artist.works[0]?.rightsHolder,
-              }}
-            />
+            {ownImage ? (
+              <figure className="m-0">
+                <img
+                  src={ownImage}
+                  alt={`${artist.name} — freigegebene Abbildung`}
+                  loading="lazy"
+                  className="aspect-[16/9] w-full object-cover"
+                />
+                {source?.credit && (
+                  <figcaption className="px-4 pt-2 text-[11px] text-muted-foreground">
+                    {source.credit}
+                  </figcaption>
+                )}
+              </figure>
+            ) : (
+              <ProtectedArtPlaceholder
+                className="aspect-[16/9]"
+                label="Museums-Ansicht verfügbar"
+                target={{
+                  url: artist.works[0]?.museumUrl ?? source?.museumUrl ?? "",
+                  artist: artist.name,
+                  title: artist.works[0] ? `${artist.works[0].title} (${artist.works[0].year})` : undefined,
+                  rightsHolder: artist.works[0]?.rightsHolder,
+                }}
+              />
+            )}
+
             <Link to="/moderne/$slug" params={{ slug: artist.slug }} className="block p-6">
               <p className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase">
                 {artist.movement}
@@ -75,7 +96,8 @@ function ModerneIndex() {
               </span>
             </Link>
           </article>
-        ))}
+          );
+        })}
       </div>
 
       <section className="mt-14 max-w-3xl rounded-xl border border-border p-6">
