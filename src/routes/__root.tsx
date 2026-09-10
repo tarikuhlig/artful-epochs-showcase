@@ -171,12 +171,12 @@ function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 hidden border-b border-border bg-background/85 pt-[env(safe-area-inset-top)] backdrop-blur-md md:block">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:h-16 sm:px-6">
-        <Link to="/" className="flex items-center">
+      <div className="mx-auto grid h-14 max-w-6xl grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center px-4 sm:h-16 sm:px-6">
+        <Link to="/" className="flex min-w-0 items-center justify-self-start">
           <ProvenanceLogo compact />
         </Link>
 
-        <nav className="hidden items-center gap-1 text-sm font-medium md:flex">
+        <nav aria-label="Desktop-Hauptmenü" className="flex items-center justify-center gap-1 text-sm font-medium">
           {NAV.filter((item) => !item.authOnly || user).map((item) => (
             <Link
               key={item.to}
@@ -188,8 +188,11 @@ function SiteHeader() {
               {item.label}
             </Link>
           ))}
+        </nav>
+
+        <div className="flex items-center justify-self-end">
           {user ? (
-            <div className="ml-2 flex items-center gap-1">
+            <div className="flex items-center gap-1">
               <CoinBadge className="mr-1" />
               <Link
                 to="/einstellungen"
@@ -203,13 +206,12 @@ function SiteHeader() {
           ) : (
             <Link
               to="/auth"
-              className="ml-1 rounded-full bg-primary px-4 py-2 text-primary-foreground transition-opacity hover:opacity-90"
+              className="rounded-full bg-primary px-4 py-2 text-primary-foreground transition-opacity hover:opacity-90"
             >
               Anmelden
             </Link>
           )}
-        </nav>
-
+        </div>
       </div>
     </header>
   );
