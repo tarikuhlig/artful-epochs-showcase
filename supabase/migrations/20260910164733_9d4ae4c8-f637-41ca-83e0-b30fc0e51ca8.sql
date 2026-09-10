@@ -1,0 +1,2 @@
+ALTER TABLE public.art_path_progress DROP CONSTRAINT IF EXISTS art_path_progress_station_index_check;
+ALTER TABLE public.art_path_progress ADD CONSTRAINT art_path_progress_station_index_check CHECK (station_index >= 0 AND station_index <= 29);
