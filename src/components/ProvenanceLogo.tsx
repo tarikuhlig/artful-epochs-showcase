@@ -12,12 +12,12 @@ export function ProvenanceLogo({ className, compact = false, mark = false }: Pro
     <span
       aria-label={mark ? "Provenance P" : "Provenance"}
       className={cn(
-        "font-logo inline-block whitespace-nowrap text-foreground",
+        "font-logo inline-block origin-center whitespace-nowrap text-foreground",
         mark
           ? "text-[clamp(5rem,21vw,8.5rem)] leading-none"
           : compact
-            ? "text-[2.35rem] leading-none"
-            : "text-[clamp(4.5rem,18vw,11rem)] leading-[0.9]",
+            ? "scale-x-[1.12] text-[2.35rem] leading-none"
+            : "scale-x-[1.2] text-[clamp(4.5rem,18vw,11rem)] leading-[0.9]",
         className,
       )}
     >
