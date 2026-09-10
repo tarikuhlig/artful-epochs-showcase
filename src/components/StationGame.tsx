@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Check, Gamepad2, RotateCcw, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Work } from "@/lib/art-data";
