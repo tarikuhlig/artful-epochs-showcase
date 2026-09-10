@@ -1569,6 +1569,7 @@ export const painterData: PainterData[] = painterCandidates.filter(
 );
 const workCandidates: WorkData[] = [...baseWorkData, ...extraWorks, ...extraWorks2, ...extraWorks3];
 
+/** Bekannte Übersetzungs- und Schreibvarianten: Schlüssel weicht dem kuratierten deutschen Eintrag. */
 const translatedDuplicateIds: Record<string, string> = {
   "arnolfini-portraet": "arnolfini-hochzeit",
   "the-fighting-temeraire": "die-kaempfende-temeraire",
@@ -1581,7 +1582,25 @@ const translatedDuplicateIds: Record<string, string> = {
   "badende-in-asnieres": "badende-von-asnieres",
   "composition-vii": "komposition-vii",
   "adele-bloch-bauer-i": "adele-bloch-bauer",
+  "primavera-botticelli": "primavera",
+  "der-absinth-degas": "der-absinth",
+  "moench-am-meer-friedrich": "moench-am-meer",
+  "mont-sainte-victoire-cezanne": "mont-sainte-victoire",
+  "vase-of-flowers": "flowers-in-a-vase",
+  "la-normandie-normandy": "normandie",
+  "das-promenoir-des-moulin-rouge": "im-moulin-rouge",
+  "die-bootsfahrt": "die-bootspartie",
+  "schlummernde-venus-tizian": "schlummernde-venus",
+  "die-anbetung-der-koenige-tondo-lippi": "die-anbetung-der-koenige-tondo",
+  "simultaneous-solar-prism": "composition-dancer",
 };
+
+/** Füllwörter, die deutsche und englische Titelvarianten desselben Werks unterscheiden. */
+const titleStopWords = new Set([
+  "der", "die", "das", "den", "dem", "des", "ein", "eine", "einer", "eines",
+  "the", "a", "an", "of", "and", "und", "le", "la", "les", "el", "il", "lo",
+  "in", "im", "mit", "von", "vom", "with", "on", "at", "au", "aux", "du", "de", "di", "al",
+]);
 
 function normalizedWorkTitle(title: string) {
   return title
@@ -1592,16 +1611,37 @@ function normalizedWorkTitle(title: string) {
     .trim();
 }
 
+/** Titelkern ohne Artikel, Klammerzusätze und Wortreihenfolge – erkennt Varianten wie „Primavera“ / „La Primavera (Der Frühling)“. */
+function workTitleCore(title: string) {
+  return normalizedWorkTitle(title)
+    .split(" ")
+    .filter((word) => word && !titleStopWords.has(word))
+    .sort()
+    .join(" ");
+}
+
 /** Kuratierte deutsche Einträge stehen zuerst und gewinnen vor importierten Dubletten. */
 export const workData: WorkData[] = workCandidates.filter((work, index, candidates) => {
   const canonicalId = translatedDuplicateIds[work.id] ?? work.id;
   const titleKey = `${work.painter}::${normalizedWorkTitle(work.title)}`;
+  const coreKey = `${work.painter}::${workTitleCore(work.title)}`;
+  const imageKey = typeof work.image === "string" ? work.image : null;
 
-  return candidates.findIndex((candidate) => {
-    const candidateId = translatedDuplicateIds[candidate.id] ?? candidate.id;
-    const candidateTitleKey = `${candidate.painter}::${normalizedWorkTitle(candidate.title)}`;
-    return candidateId === canonicalId || candidateTitleKey === titleKey;
-  }) === index;
+  return (
+    candidates.findIndex((candidate) => {
+      const candidateId = translatedDuplicateIds[candidate.id] ?? candidate.id;
+      if (candidateId === canonicalId) return true;
+      if (`${candidate.painter}::${normalizedWorkTitle(candidate.title)}` === titleKey) return true;
+      if (`${candidate.painter}::${workTitleCore(candidate.title)}` === coreKey) return true;
+      // Gleiches Bild und gleicher Titelkern = dieselbe Abbildung unter anderem Namen.
+      const candidateImage = typeof candidate.image === "string" ? candidate.image : null;
+      return Boolean(
+        imageKey &&
+          candidateImage === imageKey &&
+          workTitleCore(candidate.title) === workTitleCore(work.title),
+      );
+    }) === index
+  );
 });
 
 const painters: Painter[] = painterData.map((p) => ({
@@ -1621,9 +1661,19 @@ export const allPainters: (Omit<Painter, "epoch"> & { epoch: Epoch })[] = epochs
 export const allWorks: Work[] =
   epochs.flatMap((epoch) =>
     epoch.painters.flatMap((painter) =>
-      painter.works.map((work) => ({ ...work, painter, epoch })),
+      painter.works.map((work) => ({ ...work, uid: `${painter.slug}--${work.id}`, painter, epoch })),
     ),
   );
+
+/** Sicherheitsnetz: doppelte IDs würden Routen und Sammlung durcheinanderbringen. */
+if (import.meta.env.DEV) {
+  const seen = new Set<string>();
+  const duplicates = allWorks.filter((work) => (seen.has(work.id) ? true : (seen.add(work.id), false)));
+  if (duplicates.length > 0) {
+    console.warn("[art-data] Doppelte Werk-IDs gefunden:", duplicates.map((w) => w.id));
+  }
+}
+
 
 export function findEpoch(slug: string) {
   return epochs.find((e) => e.slug === slug);
