@@ -181,6 +181,8 @@ function ArtPathPage() {
   /** Ergebnisse je Station und Frage — Grundlage für Wiederholung und Lernstand. */
   const [results, setResults] = useState<Record<number, Record<string, boolean>>>({});
   const [repeats, setRepeats] = useState<Record<number, string[]>>({});
+  /** Karten mit Rätsel, die bereits beantwortet wurden — je Station. */
+  const [solvedCards, setSolvedCards] = useState<Record<number, number[]>>({});
   const completed = new Set(progress.map((entry) => entry.station_index));
   const next = progress.length;
 
