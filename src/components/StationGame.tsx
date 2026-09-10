@@ -28,7 +28,7 @@ function yearOf(work: Work): number {
  * danach die gleichen Werke zeitlich ordnen. Beides lässt sich nur mit
  * dem Wissen aus den vorherigen Karten lösen.
  */
-export function StationGame({ works, seed, era }: { works: Work[]; seed: number; era: string }) {
+export function StationGame({ works, seed, era, onSolved }: { works: Work[]; seed: number; era: string; onSolved?: () => void }) {
   const pool = works.slice(0, 4);
   const painters = useMemo(() => shuffle(pool.map((work) => work.painter.name), seed + 3), [pool, seed]);
   const shuffled = useMemo(() => shuffle(pool, seed + 7), [pool, seed]);
