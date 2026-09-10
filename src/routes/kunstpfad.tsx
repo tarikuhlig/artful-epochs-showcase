@@ -231,8 +231,22 @@ function ArtPathPage() {
       .map((item) => item.topic ?? item.question),
   )).slice(0, 5);
 
+  /** Beantwortete bzw. gespielte Karten je Station — ohne sie geht es nicht weiter. */
+  const solvedList = solvedCards[activeStation] ?? [];
+  const markCardSolved = useCallback((index: number) => {
+    setSolvedCards((current) => {
+      const list = current[activeStation] ?? [];
+      if (list.includes(index)) return current;
+      return { ...current, [activeStation]: [...list, index] };
+    });
+  }, [activeStation]);
+  const markGameSolved = useCallback(() => markCardSolved(card), [markCardSolved, card]);
+  const needsAnswer = entry?.type === "question" || entry?.type === "transfer" || entry?.type === "game";
+  const canAdvance = !needsAnswer || solvedList.includes(card);
+
   /** Falsch oder unsicher beantwortete Fragen kehren später in anderer Form zurück. */
   function recordAnswer(question: ArtQuestion, correct: boolean) {
+    markCardSolved(card);
     const baseId = question.id.replace(/-wdh$/, "");
     setResults((current) => ({
       ...current,
