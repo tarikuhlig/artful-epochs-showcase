@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { findStyle, type allPainters } from "@/lib/art-data";
 import { FavoriteButton } from "@/components/FavoriteButton";
+import { ProtectedArtPlaceholder } from "@/components/ProtectedArtPlaceholder";
 
 type PainterEntry = (typeof allPainters)[number];
 
