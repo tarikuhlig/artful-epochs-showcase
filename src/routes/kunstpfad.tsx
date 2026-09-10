@@ -499,7 +499,7 @@ function ArtPathPage() {
 
         {focus && <>
         <div className="mb-2 flex flex-wrap justify-center gap-1.5" aria-label={`Karte ${card + 1} von ${sequence.length}`}>
-          {sequence.map((item, index) => <Button key={`${item.type}-${index}`} type="button" variant="ghost" size="icon" aria-label={`Karte ${index + 1} öffnen`} onClick={() => setCard(index)} className="h-7 w-7 rounded-full p-0 hover:bg-transparent"><span className={`h-1.5 rounded-full transition-all ${index === card ? "w-6 bg-foreground" : index < card ? "w-3 bg-muted-foreground" : item.type === "study" ? "w-3 bg-border" : "w-1.5 bg-border"}`} /></Button>)}
+          {sequence.map((item, index) => <Button key={`${item.type}-${index}`} type="button" variant="ghost" size="icon" disabled={index > card && !canAdvance} aria-label={`Karte ${index + 1} öffnen`} onClick={() => setCard(index > card && !canAdvance ? card : index)} className="h-7 w-7 rounded-full p-0 hover:bg-transparent"><span className={`h-1.5 rounded-full transition-all ${index === card ? "w-6 bg-foreground" : index < card ? "w-3 bg-muted-foreground" : item.type === "study" ? "w-3 bg-border" : "w-1.5 bg-border"}`} /></Button>)}
         </div>
         <p className="mb-4 text-center text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{entry?.type === "study" ? "Lernen" : entry?.type === "question" ? "Abrufen" : entry?.type === "game" ? "Spielen" : entry?.type === "transfer" ? "Anwenden" : entry?.type === "summary" ? "Bilanz" : "Abschluss"}</p>
 
