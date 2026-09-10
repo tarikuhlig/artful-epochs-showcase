@@ -24,6 +24,7 @@ import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { PremiumBanner } from "@/components/PremiumUpsell";
 import { CoinBadge } from "@/components/CoinBadge";
 import { Toaster } from "@/components/ui/sonner";
+import { ExternalArtProvider } from "@/components/ExternalArtModal";
 
 function NotFoundComponent() {
   return (
