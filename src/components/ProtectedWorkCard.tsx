@@ -35,15 +35,14 @@ export function ProtectedWorkCard({ work, artist }: { work: ModernWork; artist?:
           <p className="mt-2 text-sm leading-relaxed">{work.visualDescription}</p>
         </div>
 
-        <a
-          href={work.museumUrl}
-          target="_blank"
-          rel="noopener noreferrer nofollow"
+        <button
+          type="button"
+          onClick={() => open(target)}
           className="mt-4 inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-accent"
         >
           Beim Museum ansehen
           <ExternalLink className="h-4 w-4" />
-        </a>
+        </button>
 
         <p className="mt-3 text-xs text-muted-foreground">Rechte: {work.rightsHolder}</p>
       </div>
