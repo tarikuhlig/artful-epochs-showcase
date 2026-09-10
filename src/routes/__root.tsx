@@ -166,17 +166,25 @@ const NAV: {
 
 
 
+function BrandHeader() {
+  return (
+    <div className="hidden border-b border-border bg-background pt-[env(safe-area-inset-top)] md:block">
+      <div className="mx-auto flex max-w-6xl items-center justify-center px-4 py-5 sm:py-6">
+        <Link to="/" aria-label="Provenance Startseite" className="inline-flex">
+          <ProvenanceLogo compact className="text-[2.25rem] sm:text-[2.5rem]" />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 function SiteHeader() {
   const { user } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 hidden border-b border-border bg-background/85 pt-[env(safe-area-inset-top)] backdrop-blur-md md:block">
-      <div className="mx-auto grid h-14 max-w-6xl grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center px-4 sm:h-16 sm:px-6">
-        <Link to="/" className="flex min-w-0 items-center justify-self-start">
-          <ProvenanceLogo compact />
-        </Link>
-
-        <nav aria-label="Desktop-Hauptmenü" className="flex items-center justify-center gap-1 text-sm font-medium">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:h-16 sm:px-6">
+        <nav aria-label="Desktop-Hauptmenü" className="flex flex-1 items-center justify-center gap-1 text-sm font-medium">
           {NAV.filter((item) => !item.authOnly || user).map((item) => (
             <Link
               key={item.to}
@@ -190,9 +198,9 @@ function SiteHeader() {
           ))}
         </nav>
 
-        <div className="flex items-center justify-self-end">
+        <div className="absolute right-4 flex items-center gap-1 sm:right-6">
           {user ? (
-            <div className="flex items-center gap-1">
+            <>
               <CoinBadge className="mr-1" />
               <Link
                 to="/einstellungen"
@@ -202,11 +210,11 @@ function SiteHeader() {
               >
                 <Settings className="h-4 w-4" />
               </Link>
-            </div>
+            </>
           ) : (
             <Link
               to="/auth"
-              className="rounded-full bg-primary px-4 py-2 text-primary-foreground transition-opacity hover:opacity-90"
+              className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
             >
               Anmelden
             </Link>
@@ -250,6 +258,7 @@ function RootComponent() {
       {/* Platz für die feste Leiste oben auf dem Handy */}
       <div aria-hidden className="h-[calc(env(safe-area-inset-top)+3.25rem)] md:hidden" />
       <PaymentTestModeBanner />
+      <BrandHeader />
       <SiteHeader />
       <PremiumBanner />
       {/* Ruhige Leiste oben auf dem Handy — verdeckt keine Inhalte mehr. */}
