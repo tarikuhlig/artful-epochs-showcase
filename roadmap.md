@@ -14,3 +14,7 @@
 - [x] Coins verdienen: Epochen-Spiel, Sammler-Meilensteine, Werke verkaufen
 - [x] Reise: keine trockenen Blöcke — Fachbegriffe direkt im Text erklären (Glossar stärker einbinden)
 - [x] Reise: historische Werkzeugbilder immersiv in alle 30 Stationen einbinden
+- [x] Legendäre Werke abartig teuer machen (Rang „Legendär“)
+- [x] Coin-System mathematisch neu ausbalancieren (alles durch harte Arbeit erreichbar)
+- [ ] Reise: wiederholte Merksätze/Quizzitate durch neuen Input ersetzen, Bezug zwischen Künstlern einer Epoche stärken
+- [ ] Entdecken: kuratierte Touren („Ein Wein mit da Vinci“, „Starke Frauen der Epochen“ …)
