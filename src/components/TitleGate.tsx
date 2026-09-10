@@ -1,5 +1,5 @@
 import { useState } from "react";
-import provenanceLogo from "@/assets/provenance-logo.png";
+import { ProvenanceLogo } from "@/components/ProvenanceLogo";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { setStaySignedIn } from "@/lib/session-persistence";
@@ -91,13 +91,7 @@ export function TitleGate({ onDone }: { onDone: () => void }) {
   return (
     <div className="fixed inset-0 z-[110] overflow-y-auto bg-background">
       <div className="mx-auto flex min-h-full max-w-md flex-col justify-center px-6 py-12">
-        <img
-          src={provenanceLogo}
-          alt="Provenance"
-          width={1920}
-          height={640}
-          className="mx-auto w-[min(64vw,340px)]"
-        />
+        <ProvenanceLogo className="mx-auto text-[clamp(3.25rem,16vw,5rem)]" />
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Maler, Epochen und Meisterwerke entdecken — melde dich an, um deinen Fortschritt zu
           speichern.

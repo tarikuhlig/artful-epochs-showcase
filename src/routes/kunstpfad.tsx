@@ -387,7 +387,20 @@ function ArtPathPage() {
       }
       await refetch(); invalidateFarm();
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Die Station konnte nicht abgeschlossen werden.");
+      const message = cause instanceof Error ? cause.message : "Die Station konnte nicht abgeschlossen werden.";
+      if (/complete stations in order|reihenfolge|already completed|bereits abgeschlossen/i.test(message)) {
+        const refreshed = await refetch();
+        const freshProgress = refreshed.data ?? [];
+        const resumeStation = Math.min(freshProgress.length, artPathWithWorks.length - 1);
+        setActiveStation(resumeStation);
+        setCard(0);
+        setFeedback({});
+        setAnswers({});
+        setNotice("Dein gespeicherter Stand wurde aktualisiert. Du kannst hier direkt weiterlernen.");
+        setError("");
+      } else {
+        setError(message);
+      }
     } finally { setBusy(null); }
   }
 
@@ -647,7 +660,8 @@ function ArtPathPage() {
             <div className="mt-6 rounded-lg bg-path-leaf p-5"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">Themen zum Wiederholen</p>{reviewTopics.length > 0 ? <ul className="mt-2 grid gap-1 text-sm leading-relaxed">{reviewTopics.map((topic) => <li key={topic}>· {topic}</li>)}</ul> : <p className="mt-2 text-sm leading-relaxed">Nichts offen — du hast alle Fragen dieser Station sicher beantwortet.</p>}</div>
           </div>}
 
-          {entry?.type === "final" && quiz && <div className="mx-auto flex min-h-[570px] max-w-2xl flex-col justify-center p-6 sm:min-h-[610px] sm:p-10"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Palette className="h-4 w-4" /> Abschlusskarte</div><h3 className="font-display mt-3 text-3xl font-medium">Epochenfrage</h3><p className="mt-5 text-lg leading-relaxed">{quiz.question}</p><div className="mt-5 grid gap-2">{quiz.options.map((option) => <Button key={option} type="button" variant="outline" onClick={() => { setAnswers((current) => ({ ...current, [station.index]: option })); setFeedback((current) => { const copy = { ...current }; delete copy[station.index]; return copy; }); }} className={`h-auto min-h-12 justify-start whitespace-normal rounded-lg px-4 py-3 text-left font-normal ${selected === option ? "border-foreground bg-coin-soft" : ""}`}>{option}</Button>)}</div>{result === "wrong" && <p className="mt-4 flex items-center gap-2 text-sm text-destructive"><X className="h-4 w-4" />Noch nicht richtig – blättere zurück zur Merkkarte.</p>}{(result === "correct" || done) && <p className="mt-4 flex items-center gap-2 text-sm"><Check className="h-4 w-4" />{quiz.explanation}</p>}{!done && <Button type="button" disabled={!selected || busy === station.index} onClick={() => finish(station.index, selected)} className="mt-5 h-auto min-h-11 rounded-full px-5 py-2.5">{user ? (busy === station.index ? "Wird geprüft …" : "Antwort prüfen & nächste Station öffnen") : "Anmelden & antworten"}</Button>}{done && activeStation < artPathWithWorks.length - 1 && <Button type="button" onClick={() => openStation(activeStation + 1)} className="mt-5 rounded-full">Zur nächsten Station <ChevronRight className="h-4 w-4" /></Button>}</div>}
+          {entry?.type === "final" && quiz && <div className="mx-auto flex min-h-[570px] max-w-2xl flex-col justify-center p-6 sm:min-h-[610px] sm:p-10"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Palette className="h-4 w-4" /> Abschlusskarte</div><h3 className="font-display mt-3 text-3xl font-medium">Epochenfrage</h3><p className="mt-5 text-lg leading-relaxed">{quiz.question}</p><div className="mt-5 grid gap-2">{quiz.options.map((option) => <Button key={option} type="button" variant="outline" disabled={busy === station.index || done} onClick={() => { setAnswers((current) => ({ ...current, [station.index]: option })); setFeedback((current) => { const copy = { ...current }; delete copy[station.index]; return copy; }); }} className={`h-auto min-h-12 justify-start whitespace-normal rounded-lg px-4 py-3 text-left font-normal ${selected === option ? "border-foreground bg-coin-soft" : ""}`}>{option}</Button>)}</div>{result === "wrong" && <div className="mt-4 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm"><p className="flex items-center gap-2 text-destructive"><X className="h-4 w-4" />Noch nicht richtig.</p><p className="mt-2 text-muted-foreground">{quiz.hint ?? "Blättere zur Merkkarte zurück und prüfe den Wendepunkt dieser Epoche."}</p></div>}{(result === "correct" || done) && <p className="mt-4 flex items-start gap-2 text-sm leading-relaxed"><Check className="mt-0.5 h-4 w-4 shrink-0" />{quiz.explanation}</p>}{!done && <Button type="button" disabled={!selected || busy === station.index} onClick={() => finish(station.index, selected)} className="mt-5 h-auto min-h-11 rounded-full px-5 py-2.5">{user ? (busy === station.index ? "Wird geprüft …" : "Antwort prüfen & nächste Station öffnen") : "Anmelden & Fortschritt speichern"}</Button>}{done && activeStation < artPathWithWorks.length - 1 && <Button type="button" onClick={() => openStation(activeStation + 1)} className="mt-5 rounded-full">Zur nächsten Station <ChevronRight className="h-4 w-4" /></Button>}</div>}
+          {entry?.type === "final" && !quiz && <div className="mx-auto flex min-h-[570px] max-w-2xl flex-col items-center justify-center p-8 text-center sm:min-h-[610px]"><Palette className="h-6 w-6" /><h3 className="font-display mt-4 text-3xl font-medium">Abschluss wird aktualisiert</h3><p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">Für diese Station fehlt gerade eine gültige Epochenfrage. Dein bisheriger Stand bleibt gespeichert.</p><Button type="button" variant="outline" onClick={() => { setCard(0); setError(""); }} className="mt-6 rounded-full">Zur ersten Karte</Button></div>}
         </article>}
 
         {unlocked && <div className="mt-5 flex items-center justify-between gap-3">
