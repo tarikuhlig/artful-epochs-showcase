@@ -26,6 +26,7 @@ import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { allWorks } from "@/lib/art-data";
 import { emitCollected } from "@/lib/collection-events";
 import { StationGame } from "@/components/StationGame";
+import { AtelierTools } from "@/components/AtelierTools";
 
 export const Route = createFileRoute("/kunstpfad")({
   head: () => ({ meta: [
@@ -454,7 +455,7 @@ function ArtPathPage() {
     </section>
 
 
-    <section className={focus ? "fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-background px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(5rem,env(safe-area-inset-bottom))] sm:px-6" : "mx-auto max-w-4xl px-5 py-10 sm:px-6 md:py-14"}>
+    <section className={focus ? "fixed inset-0 z-[70] overflow-y-auto overscroll-contain bg-background px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-6" : "mx-auto max-w-4xl px-5 py-10 sm:px-6 md:py-14"}>
       <div className={focus ? "mx-auto w-full max-w-4xl" : ""}>
       {focus && <div className="mb-5 flex items-center justify-between gap-3">
         <p className="pl-14 text-[10px] tracking-[0.25em] text-muted-foreground uppercase">Station {activeStation + 1} von {artPathWithWorks.length}</p>
@@ -526,7 +527,7 @@ function ArtPathPage() {
           </div>}
 
 
-          {study === 4 && <div className="min-h-[570px] overflow-y-auto p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Brush className="h-4 w-4" /> Werkzeug & Technik</div><h3 className="font-display mt-3 text-3xl font-medium">Pinsel, Griffel, Presse</h3><div className="mt-7 grid gap-x-8 gap-y-6 md:grid-cols-2">{[{ label: "Pinsel", value: station.brushes }, { label: "Werkzeuge", value: station.tools }, { label: "Technik", value: station.technique }].map((item) => <section key={item.label} className="border-t border-border pt-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">{item.label}</p><p className="mt-2 text-sm leading-relaxed">{item.value}</p></section>)}</div><TermNotes entries={termsForStudy(4)} /><p className="mt-7 rounded-lg bg-muted p-5 text-sm leading-relaxed"><span className="font-medium">Übung:</span> {station.experience.mission}</p></div>}
+          {study === 4 && <div className="min-h-[570px] p-6 sm:min-h-[610px] sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Brush className="h-4 w-4" /> Werkzeug & Technik</div><h3 className="font-display mt-3 text-3xl font-medium">Ein Blick in die Werkstatt</h3><p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">Tippe ein Werkzeug an und entdecke, wie es benutzt wurde und welche Spur es im Bild hinterließ.</p><AtelierTools stationIndex={activeStation} workTitle={station.work?.title ?? station.title} technique={station.technique} /><div className="mt-8 grid gap-x-8 gap-y-6 md:grid-cols-2">{[{ label: "Pinsel", value: station.brushes }, { label: "Weitere Werkzeuge", value: station.tools }].map((item) => <section key={item.label} className="border-t border-border pt-4"><p className="text-[10px] tracking-[0.18em] text-muted-foreground uppercase">{item.label}</p><p className="mt-2 text-sm leading-relaxed">{item.value}</p></section>)}</div><TermNotes entries={termsForStudy(4)} /><p className="mt-7 rounded-lg bg-muted p-5 text-sm leading-relaxed"><span className="font-medium">Übung:</span> {station.experience.mission}</p></div>}
 
           {study === 5 && <div className="flex min-h-[570px] flex-col justify-center overflow-y-auto p-6 sm:min-h-[610px] sm:p-10"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Lightbulb className="h-4 w-4" /> Merkkarte</div><h3 className="font-display mt-3 text-3xl font-medium">Drei Sätze, die sitzen müssen</h3><ul className="mt-7 grid gap-4">{station.mnemonics.map((tip, tipIndex) => <li key={tip.text} className="flex gap-4 rounded-lg bg-path-leaf p-5"><span className="font-display text-2xl font-medium">{tipIndex + 1}</span><div className="min-w-0"><p className="font-medium leading-relaxed">{tip.text.replace(/^Merke:\s*/, "")}</p><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{tip.detail}</p></div></li>)}</ul><TermNotes entries={termsForStudy(5)} /></div>}
 
