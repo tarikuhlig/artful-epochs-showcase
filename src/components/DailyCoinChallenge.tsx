@@ -52,10 +52,10 @@ export function DailyCoinChallenge() {
   return <section className="mt-14 overflow-hidden rounded-xl border border-border bg-path-leaf">
     <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border px-6 py-5 sm:px-8">
       <div><p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Tägliche Coin-Challenge</p><h2 className="font-display mt-1 text-2xl font-medium">Kunstwissen zahlt sich aus</h2></div>
-      <div className="flex items-center gap-2 rounded-full bg-background px-4 py-2 text-sm"><img src={coin} alt="" className="h-6 w-6" /><span>bis zu 60 Coins</span></div>
+      <div className="flex items-center gap-2 rounded-full bg-background px-4 py-2 text-sm"><img src={coin} alt="" className="h-6 w-6" /><span>bis zu 300 Coins</span></div>
     </div>
     <div className="p-6 sm:p-8">
-      <div className="flex items-center justify-between text-xs text-muted-foreground"><span>Frage {step + 1} von 3</span><span>10 Coins je Treffer · 30 Bonus bei 3/3</span></div>
+      <div className="flex items-center justify-between text-xs text-muted-foreground"><span>Frage {step + 1} von 3</span><span>60 Coins je Treffer · 120 Bonus bei 3/3</span></div>
       <div className="mt-3 flex gap-2">{questions.map((item, index) => <span key={item.id} className={`h-1.5 flex-1 rounded-full ${index <= step ? "bg-coin" : "bg-background"}`} />)}</div>
       <h3 className="font-display mt-7 text-2xl font-medium">{question.prompt}</h3>
       <div className={`mt-6 grid gap-3 ${question.comparisonImage ? "grid-cols-2" : "grid-cols-1"}`}>

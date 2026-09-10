@@ -9,7 +9,7 @@ export type CardQuizCard = {
   answer: string;
 };
 
-export const CARD_QUIZ_ROUNDS_PER_DAY = 5;
+export const CARD_QUIZ_ROUNDS_PER_DAY = 8;
 export const CARD_QUIZ_CARDS = 8;
 
 function seedFrom(text: string): number {
@@ -62,7 +62,7 @@ export function cardQuizRound(dateISO: string, round: number): CardQuizCard[] {
   });
 }
 
-/** Teil des Lern-Budgets (35 %): max. 20 Coins je Runde, 100 pro Tag. */
+/** 10 Coins je Treffer, 20 Bonus bei 8/8 — bis zu 800 Coins pro Tag. */
 export function cardQuizReward(score: number): number {
-  return score * 2 + (score === CARD_QUIZ_CARDS ? 4 : 0);
+  return score * 10 + (score === CARD_QUIZ_CARDS ? 20 : 0);
 }

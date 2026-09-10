@@ -8,7 +8,7 @@ import { epochGuides } from "@/lib/epoch-guide";
 
 export const EPOCH_GAME_ROUNDS_PER_DAY = 3;
 export const EPOCH_GAME_CARDS = 4;
-export const EPOCH_GAME_COINS_PER_HIT = 10;
+export const EPOCH_GAME_COINS_PER_HIT = 40;
 
 export type EpochGameCard = {
   workId: string;

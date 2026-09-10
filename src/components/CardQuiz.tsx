@@ -59,14 +59,14 @@ export function CardQuiz() {
       <div>
         <div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Layers className="h-4 w-4" /> Karten-Quiz</div>
         <h2 className="font-display mt-2 text-2xl font-medium">Bilder erkennen, Coins verdienen</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Acht Bildkarten pro Runde, fünf Runden am Tag. 5 Coins je Treffer, 20 Bonus bei 8/8.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Acht Bildkarten pro Runde, acht Runden am Tag. 10 Coins je Treffer, 20 Bonus bei 8/8.</p>
       </div>
       <p className="flex items-center gap-2 text-sm"><img src={coin} alt="" className="h-6 w-6" />{earnedToday} heute</p>
     </div>
 
     {message && <p role="status" className="mt-5 text-sm">{message}</p>}
 
-    {!hasAccess ? <p className="mt-6 flex items-center gap-2 rounded-lg bg-muted p-4 text-sm text-muted-foreground"><LockKeyhole className="h-4 w-4" /> Mit Premium verdienst du hier täglich bis zu {CARD_QUIZ_ROUNDS_PER_DAY * (CARD_QUIZ_CARDS * 5 + 20)} Coins fürs Auktionshaus.</p>
+    {!hasAccess ? <p className="mt-6 flex items-center gap-2 rounded-lg bg-muted p-4 text-sm text-muted-foreground"><LockKeyhole className="h-4 w-4" /> Mit Premium verdienst du hier täglich bis zu {CARD_QUIZ_ROUNDS_PER_DAY * (CARD_QUIZ_CARDS * 10 + 20)} Coins fürs Auktionshaus.</p>
       : nextRound < 0 ? <p className="mt-6 rounded-lg bg-path-leaf p-5 text-sm">Alle {CARD_QUIZ_ROUNDS_PER_DAY} Runden von heute gespielt. Morgen warten neue Karten.</p>
       : card ? <div className="mt-6">
         <p className="text-xs text-muted-foreground">Runde {nextRound + 1} von {CARD_QUIZ_ROUNDS_PER_DAY} · Karte {index + 1} von {CARD_QUIZ_CARDS}</p>

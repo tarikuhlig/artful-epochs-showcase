@@ -11,10 +11,13 @@ import { sellPrice } from "@/lib/art-valuation";
 import { useFavorites } from "@/lib/favorites";
 
 const MILESTONES = [
-  { key: "works:5" as const, need: 5, coins: 100 },
-  { key: "works:10" as const, need: 10, coins: 200 },
-  { key: "works:25" as const, need: 25, coins: 500 },
-  { key: "works:50" as const, need: 50, coins: 1000 },
+  { key: "works:5" as const, need: 5, coins: 1000 },
+  { key: "works:10" as const, need: 10, coins: 2500 },
+  { key: "works:25" as const, need: 25, coins: 8000 },
+  { key: "works:50" as const, need: 50, coins: 20000 },
+  { key: "works:100" as const, need: 100, coins: 50000 },
+  { key: "works:250" as const, need: 250, coins: 150000 },
+  { key: "works:500" as const, need: 500, coins: 400000 },
 ];
 
 export function CollectionRewards({ featuredIds = [] }: { featuredIds?: string[] }) {
