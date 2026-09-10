@@ -16,8 +16,8 @@ export function ProvenanceLogo({ className, compact = false, mark = false }: Pro
         mark
           ? "text-[clamp(5rem,21vw,8.5rem)] leading-none"
           : compact
-            ? "scale-x-[1.12] text-[2.35rem] leading-none"
-            : "scale-x-[1.2] text-[clamp(4.5rem,18vw,11rem)] leading-[0.9]",
+            ? "scale-x-[1.28] text-[2rem] leading-none"
+            : "scale-x-[1.68] text-[clamp(3.4rem,14vw,7.5rem)] leading-[0.82]",
         className,
       )}
     >
