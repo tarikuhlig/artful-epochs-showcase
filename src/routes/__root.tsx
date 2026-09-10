@@ -24,6 +24,7 @@ import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { PremiumBanner } from "@/components/PremiumUpsell";
 import { CoinBadge } from "@/components/CoinBadge";
 import { Toaster } from "@/components/ui/sonner";
+import { ExternalArtProvider } from "@/components/ExternalArtModal";
 
 function NotFoundComponent() {
   return (
@@ -249,6 +250,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ExternalArtProvider>
       {/* Platz für die feste Leiste oben auf dem Handy */}
       <div aria-hidden className="h-[calc(env(safe-area-inset-top)+3.25rem)] md:hidden" />
       <PaymentTestModeBanner />
@@ -274,7 +276,7 @@ function RootComponent() {
       <AppTour />
       <CollectionPopups />
       <Toaster position="bottom-center" />
-
+      </ExternalArtProvider>
     </QueryClientProvider>
   );
 }
