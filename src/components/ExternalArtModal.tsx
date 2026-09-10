@@ -36,7 +36,15 @@ export function ExternalArtProvider({ children }: { children: ReactNode }) {
 
 function ExternalArtModal({ target, onClose }: { target: ExternalArtTarget; onClose: () => void }) {
   const [visible, setVisible] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [slow, setSlow] = useState(false);
   const frameRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSlow(true), 4000);
+    return () => window.clearTimeout(timer);
+  }, []);
+
 
   useEffect(() => {
     const raf = requestAnimationFrame(() => setVisible(true));
