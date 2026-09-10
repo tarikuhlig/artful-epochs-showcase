@@ -408,8 +408,8 @@ function ArtPathPage() {
         <div className="flex items-end justify-between gap-4">
           <div className="min-w-0">
             <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground">Die große Kunstreise</p>
-            <h1 className="font-display mt-2 text-3xl font-medium md:text-4xl">{station.era}</h1>
-            <p className="mt-1 truncate text-sm text-muted-foreground">{station.work?.title} · {station.work?.painter.name}</p>
+            <h1 className="font-display mt-2 text-3xl font-medium md:text-4xl">{station?.era}</h1>
+            <p className="mt-1 truncate text-sm text-muted-foreground">{station?.work?.title} · {station?.work?.painter?.name}</p>
           </div>
           <span className="hidden shrink-0 rounded-full border border-border bg-muted/50 px-3 py-1.5 text-[10px] font-medium text-muted-foreground sm:inline-block">
             Station {activeStation + 1} von {artPathWithWorks.length}
