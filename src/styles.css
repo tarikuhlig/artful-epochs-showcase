@@ -4,6 +4,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+  font-family: "Lamour";
+  src: url("/__l5e/assets-v1/6a556803-7fcb-44de-b150-2d738ede4f2d/lamour.otf") format("opentype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
 /*
  * Design system definition.
  *
@@ -21,7 +29,7 @@
 @theme {
   --font-display: "Archivo", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-logo: "Bodoni Moda", "Times New Roman", ui-serif, serif;
+  --font-logo: "Lamour", "Times New Roman", ui-serif, serif;
 }
 
 @keyframes tunnel-fly {
@@ -45,7 +53,7 @@
 }
 
 @utility tunnel-tile {
-  animation: tunnel-fly 2.35s cubic-bezier(0.72, 0, 1, 0.42) both;
+  animation: tunnel-fly 2.1s cubic-bezier(0.72, 0, 1, 0.42) both;
   animation-delay: var(--delay, 0s);
   will-change: transform, opacity;
 }
@@ -280,7 +288,7 @@
 
 @keyframes intro-veil-out {
   0%,
-  91% {
+  91.8% {
     opacity: 1;
     visibility: visible;
   }
@@ -291,64 +299,37 @@
 }
 
 @keyframes intro-wordmark-in {
-  0% {
-    transform: scale(0.94);
-    opacity: 0;
-  }
-  52% {
-    transform: scale(0.94);
-    opacity: 0;
-  }
-  66% {
-    opacity: 1;
-  }
-  78% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(0.36);
-    opacity: 0;
-  }
-}
-
-@keyframes intro-tondo-in {
   0%,
-  73% {
-    transform: scale(0.2);
+  53% {
+    transform: translate3d(0, 8px, 0);
     opacity: 0;
+  }
+  61% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
   }
   84% {
-    transform: scale(1.04);
+    transform: translate3d(0, 0, 0);
     opacity: 1;
   }
+  94%,
   100% {
-    transform: scale(1);
-    opacity: 1;
+    transform: translate3d(0, -4px, 0);
+    opacity: 0;
   }
 }
 
 .intro-veil {
-  animation: intro-veil-out 4s ease-in forwards;
+  animation: intro-veil-out 4.3s ease-in-out forwards;
 }
 
 .intro-wordmark {
-  animation: intro-wordmark-in 4s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.intro-tondo {
-  animation: intro-tondo-in 4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: intro-wordmark-in 4.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, opacity;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .intro-veil {
-    animation: intro-veil-out 4s linear forwards;
-  }
-  .intro-wordmark {
-    display: none;
-  }
-  .intro-tondo {
-    animation: none;
-    opacity: 1;
+    animation: intro-veil-out 4.3s linear forwards;
   }
 }

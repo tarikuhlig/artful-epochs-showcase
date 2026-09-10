@@ -15,10 +15,10 @@ const TILES = Array.from({ length: 24 }, (_, i) => {
   };
 });
 
-/** Vier Sekunden: beschleunigender Bilderstrahl, Wortmarke und ruhiger Tondo-Abschluss. */
+/** Klar getrennter Ablauf: Bilderstrahl, Wortmarke, ruhiger Übergang in die App. */
 export function IntroTunnel({ onDone }: { onDone: () => void }) {
   useEffect(() => {
-    const t = setTimeout(onDone, 4000);
+    const t = setTimeout(onDone, 4300);
     return () => clearTimeout(t);
   }, [onDone]);
 
@@ -48,9 +48,6 @@ export function IntroTunnel({ onDone }: { onDone: () => void }) {
       ))}
       <div className="intro-wordmark absolute inset-0 z-10 flex items-center justify-center px-5">
         <ProvenanceLogo className="max-w-full" />
-      </div>
-      <div className="intro-tondo absolute z-20 flex aspect-square w-[min(46vw,230px)] items-center justify-center overflow-hidden rounded-full border border-foreground bg-background">
-        <ProvenanceLogo mark className="-translate-y-[0.02em]" />
       </div>
     </div>
   );
