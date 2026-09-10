@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { modernArtists, modernWorkCount } from "@/lib/modern-artists";
 import { RightsNotice } from "@/components/RightsNotice";
+import { ProtectedArtPlaceholder } from "@/components/ProtectedArtPlaceholder";
 
 export const Route = createFileRoute("/moderne/")({
   head: () => ({
