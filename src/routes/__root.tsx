@@ -171,7 +171,7 @@ function BrandHeader() {
     <div className="hidden border-b border-border bg-background pt-[env(safe-area-inset-top)] md:block">
       <div className="mx-auto flex max-w-6xl items-center justify-center px-4 py-5 sm:py-6">
         <Link to="/" aria-label="Provenance Startseite" className="inline-flex">
-          <ProvenanceLogo />
+          <ProvenanceLogo compact className="text-[2.25rem] sm:text-[2.5rem]" />
         </Link>
       </div>
     </div>
