@@ -104,14 +104,25 @@ function ExternalArtModal({ target, onClose }: { target: ExternalArtTarget; onCl
           </button>
         </div>
 
+        {!loaded && slow && (
+          <div className="border-b border-border bg-background px-5 py-3">
+            <p className="text-xs text-muted-foreground">
+              Diese Museumsseite erlaubt keine Anzeige in der App. Öffne sie mit dem Button oben
+              direkt beim Rechteinhaber.
+            </p>
+          </div>
+        )}
+
         <iframe
           ref={frameRef}
           src={target.url}
+          onLoad={() => setLoaded(true)}
           title={`${target.artist}${target.title ? ` — ${target.title}` : ""}`}
           sandbox="allow-scripts allow-same-origin allow-popups"
           referrerPolicy="no-referrer"
           className="h-full w-full flex-1 border-0 bg-background"
         />
+
       </div>
     </div>
   );
