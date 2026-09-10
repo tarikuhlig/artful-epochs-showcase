@@ -160,19 +160,27 @@ export function stationQuestions(index: number): ArtQuestion[] {
     });
   }
 
-  // Merksatz 2
-  if (station.mnemonics[1] && others.length >= 2) {
-    const answer = short(station.mnemonics[1].text);
-    questions.push({
-      id: `merke-2-${index}`,
-      kind: "fakt",
-      question: "Welche Aussage hast du auf den Merkkarten dieser Station gelernt?",
-      options: shuffle([answer, short(others[0]!.mnemonics[1]?.text ?? others[0]!.turningPoint), short(others[1]!.mnemonics[1]?.text ?? others[1]!.turningPoint)], index + 31),
-      answer,
-      explanation: station.mnemonics[1].text,
-      hint: `Die anderen Sätze gehören zu anderen Epochen — prüfe, ob Ort und Jahreszahl zu ${station.place} (${station.years}) passen.`,
-      topic: "Merksätze der Epoche",
-    });
+  // Handschriften der Station unterscheiden: Welcher Satz gehört zu welchem Künstler?
+  if (artists[0] && artists[1] && artists[2] && station.artistLens.length >= 3) {
+    const target = artists[index % 3] ?? artists[0];
+    const position = artists.indexOf(target);
+    const answer = short(station.artistLens[position] ?? "", 150);
+    const wrong = station.artistLens
+      .filter((_, i) => i !== position)
+      .slice(0, 2)
+      .map((lens) => short(lens, 150));
+    if (answer && wrong.length >= 2) {
+      questions.push({
+        id: `maler-profil-${index}`,
+        kind: "verstaendnis",
+        question: `Alle vier arbeiten in derselben Epoche — was unterscheidet ${target.name} von den anderen?`,
+        options: shuffle([answer, wrong[0] as string, wrong[1] as string], index + 31),
+        answer,
+        explanation: `${target.name} (${target.life}): ${station.artistLens[position]} Die übrigen Sätze beschreiben seine Zeitgenossen auf dieser Station — dieselbe Werkstattkultur, andere Handschrift.`,
+        hint: `Die Falschantworten gehören zu den anderen Malern dieser Station. Frag dich, wofür gerade ${target.name} berühmt wurde.`,
+        topic: "Künstler der Epoche unterscheiden",
+      });
+    }
   }
 
   // Werkzeuge und Pinsel
@@ -257,18 +265,18 @@ export function stationQuestions(index: number): ArtQuestion[] {
     });
   }
 
-  // Merksatz 3
-  if (station.mnemonics[2] && others.length >= 2) {
-    const answer = short(station.mnemonics[2].text);
+  // Gesellschaftlicher Hintergrund — warum entsteht diese Kunst gerade hier?
+  if (others.length >= 2) {
+    const answer = short(station.history, 150);
     questions.push({
-      id: `merke-3-${index}`,
+      id: `kontext-${index}`,
       kind: "verstaendnis",
-      question: "Und zum Schluss: Welcher Merksatz stimmt?",
-      options: shuffle([answer, short(others[0]!.mnemonics[2]?.text ?? others[0]!.lesson), short(others[1]!.mnemonics[2]?.text ?? others[1]!.lesson)], index + 71),
+      question: `Wer bestellt die Bilder — und warum entsteht ${station.era} gerade dort?`,
+      options: shuffle([answer, short(others[0]!.history, 150), short(others[1]!.history, 150)], index + 71),
       answer,
-      explanation: station.mnemonics[2].text,
-      hint: `Prüfe jede Aussage gegen das, was in ${station.years} technisch und gesellschaftlich möglich war.`,
-      topic: "Merksätze der Epoche",
+      explanation: `${station.history} ${station.mnemonics[2]?.detail ?? ""}`.trim(),
+      hint: `Denk an Geld und Auftraggeber in ${station.place}: Kirche, Hof, Stadtrat oder Bürgertum — davon hängen Format, Thema und Material ab.`,
+      topic: "Auftraggeber und Zeitgeschehen",
     });
   }
 
