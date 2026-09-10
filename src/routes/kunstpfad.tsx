@@ -628,7 +628,10 @@ function ArtPathPage() {
         {unlocked && <div className="mt-5 flex items-center justify-between gap-3">
           <Button type="button" variant="outline" disabled={card === 0} onClick={() => changeCard(-1)} className="rounded-full font-normal"><ChevronLeft className="h-4 w-4" /> Zurück</Button>
           <p className="hidden text-xs text-muted-foreground sm:block">Karte {card + 1} von {sequence.length}</p>
-          <Button type="button" disabled={card === sequence.length - 1} onClick={() => changeCard(1)} className="rounded-full font-normal">Weiter <ChevronRight className="h-4 w-4" /></Button>
+          <div className="flex flex-col items-end gap-1">
+            <Button type="button" disabled={card === sequence.length - 1 || !canAdvance} onClick={() => changeCard(1)} className="rounded-full font-normal">Weiter <ChevronRight className="h-4 w-4" /></Button>
+            {!canAdvance && <span className="text-[11px] text-muted-foreground">{entry?.type === "game" ? "Erst das Rätsel prüfen" : "Erst die Frage beantworten"}</span>}
+          </div>
         </div>}
         </>}
       </>}
