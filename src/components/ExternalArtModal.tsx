@@ -4,8 +4,8 @@ import { ExternalLink, X } from "lucide-react";
 export type ExternalArtTarget = {
   url: string;
   artist: string;
-  title?: string;
-  rightsHolder?: string;
+  title?: string | undefined;
+  rightsHolder?: string | undefined;
 };
 
 type Ctx = { open: (target: ExternalArtTarget) => void; close: () => void };
