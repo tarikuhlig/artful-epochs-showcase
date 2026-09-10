@@ -258,6 +258,7 @@ function RootComponent() {
       {/* Platz für die feste Leiste oben auf dem Handy */}
       <div aria-hidden className="h-[calc(env(safe-area-inset-top)+3.25rem)] md:hidden" />
       <PaymentTestModeBanner />
+      <BrandHeader />
       <SiteHeader />
       <PremiumBanner />
       {/* Ruhige Leiste oben auf dem Handy — verdeckt keine Inhalte mehr. */}
