@@ -15,12 +15,22 @@ export function ProtectedArtPlaceholder({
   className?: string;
 }) {
   const { open } = useExternalArt();
+  const clickable = Boolean(target.url);
 
   return (
     <button
       type="button"
-      onClick={() => open(target)}
-      aria-label={`${target.artist}${target.title ? ` — ${target.title}` : ""} beim Museum ansehen`}
+      disabled={!clickable}
+      onClick={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (clickable) open(target);
+      }}
+      aria-label={
+        clickable
+          ? `${target.artist}${target.title ? ` — ${target.title}` : ""} beim Museum ansehen`
+          : `${target.artist}: keine Abbildung verfügbar`
+      }
       className={`group relative w-full overflow-hidden ${className}`}
     >
       <span className="from-pastel-tip/60 via-muted to-accent absolute inset-0 scale-110 bg-gradient-to-br blur-[3px] transition-transform duration-700 group-hover:scale-125" />
