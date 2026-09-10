@@ -3,6 +3,8 @@ import { ArrowRight } from "lucide-react";
 import { epochs, allPainters, allWorks } from "@/lib/art-data";
 import { isFreeEpoch } from "@/lib/premium-access";
 import { PremiumBadge } from "@/components/PremiumLock";
+import { EpochGame } from "@/components/EpochGame";
+import { EPOCH_GAME_COINS_PER_HIT } from "@/lib/epoch-game";
 
 export const Route = createFileRoute("/epochen/")({
   head: () => ({
@@ -40,8 +42,18 @@ function EpochenIndex() {
         Die Epochen
       </h1>
       <p className="mt-4 mb-10 max-w-2xl text-muted-foreground">
-        Die großen Kapitel der Malerei — jedes mit seinen Malern, Werken und Ideen.
+        Die großen Kapitel der Malerei — jedes mit seinen Malern, Werken und Ideen. Auf jeder
+        Epochenseite findest du Zeitgeschehen, Maltechnik, Farbwelt und einen Check mit Coins.
       </p>
+
+      <section className="mb-12">
+        <h2 className="font-display text-2xl font-medium">Erkenne die Epoche</h2>
+        <p className="mt-2 mb-5 max-w-2xl text-sm text-muted-foreground">
+          Drei Runden pro Tag, {EPOCH_GAME_COINS_PER_HIT} Coins für jedes richtig eingeordnete Werk.
+        </p>
+        <EpochGame />
+      </section>
+
 
       <div className="grid gap-6 md:grid-cols-2">
         {chronologicalEpochs.map((epoch, i) => {

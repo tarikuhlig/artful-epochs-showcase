@@ -161,3 +161,89 @@ export const purchasePrivateAuction = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ...(result?.[0] ?? {}), price, painterSlug: work.painter.slug };
   });
+
+/** Epochen-Check: drei Fragen je Epoche, einmalig 40 Coins bei 3/3. */
+export const awardEpochCheck = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({ epoch: z.string().trim().min(1).max(60), answers: z.array(z.string()).length(3) }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { epochGuides } = await import("@/lib/epoch-guide");
+    const guide = epochGuides[data.epoch];
+    if (!guide) throw new Error("Diese Epoche hat keinen Check.");
+    const score = guide.questions.reduce((total, question, index) => total + (data.answers[index] === question.answer ? 1 : 0), 0);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: result, error } = await supabaseAdmin.rpc("award_epoch_check_for_user", {
+      target_user: context.userId,
+      target_epoch: data.epoch,
+      target_score: score,
+    });
+    if (error) throw new Error(error.message);
+    return { ...(result?.[0] ?? {}), score };
+  });
+
+/** „Erkenne die Epoche": bis zu drei Runden pro Tag, 10 Coins je Treffer. */
+export const awardEpochGame = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    round: z.number().int().min(0).max(2),
+    answers: z.array(z.string()).length(4),
+  }).parse(data))
+  .handler(async ({ data, context }) => {
+    const today = new Date().toISOString().slice(0, 10);
+    if (data.date !== today) throw new Error("Diese Runde ist nicht mehr aktuell.");
+    const { epochGameRound } = await import("@/lib/epoch-game");
+    const cards = epochGameRound(data.date, data.round);
+    if (cards.length !== 4) throw new Error("Die Runde konnte nicht geladen werden.");
+    const score = cards.reduce((total, card, index) => total + (data.answers[index] === card.answer ? 1 : 0), 0);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: result, error } = await supabaseAdmin.rpc("award_epoch_game_for_user", {
+      target_user: context.userId,
+      target_date: data.date,
+      target_round: data.round,
+      target_score: score,
+    });
+    if (error) throw new Error(error.message);
+    return { ...(result?.[0] ?? {}), score };
+  });
+
+/** Sammler-Meilenstein einlösen — die Anzahl wird serverseitig gezählt. */
+export const claimCollectionMilestone = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({ key: z.enum(["works:5", "works:10", "works:25", "works:50"]) }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { count, error: countError } = await supabaseAdmin
+      .from("owned_items")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", context.userId)
+      .eq("kind", "work");
+    if (countError) throw new Error(countError.message);
+    const { data: result, error } = await supabaseAdmin.rpc("claim_collection_milestone_for_user", {
+      target_user: context.userId,
+      target_key: data.key,
+      owned_count: count ?? 0,
+    });
+    if (error) throw new Error(error.message);
+    return { ...(result?.[0] ?? {}), owned: count ?? 0 };
+  });
+
+/** Gesammeltes Werk verkaufen — 60 % des Schätzwerts, serverseitig berechnet. */
+export const sellOwnedItem = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({ workSlug: z.string().trim().min(1).max(200) }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { allWorks } = await import("@/lib/art-data");
+    const work = allWorks.find((entry) => entry.id === data.workSlug);
+    if (!work) throw new Error("Dieses Werk gibt es im Katalog nicht.");
+    const { sellPrice } = await import("@/lib/art-valuation");
+    const price = sellPrice(work.id);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: result, error } = await supabaseAdmin.rpc("sell_owned_item_for_user", {
+      target_user: context.userId,
+      target_slug: work.id,
+      target_price: price,
+    });
+    if (error) throw new Error(error.message);
+    return { ...(result?.[0] ?? {}), price };
+  });
