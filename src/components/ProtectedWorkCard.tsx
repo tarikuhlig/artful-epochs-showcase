@@ -1,19 +1,24 @@
-import { ExternalLink, Eye, Lock } from "lucide-react";
+import { ExternalLink, Eye } from "lucide-react";
 import type { ModernWork } from "@/lib/modern-artists";
+import { ProtectedArtPlaceholder } from "@/components/ProtectedArtPlaceholder";
+import { useExternalArt } from "@/components/ExternalArtModal";
 
 /** Werkkarte ohne Abbildung: Platzhalter + Beschreibung + Link zum Rechteinhaber. */
-export function ProtectedWorkCard({ work }: { work: ModernWork }) {
+export function ProtectedWorkCard({ work, artist }: { work: ModernWork; artist?: string }) {
+  const { open } = useExternalArt();
+  const target = {
+    url: work.museumUrl,
+    artist: artist ?? work.museum,
+    title: `${work.title} (${work.year})`,
+    rightsHolder: work.rightsHolder,
+  };
+
   return (
     <article className="overflow-hidden rounded-xl border border-border bg-card">
-      <div className="flex aspect-[4/3] flex-col items-center justify-center gap-2 border-b border-border bg-muted/50 px-6 text-center">
-        <Lock className="h-5 w-5 text-muted-foreground" />
-        <p className="text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
-          Abbildung urheberrechtlich geschützt
-        </p>
-        <p className="max-w-xs text-xs text-muted-foreground">
-          Zu sehen beim Rechteinhaber: {work.museum}
-        </p>
+      <div className="border-b border-border">
+        <ProtectedArtPlaceholder target={target} />
       </div>
+
 
       <div className="p-5">
         <h3 className="font-display text-lg font-medium">{work.title}</h3>
