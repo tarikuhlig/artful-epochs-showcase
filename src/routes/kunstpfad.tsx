@@ -482,7 +482,7 @@ function ArtPathPage() {
       {/* Description card + CTAs */}
       <div className="mt-6 rounded-2xl border border-border bg-muted/30 p-6 sm:p-8">
         <p className="leading-relaxed text-foreground/80">
-          <GlossaryText text={station.lesson} />
+          <GlossaryText text={station?.lesson ?? ""} />
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Button type="button" onClick={resumeJourney} className="h-auto min-h-11 flex-1 rounded-xl px-6">
