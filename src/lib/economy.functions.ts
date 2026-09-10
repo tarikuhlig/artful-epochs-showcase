@@ -210,7 +210,7 @@ export const awardEpochGame = createServerFn({ method: "POST" })
 /** Sammler-Meilenstein einlösen — die Anzahl wird serverseitig gezählt. */
 export const claimCollectionMilestone = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ key: z.enum(["works:5", "works:10", "works:25", "works:50"]) }).parse(data))
+  .inputValidator((data) => z.object({ key: z.enum(["works:5", "works:10", "works:25", "works:50", "works:100", "works:250", "works:500"]) }).parse(data))
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { count, error: countError } = await supabaseAdmin
