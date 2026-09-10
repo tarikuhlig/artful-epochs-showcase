@@ -122,6 +122,36 @@ export type Database = {
         }
         Relationships: []
       }
+      coin_awards: {
+        Row: {
+          award_key: string
+          coins: number
+          created_at: string
+          id: string
+          kind: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          award_key: string
+          coins?: number
+          created_at?: string
+          id?: string
+          kind: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          award_key?: string
+          coins?: number
+          created_at?: string
+          id?: string
+          kind?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       daily_coin_challenges: {
         Row: {
           challenge_date: string
@@ -514,11 +544,42 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_epoch_check_for_user: {
+        Args: {
+          target_epoch: string
+          target_score: number
+          target_user: string
+        }
+        Returns: {
+          awarded: number
+          coins: number
+        }[]
+      }
+      award_epoch_game_for_user: {
+        Args: {
+          target_date: string
+          target_round: number
+          target_score: number
+          target_user: string
+        }
+        Returns: {
+          awarded: number
+          coins: number
+          rounds_today: number
+        }[]
+      }
       award_study_card_for_user: {
         Args: { target_date: string; target_user: string }
         Returns: {
           awarded: number
           cards_today: number
+          coins: number
+        }[]
+      }
+      claim_collection_milestone_for_user: {
+        Args: { owned_count: number; target_key: string; target_user: string }
+        Returns: {
+          awarded: number
           coins: number
         }[]
       }
@@ -603,6 +664,13 @@ export type Database = {
         Returns: {
           coins: number
           item_slug: string
+        }[]
+      }
+      sell_owned_item_for_user: {
+        Args: { target_price: number; target_slug: string; target_user: string }
+        Returns: {
+          coins: number
+          sold_price: number
         }[]
       }
     }

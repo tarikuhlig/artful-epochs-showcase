@@ -44,3 +44,11 @@ export function workEstimate(workId: string) {
 export function privateAuctionPrice(workId: string) {
   return round10(workEstimate(workId) * (1 + PRIVATE_AUCTION_SURCHARGE));
 }
+
+/** Anteil des Schätzwerts, den ein Verkauf aus der Sammlung einbringt. */
+export const SELL_RATE = 0.6;
+
+/** Verkaufserlös eines gesammelten Werks in Coins. */
+export function sellPrice(workId: string) {
+  return round10(workEstimate(workId) * SELL_RATE);
+}

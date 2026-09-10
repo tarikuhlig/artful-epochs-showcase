@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import coin from "@/assets/provenance-coin.png";
 import { questionKindLabel, repeatVariant, stationFinalQuestion, stationQuestions, stationSummary, stationTransferQuestion, type ArtQuestion } from "@/lib/art-path-questions";
 import { explainTerms, type GlossaryEntry } from "@/lib/art-path-glossary";
+import { GlossaryText } from "@/components/GlossaryText";
 import { pigmentSwatch } from "@/lib/pigment-colors";
 import { Button } from "@/components/ui/button";
 import { MagnifierImage } from "@/components/MagnifierImage";
@@ -471,7 +472,7 @@ function ArtPathPage() {
         </div>
 
         {!focus && <div className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
-          <p className="leading-relaxed text-muted-foreground">{station.lesson}</p>
+          <p className="leading-relaxed text-muted-foreground"><GlossaryText text={station.lesson} /></p>
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <Button type="button" onClick={resumeJourney} className="h-auto min-h-11 rounded-full px-6">{card > 0 ? `Weiter bei Karte ${card + 1}` : "Station starten"} <ChevronRight className="h-4 w-4" /></Button>
             {card > 0 && <Button type="button" variant="outline" onClick={() => openStation(activeStation)} className="h-auto min-h-11 rounded-full px-6">Von vorn</Button>}
@@ -488,15 +489,15 @@ function ArtPathPage() {
         {!unlocked ? <PremiumLock title={`${station.era} wartet auf dich`} description={`Du siehst alle ${artPathWithWorks.length} Stationen der Reise. Die ersten ${FREE_JOURNEY_STATIONS} sind frei; Premium öffnet diese und alle folgenden Lernstationen.`} /> : <article className="relative min-h-[570px] rounded-lg border border-border bg-card shadow-sm sm:min-h-[610px]">
           {study === 0 && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1.08fr_0.92fr]">
             <div className="flex min-h-64 items-center justify-center bg-muted p-4 md:min-h-full">{station.work && <MagnifierImage src={station.work.image} alt={station.work.title} className="w-full" />}</div>
-            <div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9"><BookOpen className="h-6 w-6" /><p className="mt-5 text-[10px] tracking-[0.24em] text-muted-foreground uppercase">{station.years} · {station.place}</p><h3 className="font-display mt-2 text-3xl font-medium sm:text-4xl">{station.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground">{station.lesson}</p><TermNotes entries={termsForStudy(0)} /></div>
+            <div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9"><BookOpen className="h-6 w-6" /><p className="mt-5 text-[10px] tracking-[0.24em] text-muted-foreground uppercase">{station.years} · {station.place}</p><h3 className="font-display mt-2 text-3xl font-medium sm:text-4xl">{station.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground"><GlossaryText text={station.lesson} /></p><TermNotes entries={termsForStudy(0)} /></div>
           </div>}
 
           {study === 1 && <div className="grid min-h-[570px] sm:min-h-[610px] md:grid-cols-[1fr_1fr]">
-            <div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Compass className="h-4 w-4" /> Ankunft</div><h3 className="font-display mt-3 text-3xl font-medium">{station.experience.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground">{station.experience.story}</p><TermNotes entries={termsForStudy(1)} /></div>
+            <div className="flex flex-col justify-center overflow-y-auto p-6 sm:p-9"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Compass className="h-4 w-4" /> Ankunft</div><h3 className="font-display mt-3 text-3xl font-medium">{station.experience.title}</h3><p className="mt-5 leading-relaxed text-muted-foreground"><GlossaryText text={station.experience.story} /></p><TermNotes entries={termsForStudy(1)} /></div>
             <div className="flex min-h-56 items-center justify-center bg-muted p-4 md:min-h-full">{station.works[1] && <MagnifierImage src={station.works[1]!.image} alt={station.works[1]!.title} className="w-full" />}</div>
           </div>}
 
-          {study === 2 && <div className="flex min-h-[570px] flex-col justify-center overflow-y-auto p-6 sm:min-h-[610px] sm:p-10"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><ScrollText className="h-4 w-4" /> Zeit & Wendepunkt</div><h3 className="font-display mt-3 text-3xl font-medium">Was die Welt verändert</h3><p className="mt-5 max-w-2xl leading-relaxed text-muted-foreground">{station.history}</p><p className="mt-6 max-w-2xl border-l-2 border-foreground pl-5 leading-relaxed">{station.turningPoint}</p><div className="max-w-2xl"><TermNotes entries={termsForStudy(2)} /></div></div>}
+          {study === 2 && <div className="flex min-h-[570px] flex-col justify-center overflow-y-auto p-6 sm:min-h-[610px] sm:p-10"><div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><ScrollText className="h-4 w-4" /> Zeit & Wendepunkt</div><h3 className="font-display mt-3 text-3xl font-medium">Was die Welt verändert</h3><p className="mt-5 max-w-2xl leading-relaxed text-muted-foreground"><GlossaryText text={station.history} /></p><p className="mt-6 max-w-2xl border-l-2 border-foreground pl-5 leading-relaxed"><GlossaryText text={station.turningPoint} /></p><div className="max-w-2xl"><TermNotes entries={termsForStudy(2)} /></div></div>}
 
           {study === 3 && <div className="min-h-[570px] overflow-y-auto p-6 sm:min-h-[610px] sm:p-9">
             <div className="flex items-center gap-2 text-[10px] tracking-[0.2em] text-muted-foreground uppercase"><Palette className="h-4 w-4" /> Farben & Pigmente</div>

@@ -17,6 +17,7 @@ import { usePremiumAccess } from "@/hooks/usePremiumAccess";
 import { LicenseNotice } from "@/components/LicenseNotice";
 import { OwnPhotos } from "@/components/OwnPhotos";
 import { FavoritesSection } from "@/components/FavoritesSection";
+import { CollectionRewards } from "@/components/CollectionRewards";
 
 
 export const Route = createFileRoute("/_authenticated/sammlung")({
@@ -243,6 +244,8 @@ function CollectionPage() {
       </section>
 
       <FavoritesSection />
+
+      <CollectionRewards featuredIds={featuredIds} />
 
       <section className="mt-16 border-y border-border py-12">
         <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs tracking-[0.22em] text-muted-foreground uppercase">Deine Ankäufe</p><h2 className="font-display mt-2 text-3xl font-medium">Galeriedepot</h2></div><Button asChild className="rounded-full"><Link to="/auktionshaus">Zum Auktionshaus</Link></Button></div>

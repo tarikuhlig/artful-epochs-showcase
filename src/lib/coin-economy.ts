@@ -37,3 +37,14 @@ export const DAILY_DAILY_MAX = DAILY_LESSON_MAX * 2 + DAILY_CHALLENGE_MAX; // 15
 
 export const STUDY_BUDGET = 14_700;
 export const DAILY_BUDGET = 6_300;
+
+/**
+ * Zusätzliche Coin-Quellen außerhalb des Lernbudgets:
+ * - Epochen-Check: einmalig 40 Coins je Epoche (nur bei voller Punktzahl)
+ * - „Erkenne die Epoche": 3 Runden pro Tag, 10 Coins je richtig erkanntem Werk
+ * - Sammler-Meilensteine: 5/10/25/50 Werke → 100/200/500/1000 Coins, einmalig
+ * - Verkauf aus der Sammlung: 60 % des Schätzwerts
+ */
+export const EPOCH_CHECK_REWARD = 40;
+export const EPOCH_GAME_HIT_REWARD = 10;
+export const MILESTONE_REWARDS = { 5: 100, 10: 200, 25: 500, 50: 1000 } as const;

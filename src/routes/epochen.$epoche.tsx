@@ -5,6 +5,8 @@ import { useTrackDiscovery } from "@/lib/progress";
 import { isFreeEpoch } from "@/lib/premium-access";
 import { PremiumLock } from "@/components/PremiumLock";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
+import { EpochGuide } from "@/components/EpochGuide";
+import { epochGuide } from "@/lib/epoch-guide";
 
 export const Route = createFileRoute("/epochen/$epoche")({
   loader: ({ params }) => {
@@ -30,6 +32,7 @@ function EpochPage() {
   const epoch = Route.useLoaderData();
   const { hasAccess } = usePremiumAccess();
   const free = hasAccess || isFreeEpoch(epoch.slug);
+  const guide = epochGuide(epoch.slug);
   useTrackDiscovery("epoch", epoch.slug, { enabled: free });
 
   return (
@@ -53,6 +56,8 @@ function EpochPage() {
           {epoch.description}
         </p>
       </header>
+
+      {free && guide && <EpochGuide slug={epoch.slug} guide={guide} />}
 
       {free ? <div className="mt-12 grid gap-6 md:grid-cols-2">
         {epoch.painters.map((painter) => {
