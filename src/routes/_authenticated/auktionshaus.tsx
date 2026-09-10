@@ -55,7 +55,7 @@ function AuctionPage() {
       <div className="mt-8 grid gap-6 sm:grid-cols-2">{rankedOffers.map((offer, index) => {
         const work = allWorks.find((w) => w.id === offer.work_slug); if (!work) return null;
         const rarity = artRank(offer.price);
-        const isPlatinum = rarity === "Platin";
+        const isPlatinum = rarity === "Platin" || rarity === "Legendär";
         const alreadyOwned = ownedSlugs.has(work.id);
         return <article key={offer.id} className={`flex flex-col gap-4 rounded-[2rem] border border-border bg-card p-4 shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-shadow hover:shadow-[0_16px_44px_rgba(0,0,0,0.07)] ${isPlatinum ? "w-full sm:col-span-2 sm:mx-auto sm:max-w-3xl" : ""}`}>
           <div className="flex items-center justify-between px-1 pt-1">
