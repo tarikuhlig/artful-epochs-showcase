@@ -504,8 +504,8 @@ function ArtPathPage() {
     </main>
 
 
-    <section className={focus ? "fixed inset-0 z-[70] overflow-y-auto overscroll-contain bg-background px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-6" : "mx-auto max-w-4xl px-5 py-10 sm:px-6 md:py-14"}>
-      <div className={focus ? "mx-auto w-full max-w-4xl" : ""}>
+    <section className={focus ? "fixed inset-0 z-[70] overflow-y-auto overscroll-contain bg-background px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-6" : "hidden"}>
+      <div className="mx-auto w-full max-w-4xl">
       {focus && <div className="mb-5 flex items-center justify-between gap-3">
         <p className="pl-14 text-[10px] tracking-[0.25em] text-muted-foreground uppercase">Station {activeStation + 1} von {artPathWithWorks.length}</p>
         <Button type="button" variant="outline" size="icon" aria-label="Reise verlassen" onClick={() => setFocus(false)} className="h-10 w-10 rounded-full"><X className="h-4 w-4" /></Button>
@@ -520,14 +520,6 @@ function ArtPathPage() {
             <span className="flex items-center gap-1 text-sm"><Coins className="h-4 w-4 shrink-0" /> +{station.coinReward}</span>
           </div>
         </div>
-
-        {!focus && <div className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
-          <p className="leading-relaxed text-muted-foreground"><GlossaryText text={station.lesson} /></p>
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <Button type="button" onClick={resumeJourney} className="h-auto min-h-11 rounded-full px-6">{card > 0 ? `Weiter bei Karte ${card + 1}` : "Station starten"} <ChevronRight className="h-4 w-4" /></Button>
-            {card > 0 && <Button type="button" variant="outline" onClick={() => openStation(activeStation)} className="h-auto min-h-11 rounded-full px-6">Von vorn</Button>}
-          </div>
-        </div>}
 
 
         {focus && <>
