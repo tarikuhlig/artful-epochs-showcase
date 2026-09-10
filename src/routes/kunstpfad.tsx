@@ -11,7 +11,7 @@ import { completePathStation } from "@/lib/economy.functions";
 import { useAuth } from "@/hooks/useAuth";
 import { useInvalidateFarm } from "@/lib/farm";
 import { supabase } from "@/integrations/supabase/client";
-import coin from "@/assets/provenance-coin.png";
+
 import { questionKindLabel, repeatVariant, stationFinalQuestion, stationQuestions, stationSummary, stationTransferQuestion, type ArtQuestion } from "@/lib/art-path-questions";
 import { explainTerms, type GlossaryEntry } from "@/lib/art-path-glossary";
 import { GlossaryText } from "@/components/GlossaryText";
