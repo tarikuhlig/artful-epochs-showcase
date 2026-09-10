@@ -96,7 +96,8 @@ function ModerneIndex() {
               </span>
             </Link>
           </article>
-        ))}
+          );
+        })}
       </div>
 
       <section className="mt-14 max-w-3xl rounded-xl border border-border p-6">
