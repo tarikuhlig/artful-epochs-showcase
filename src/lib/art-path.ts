@@ -20,11 +20,11 @@ function findPainter(name: string): CatalogPainter | undefined {
 }
 
 /**
- * Coin-Ökonomie: Die Reise trägt 50 % des Gesamtbudgets (21.000 Coins).
+ * Coin-Ökonomie: Die Reise trägt 84.000 Coins (24 × 2.500 + 6 × 4.000).
  * Muss mit `complete_art_path_station_for_user` in der Datenbank übereinstimmen.
  */
-export const STATION_REWARD = 650;
-export const MILESTONE_REWARD = 900;
+export const STATION_REWARD = 2_500;
+export const MILESTONE_REWARD = 4_000;
 
 export const artPath: ArtPathStation[] = stationContent.map((content, index) => ({
   ...content,

@@ -9,6 +9,7 @@ import { epochs, allWorks, allPainters } from "@/lib/art-data";
 import { PainterCard } from "@/components/PainterCard";
 
 import { museums } from "@/lib/museums";
+import { journeys } from "@/lib/journeys";
 import { artPathWithWorks } from "@/lib/art-path";
 import { useAuth } from "@/hooks/useAuth";
 import { useArtPathProgress } from "@/lib/economy";
@@ -79,6 +80,15 @@ function HomePage() {
   const painterWorks = worksOfPainter(dailyPainter.slug);
   const dayIndex = Math.floor(Date.now() / 86_400_000);
   const featuredPainters = Array.from({ length: 6 }, (_, i) => allPainters[(dayIndex * 6 + i * 17) % allPainters.length]).filter((p): p is (typeof allPainters)[number] => Boolean(p));
+  const preferredTours = ["ein-wein-mit-leonardo", "starke-frauen-der-epochen", "nacht-und-kerzenlicht"];
+  const featuredTours = journeys
+    .filter((journey) => preferredTours.includes(journey.slug))
+    .concat(journeys.filter((journey) => !preferredTours.includes(journey.slug)))
+    .slice(0, 3)
+    .map((journey) => ({
+      ...journey,
+      image: journey.stops.map((stop) => allWorks.find((item) => item.id === stop.workId)?.image).find(Boolean),
+    }));
 
 
   return (
