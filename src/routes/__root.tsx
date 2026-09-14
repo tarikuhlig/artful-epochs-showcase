@@ -8,7 +8,8 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
-import { Settings } from "lucide-react";
+import { Search, Settings } from "lucide-react";
+import { GlobalSearchProvider, useGlobalSearch } from "@/components/GlobalSearch";
 import { MobileTabBar } from "@/components/MobileTabBar";
 import { AppTour } from "@/components/AppTour";
 import { CollectionPopups } from "@/components/CollectionPopups";
@@ -187,6 +188,7 @@ function BrandHeader() {
 
 function SiteHeader() {
   const { user } = useAuth();
+  const search = useGlobalSearch();
 
   return (
     <header className="sticky top-0 z-50 hidden border-b border-border bg-background/85 pt-[env(safe-area-inset-top)] backdrop-blur-md md:block">
@@ -206,6 +208,14 @@ function SiteHeader() {
         </nav>
 
         <div className="absolute right-4 flex items-center gap-1 sm:right-6">
+          <button
+            type="button"
+            aria-label="Suche öffnen"
+            onClick={search.open}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-input text-foreground transition-colors hover:bg-accent"
+          >
+            <Search className="h-4 w-4" />
+          </button>
           {user ? (
             <>
               <CoinBadge className="mr-1" />
@@ -232,6 +242,24 @@ function SiteHeader() {
   );
 }
 
+
+/** Lupe und Coin-Stand oben rechts — nur auf dem Handy. */
+function MobileQuickActions() {
+  const search = useGlobalSearch();
+  return (
+    <div className="fixed top-[calc(env(safe-area-inset-top)+0.6rem)] right-3 z-[65] flex items-center gap-2 md:hidden">
+      <button
+        type="button"
+        aria-label="Suche öffnen"
+        onClick={search.open}
+        className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background/95 text-foreground shadow-sm backdrop-blur transition-colors hover:bg-accent"
+      >
+        <Search className="h-4 w-4" />
+      </button>
+      <CoinBadge className="h-9 bg-background/95 px-3 shadow-sm backdrop-blur" />
+    </div>
+  );
+}
 
 function SiteFooter() {
   return (
@@ -261,6 +289,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <GlobalSearchProvider>
       <ExternalArtProvider>
       {/* Platz für die feste Leiste oben auf dem Handy */}
       <div aria-hidden className="h-[calc(env(safe-area-inset-top)+3.25rem)] md:hidden" />
@@ -274,10 +303,8 @@ function RootComponent() {
         className="pointer-events-none fixed inset-x-0 top-0 z-[55] h-[calc(env(safe-area-inset-top)+3.25rem)] bg-background/85 backdrop-blur-md md:hidden"
       />
       <BackButton />
-      {/* Coin-Stand jederzeit sichtbar — auf dem Handy oben rechts. */}
-      <div className="fixed top-[calc(env(safe-area-inset-top)+0.6rem)] right-3 z-[65] md:hidden">
-        <CoinBadge className="h-9 bg-background/95 px-3 shadow-sm backdrop-blur" />
-      </div>
+      {/* Suche und Coin-Stand jederzeit sichtbar — auf dem Handy oben rechts. */}
+      <MobileQuickActions />
       <main>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
@@ -289,6 +316,7 @@ function RootComponent() {
       <CollectionPopups />
       <Toaster position="bottom-center" />
       </ExternalArtProvider>
+      </GlobalSearchProvider>
     </QueryClientProvider>
   );
 }
