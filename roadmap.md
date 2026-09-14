@@ -17,4 +17,5 @@
 - [x] Legendäre Werke abartig teuer machen (Rang „Legendär“)
 - [x] Coin-System mathematisch neu ausbalancieren (alles durch harte Arbeit erreichbar)
 - [ ] Reise: wiederholte Merksätze/Quizzitate durch neuen Input ersetzen, Bezug zwischen Künstlern einer Epoche stärken
+- [x] Auktionspreise senken (casual-freundlicher Grind) + unlesbares Rang-Abzeichen „Legendär“ beheben
 - [ ] Entdecken: kuratierte Touren („Ein Wein mit da Vinci“, „Starke Frauen der Epochen“ …)
