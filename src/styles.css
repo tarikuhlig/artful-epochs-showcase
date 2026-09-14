@@ -99,6 +99,8 @@
   --color-path-coral: var(--path-coral);
   --color-path-leaf: var(--path-leaf);
   --color-pastel-tip: var(--pastel-tip);
+  --color-tip-surface: var(--tip-surface);
+  --color-tip-foreground: var(--tip-foreground);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
