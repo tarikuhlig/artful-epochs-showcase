@@ -43,7 +43,8 @@ const PREFERRED_TOURS = ["ein-wein-mit-leonardo", "starke-frauen-der-epochen", "
 
 /** Einmal pro Modul berechnet, damit der Server-Render der Startseite nichts wiederholt. */
 const FEATURED_TOURS = (() => {
-  const imageByWorkId = new Map(allWorks.map((item) => [item.id, item.image] as const));
+  const imageByWorkId: Record<string, string | undefined> = {};
+  for (const item of allWorks) imageByWorkId[item.id] ??= item.image;
   return journeys
     .filter((journey) => PREFERRED_TOURS.includes(journey.slug))
     .concat(journeys.filter((journey) => !PREFERRED_TOURS.includes(journey.slug)))
