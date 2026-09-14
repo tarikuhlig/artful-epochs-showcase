@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ArrowRight, Brush, Coins, GraduationCap, Landmark, Layers, Map, Palette, Sparkles } from "lucide-react";
+import { ArrowRight, Brush, Coins, GraduationCap, Landmark, Layers, Map, Palette, Search, Sparkles } from "lucide-react";
+import { useGlobalSearch } from "@/components/GlobalSearch";
 import { IntroTunnel } from "@/components/IntroTunnel";
 import { PremiumUpsell } from "@/components/PremiumUpsell";
 import { TitleGate } from "@/components/TitleGate";
@@ -117,6 +118,7 @@ function HomePage() {
   const { work, workIndex, discoveries, dailyPainter, painterWorks, featuredPainters } = daily;
   const tip = DAILY_TIPS[new Date().getDay() % DAILY_TIPS.length];
   const featuredTours = FEATURED_TOURS;
+  const search = useGlobalSearch();
 
 
 
@@ -132,6 +134,14 @@ function HomePage() {
             <p className="text-[11px] tracking-[0.32em] text-muted-foreground uppercase">Deine Welt der Kunst</p>
             <h1 className="font-display mt-4 max-w-xl text-5xl leading-[0.98] font-medium md:text-6xl">Jeden Tag ein neues Bild sehen.</h1>
             <p className="mt-5 max-w-lg text-base leading-relaxed text-muted-foreground">Reise durch Jahrhunderte, begegne Künstlern und lerne Meisterwerke mit neuen Augen zu betrachten.</p>
+            <button
+              type="button"
+              onClick={search.open}
+              className="mt-6 flex w-full max-w-md items-center gap-3 rounded-full border border-input bg-background px-5 py-3 text-left text-sm text-muted-foreground shadow-sm transition-colors hover:border-foreground/30 hover:text-foreground"
+            >
+              <Search className="h-4 w-4 shrink-0" />
+              Künstler, Werk, Epoche oder Museum suchen
+            </button>
             <div className="mt-7 flex flex-wrap gap-3">
               <Button asChild size="lg" className="rounded-full px-6"><Link to="/kunstpfad">{canResume ? "Reise fortsetzen" : "Reise beginnen"} <ArrowRight /></Link></Button>
               <Button asChild variant="outline" size="lg" className="rounded-full px-6"><Link to="/epochen">Frei entdecken</Link></Button>
