@@ -35,7 +35,32 @@ function AuctionPage() {
   const [message, setMessage] = useState("");
 
   const ownedSlugs = new Set(owned.map((item) => item.item_slug));
-  const rankedOffers = [...offers].sort((a, b) => b.price - a.price);
+
+  const rankedOffers = [...offers]
+    .map((offer) => {
+      const work = allWorks.find((w) => w.id === offer.work_slug);
+      const rarity = work ? artRank(offer.price) : "Bronze";
+      return { ...offer, work, rarity };
+    })
+    .filter((offer) => offer.work)
+    .sort((a, b) => b.price - a.price);
+
+  let legendaryShown = false;
+  const displayedOffers = [];
+  for (const offer of rankedOffers) {
+    if (offer.rarity === "Legendär") {
+      if (legendaryShown) continue;
+      legendaryShown = true;
+    }
+    displayedOffers.push(offer);
+    if (displayedOffers.length >= 5) break;
+  }
+
+  const topTierCount = displayedOffers.filter((o) => o.rarity === "Legendär" || o.rarity === "Platin").length;
+  const goldCount = displayedOffers.filter((o) => o.rarity === "Gold").length;
+  const bronzeCount = displayedOffers.filter((o) => o.rarity === "Bronze").length;
+  const topTierLabel = displayedOffers.some((o) => o.rarity === "Legendär") ? "Legendär" : "Platin";
+
   void refetchOffers;
   return <main className="min-h-screen bg-background">
     <header className="border-b border-border bg-card">
@@ -49,10 +74,10 @@ function AuctionPage() {
     </header>
 
     <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 md:py-14">
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-5"><div><p className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase">Heutige Auswahl · 1 Platin · 2 Gold · 2 Bronze</p><h2 className="font-display mt-1 text-2xl font-medium">Fünf Lose des Tages</h2></div><p className="flex items-center gap-2 text-sm text-muted-foreground"><Sparkles className="h-4 w-4" /> Wechsel in 24 Stunden</p></div>
-      {!hasAccess && <div className="mt-8"><PremiumLock title="Auktionshaus für Premium-Sammler" description="Alle fünf Tageslose bleiben sichtbar. Premium öffnet den Erwerb und deine private Ausstellung; dein Coin-Guthaben findest du ausschließlich im Galerie-Dashboard." /></div>}
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-5"><div><p className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase">{displayedOffers.length} Lose · {topTierCount} {topTierLabel} · {goldCount} Gold · {bronzeCount} Bronze</p><h2 className="font-display mt-1 text-2xl font-medium">Tageslose</h2></div><p className="flex items-center gap-2 text-sm text-muted-foreground"><Sparkles className="h-4 w-4" /> Wechsel in 24 Stunden</p></div>
+      {!hasAccess && <div className="mt-8"><PremiumLock title="Auktionshaus für Premium-Sammler" description="Alle Tageslose bleiben sichtbar. Premium öffnet den Erwerb und deine private Ausstellung; dein Coin-Guthaben findest du ausschließlich im Galerie-Dashboard." /></div>}
       {message && <p role="status" className="mt-6 text-center text-sm text-muted-foreground">{message}</p>}
-      <div className="mt-8 grid gap-6 sm:grid-cols-2">{rankedOffers.map((offer, index) => {
+      <div className="mt-8 grid gap-6 sm:grid-cols-2">{displayedOffers.map((offer, index) => {
         const work = allWorks.find((w) => w.id === offer.work_slug); if (!work) return null;
         const rarity = artRank(offer.price);
         const isPlatinum = rarity === "Platin" || rarity === "Legendär";
