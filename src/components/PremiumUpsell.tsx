@@ -52,7 +52,7 @@ const MISSING = [
   ["Auktionshaus & private Galerie", "Free: Ansehen, aber kein Sammeln und Ausstellen"],
   ["Tägliche Coin-Challenge (bis 60 Coins)", "Free: gesperrt"],
   ["Museen, Reisegeschichten & Blickschule", "Free: nur Kurzinfos"],
-  ["Sammlerränge Platin, Gold, Bronze", "Free: keine Ausstellungswand"],
+  ["Sammlerränge Legendär bis Bronze", "Free: keine Ausstellungswand"],
 ] as const;
 
 /** Große Abo-Werbung: zeigt konkret, was ohne Premium fehlt. */
