@@ -39,6 +39,29 @@ const DAILY_TIPS = [
   { title: "Vergleiche Größe und Wirkung", text: "Denke das echte Format mit: Ein kleines Bild lädt zur Nähe ein, ein monumentales Werk nimmt den ganzen Raum ein." },
 ];
 
+const PREFERRED_TOURS = ["ein-wein-mit-leonardo", "starke-frauen-der-epochen", "nacht-und-kerzenlicht"];
+
+/** Einmal pro Modul berechnet, damit der Server-Render der Startseite nichts wiederholt. */
+const FEATURED_TOURS = (() => {
+  const imageByWorkId = new Map(allWorks.map((item) => [item.id, item.image] as const));
+  return journeys
+    .filter((journey) => PREFERRED_TOURS.includes(journey.slug))
+    .concat(journeys.filter((journey) => !PREFERRED_TOURS.includes(journey.slug)))
+    .slice(0, 3)
+    .map((journey) => ({
+      slug: journey.slug,
+      title: journey.title,
+      subtitle: journey.subtitle,
+      kind: journey.kind,
+      era: journey.era,
+      stopCount: journey.stops.length,
+      image: journey.stops.map((stop) => imageByWorkId.get(stop.workId)).find(Boolean),
+    }));
+})();
+
+const TOUR_COUNT = journeys.length;
+const MUSEUM_COUNT = museums.length;
+
 function readHasResume(): boolean {
   if (typeof window === "undefined") return false;
   try {
