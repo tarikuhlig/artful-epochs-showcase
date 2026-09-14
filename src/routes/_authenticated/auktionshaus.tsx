@@ -45,23 +45,20 @@ function AuctionPage() {
     .filter((offer) => offer.work)
     .sort((a, b) => b.price - a.price);
 
-  // Im Salon wird pro Tag nur ein legendäres Los präsentiert.
-  // Alle weiteren Legendäre des Slots werden ausgeblendet und durch Gold/Bronze aufgefüllt.
-  let legendaryShown = false;
-  const displayedOffers = [];
-  for (const offer of rankedOffers) {
-    if (offer.rarity === "Legendär") {
-      if (legendaryShown) continue;
-      legendaryShown = true;
-    }
-    displayedOffers.push(offer);
-    if (displayedOffers.length >= 5) break;
-  }
+  // Im Salon wird pro Tag genau ein Los je Klasse präsentiert:
+  // ein legendäres, ein Platin-, ein Gold-, ein Silber- und ein Bronze-Werk.
+  const RANK_ORDER: ArtRank[] = ["Legendär", "Platin", "Gold", "Silber", "Bronze"];
+  const displayedOffers = RANK_ORDER
+    .map((rank) => rankedOffers.find((offer) => offer.rarity === rank))
+    .filter((offer) => offer !== undefined);
 
-  const topTierCount = displayedOffers.filter((o) => o.rarity === "Legendär" || o.rarity === "Platin").length;
-  const goldCount = displayedOffers.filter((o) => o.rarity === "Gold").length;
-  const bronzeCount = displayedOffers.filter((o) => o.rarity === "Bronze").length;
-  const topTierLabel = displayedOffers.some((o) => o.rarity === "Legendär") ? "Legendär" : "Platin";
+  const rankSummary = RANK_ORDER
+    .map((rank) => {
+      const count = displayedOffers.filter((o) => o.rarity === rank).length;
+      return count ? `${count} ${rank}` : null;
+    })
+    .filter(Boolean)
+    .join(" · ");
 
   void refetchOffers;
   return <main className="min-h-screen bg-background">
