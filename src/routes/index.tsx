@@ -127,7 +127,7 @@ function HomePage() {
       {stage === "intro" && <IntroTunnel onDone={finishIntro} />}
 
       <section className="relative overflow-hidden bg-background">
-        <div className="relative mx-auto grid max-w-6xl gap-10 px-6 py-12 lg:grid-cols-[0.88fr_1.12fr] lg:items-center lg:py-16">
+        <div className="relative mx-auto grid max-w-6xl gap-10 px-6 py-10 lg:grid-cols-[0.88fr_1.12fr] lg:items-center lg:py-14">
           <div>
             <p className="text-[11px] tracking-[0.32em] text-muted-foreground uppercase">Deine Welt der Kunst</p>
             <h1 className="font-display mt-4 max-w-xl text-5xl leading-[0.98] font-medium md:text-6xl">Jeden Tag ein neues Bild sehen.</h1>
@@ -199,7 +199,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-14">
+      <section className="mx-auto max-w-6xl px-6 pb-10 sm:pb-12">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Kuratierte Touren</p>
@@ -226,7 +226,7 @@ function HomePage() {
       </section>
 
       <section className="bg-card">
-        <div className="mx-auto max-w-6xl px-6 py-14">
+        <div className="mx-auto max-w-6xl px-6 py-10 sm:py-12">
           <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Wähle deinen Einstieg</p>
           <h2 className="font-display mt-2 text-3xl font-medium">Was möchtest du heute entdecken?</h2>
           <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
@@ -249,9 +249,9 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pt-14"><PremiumUpsell /></section>
+      <section className="mx-auto max-w-6xl px-6 pt-10 sm:pt-12"><PremiumUpsell /></section>
 
-      <section className="mx-auto max-w-6xl px-6 py-16">
+      <section className="mx-auto max-w-6xl px-6 py-12 sm:py-14">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Die Maler</p>
@@ -265,7 +265,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-16">
+      <section className="mx-auto max-w-6xl px-6 pb-12 sm:pb-14">
         <div className="flex items-end justify-between gap-4"><div><p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Heute entdecken</p><h2 className="font-display mt-2 text-3xl font-medium">Drei Werke, drei Perspektiven</h2></div><Sparkles className="hidden h-6 w-6 text-coin sm:block" /></div>
         <div className="mt-7 grid gap-6 sm:grid-cols-3">{discoveries.map((item, index) => item && <Link key={item.id} to="/werke/$id" params={{ id: item.id }} className="group"><div className="aspect-[4/3] overflow-hidden rounded-lg bg-muted"><img src={item.image} alt={item.title} loading={index ? "lazy" : "eager"} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></div><p className="mt-3 text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{index === 0 ? "Meisterwerk" : index === 1 ? "Neue Technik" : "Anderer Blick"}</p><h3 className="font-display mt-1 text-lg font-medium">{item.title}</h3><p className="text-sm text-muted-foreground">{item.painter.name} · {item.year}</p></Link>)}</div>
       </section>
