@@ -127,7 +127,7 @@ function HomePage() {
       {stage === "intro" && <IntroTunnel onDone={finishIntro} />}
 
       <section className="relative overflow-hidden bg-background">
-        <div className="relative mx-auto grid max-w-6xl gap-10 px-6 py-12 lg:grid-cols-[0.88fr_1.12fr] lg:items-center lg:py-16">
+        <div className="relative mx-auto grid max-w-6xl gap-10 px-6 py-10 lg:grid-cols-[0.88fr_1.12fr] lg:items-center lg:py-14">
           <div>
             <p className="text-[11px] tracking-[0.32em] text-muted-foreground uppercase">Deine Welt der Kunst</p>
             <h1 className="font-display mt-4 max-w-xl text-5xl leading-[0.98] font-medium md:text-6xl">Jeden Tag ein neues Bild sehen.</h1>
@@ -166,19 +166,29 @@ function HomePage() {
         </Link>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-14">
+      <section className="mx-auto max-w-6xl px-6 py-10 sm:py-12">
         <div className="grid gap-4 md:grid-cols-[1.35fr_0.65fr]">
-          <div className="grid overflow-hidden rounded-xl bg-pastel-tip sm:grid-cols-[0.78fr_1.22fr]">
+          <Link to="/kuenstler-des-tages" className="group grid overflow-hidden rounded-xl bg-tip-surface sm:grid-cols-[0.78fr_1.22fr]">
             <div className="aspect-[4/3] min-h-56 overflow-hidden sm:aspect-auto">
-              <img src={discoveries[1]?.image} alt={discoveries[1]?.title ?? "Detail eines Kunstwerks"} loading="lazy" className="h-full w-full object-cover" />
+              <img src={discoveries[1]?.image} alt={discoveries[1]?.title ?? "Detail eines Kunstwerks"} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]" />
             </div>
-            <div className="p-7 sm:p-9">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pastel-tip/60"><Brush className="h-5 w-5 text-background" /></div>
-              <p className="mt-8 text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Blickschule des Tages</p>
-              <h2 className="font-display mt-2 text-3xl font-medium">{tip?.title}</h2>
-              <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">{tip?.text}</p>
+            <div className="relative p-7 sm:p-9">
+              <div className="relative z-10 flex flex-col gap-5">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-background/30 bg-background/10 shadow-inner backdrop-blur-md">
+                  <Brush className="h-5 w-5 text-background" />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <p className="text-[10px] font-semibold tracking-[0.25em] text-background/70 uppercase">Blickschule des Tages</p>
+                  <h2 className="font-display text-2xl font-medium leading-tight text-background sm:text-3xl">{tip?.title}</h2>
+                </div>
+                <p className="max-w-2xl leading-relaxed text-background/80">{tip?.text}</p>
+                <div className="flex items-center gap-2 text-sm font-medium text-background">
+                  <span className="border-b border-background/30 pb-1 transition-colors group-hover:border-background/70">Lektion starten</span>
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </div>
+              </div>
             </div>
-          </div>
+          </Link>
           <Link to={user ? "/profil" : "/auth"} className="group relative min-h-80 overflow-hidden rounded-xl bg-muted">
             <img src={discoveries[2]?.image} alt="Kunstwerk aus deiner Sammlung" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
             <div className="absolute inset-x-0 bottom-0 m-3 rounded-lg bg-background/92 p-5 backdrop-blur-sm">
@@ -189,7 +199,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-14">
+      <section className="mx-auto max-w-6xl px-6 pb-10 sm:pb-12">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Kuratierte Touren</p>
@@ -216,7 +226,7 @@ function HomePage() {
       </section>
 
       <section className="bg-card">
-        <div className="mx-auto max-w-6xl px-6 py-14">
+        <div className="mx-auto max-w-6xl px-6 py-10 sm:py-12">
           <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Wähle deinen Einstieg</p>
           <h2 className="font-display mt-2 text-3xl font-medium">Was möchtest du heute entdecken?</h2>
           <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
@@ -239,9 +249,9 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pt-14"><PremiumUpsell /></section>
+      <section className="mx-auto max-w-6xl px-6 pt-10 sm:pt-12"><PremiumUpsell /></section>
 
-      <section className="mx-auto max-w-6xl px-6 py-16">
+      <section className="mx-auto max-w-6xl px-6 py-12 sm:py-14">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Die Maler</p>
@@ -255,7 +265,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-16">
+      <section className="mx-auto max-w-6xl px-6 pb-12 sm:pb-14">
         <div className="flex items-end justify-between gap-4"><div><p className="text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Heute entdecken</p><h2 className="font-display mt-2 text-3xl font-medium">Drei Werke, drei Perspektiven</h2></div><Sparkles className="hidden h-6 w-6 text-coin sm:block" /></div>
         <div className="mt-7 grid gap-6 sm:grid-cols-3">{discoveries.map((item, index) => item && <Link key={item.id} to="/werke/$id" params={{ id: item.id }} className="group"><div className="aspect-[4/3] overflow-hidden rounded-lg bg-muted"><img src={item.image} alt={item.title} loading={index ? "lazy" : "eager"} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" /></div><p className="mt-3 text-[10px] tracking-[0.2em] text-muted-foreground uppercase">{index === 0 ? "Meisterwerk" : index === 1 ? "Neue Technik" : "Anderer Blick"}</p><h3 className="font-display mt-1 text-lg font-medium">{item.title}</h3><p className="text-sm text-muted-foreground">{item.painter.name} · {item.year}</p></Link>)}</div>
       </section>

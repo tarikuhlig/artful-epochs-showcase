@@ -35,7 +35,34 @@ function AuctionPage() {
   const [message, setMessage] = useState("");
 
   const ownedSlugs = new Set(owned.map((item) => item.item_slug));
-  const rankedOffers = [...offers].sort((a, b) => b.price - a.price);
+
+  const rankedOffers = [...offers]
+    .map((offer) => {
+      const work = allWorks.find((w) => w.id === offer.work_slug);
+      const rarity = work ? artRank(offer.price) : "Bronze";
+      return { ...offer, work, rarity };
+    })
+    .filter((offer) => offer.work)
+    .sort((a, b) => b.price - a.price);
+
+  // Im Salon wird pro Tag nur ein legendäres Los präsentiert.
+  // Alle weiteren Legendäre des Slots werden ausgeblendet und durch Gold/Bronze aufgefüllt.
+  let legendaryShown = false;
+  const displayedOffers = [];
+  for (const offer of rankedOffers) {
+    if (offer.rarity === "Legendär") {
+      if (legendaryShown) continue;
+      legendaryShown = true;
+    }
+    displayedOffers.push(offer);
+    if (displayedOffers.length >= 5) break;
+  }
+
+  const topTierCount = displayedOffers.filter((o) => o.rarity === "Legendär" || o.rarity === "Platin").length;
+  const goldCount = displayedOffers.filter((o) => o.rarity === "Gold").length;
+  const bronzeCount = displayedOffers.filter((o) => o.rarity === "Bronze").length;
+  const topTierLabel = displayedOffers.some((o) => o.rarity === "Legendär") ? "Legendär" : "Platin";
+
   void refetchOffers;
   return <main className="min-h-screen bg-background">
     <header className="border-b border-border bg-card">
@@ -49,17 +76,17 @@ function AuctionPage() {
     </header>
 
     <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 md:py-14">
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-5"><div><p className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase">Heutige Auswahl · 1 Platin · 2 Gold · 2 Bronze</p><h2 className="font-display mt-1 text-2xl font-medium">Fünf Lose des Tages</h2></div><p className="flex items-center gap-2 text-sm text-muted-foreground"><Sparkles className="h-4 w-4" /> Wechsel in 24 Stunden</p></div>
-      {!hasAccess && <div className="mt-8"><PremiumLock title="Auktionshaus für Premium-Sammler" description="Alle fünf Tageslose bleiben sichtbar. Premium öffnet den Erwerb und deine private Ausstellung; dein Coin-Guthaben findest du ausschließlich im Galerie-Dashboard." /></div>}
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-5"><div><p className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase">{displayedOffers.length} Lose · {topTierCount} {topTierLabel} · {goldCount} Gold · {bronzeCount} Bronze</p><h2 className="font-display mt-1 text-2xl font-medium">Tageslose</h2></div><p className="flex items-center gap-2 text-sm text-muted-foreground"><Sparkles className="h-4 w-4" /> Wechsel in 24 Stunden</p></div>
+      {!hasAccess && <div className="mt-8"><PremiumLock title="Auktionshaus für Premium-Sammler" description="Alle Tageslose bleiben sichtbar. Premium öffnet den Erwerb und deine private Ausstellung; dein Coin-Guthaben findest du ausschließlich im Galerie-Dashboard." /></div>}
       {message && <p role="status" className="mt-6 text-center text-sm text-muted-foreground">{message}</p>}
-      <div className="mt-8 grid gap-6 sm:grid-cols-2">{rankedOffers.map((offer, index) => {
-        const work = allWorks.find((w) => w.id === offer.work_slug); if (!work) return null;
-        const rarity = artRank(offer.price);
-        const isPlatinum = rarity === "Platin" || rarity === "Legendär";
+      <div className="mt-8 grid gap-6 sm:grid-cols-2">{displayedOffers.map((offer, index) => {
+        const { work, rarity } = offer;
+        if (!work) return null;
+        const isTopTier = rarity === "Platin" || rarity === "Legendär";
         const alreadyOwned = ownedSlugs.has(work.id);
-        return <article key={offer.id} className={`flex flex-col gap-4 rounded-[2rem] border border-border bg-card p-4 shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-shadow hover:shadow-[0_16px_44px_rgba(0,0,0,0.07)] ${isPlatinum ? "w-full sm:col-span-2 sm:mx-auto sm:max-w-3xl" : ""}`}>
+        return <article key={offer.id} className={`flex flex-col gap-4 rounded-[2rem] border border-border bg-card p-4 shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-shadow hover:shadow-[0_16px_44px_rgba(0,0,0,0.07)] ${isTopTier ? "w-full sm:col-span-2 sm:mx-auto sm:max-w-3xl" : ""}`}>
           <div className="flex items-center justify-between px-1 pt-1">
-            <span className="text-[10px] font-medium tracking-[0.15em] text-muted-foreground uppercase">{isPlatinum ? "Weltlos des Tages" : `Los ${String(index + 1).padStart(2, "0")}`}</span>
+            <span className="text-[10px] font-medium tracking-[0.15em] text-muted-foreground uppercase">{isTopTier ? "Weltlos des Tages" : `Los ${String(index + 1).padStart(2, "0")}`}</span>
             <span className="flex items-center gap-2">
               <FavoriteButton workSlug={work.id} className="h-8 w-8" />
               <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-medium tracking-tight ${artRankClasses(rarity)}`}>
@@ -68,12 +95,12 @@ function AuctionPage() {
             </span>
           </div>
 
-          <Link to="/werke/$id" params={{ id: work.id }} className={`group relative block overflow-hidden rounded-[1.5rem] bg-muted ${isPlatinum ? "aspect-[16/9]" : "aspect-[4/5]"}`}>
+          <Link to="/werke/$id" params={{ id: work.id }} className={`group relative block overflow-hidden rounded-[1.5rem] bg-muted ${isTopTier ? "aspect-[16/9]" : "aspect-[4/5]"}`}>
             <img src={work.image} alt={`${work.title} von ${work.painter.name}`} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
           </Link>
 
           <div className="flex flex-col gap-1 px-1">
-            <h3 className={`font-display leading-none font-normal tracking-tight ${isPlatinum ? "text-3xl" : "text-2xl"}`}>{work.title}</h3>
+            <h3 className={`font-display leading-none font-normal tracking-tight ${isTopTier ? "text-3xl" : "text-2xl"}`}>{work.title}</h3>
             <p className="text-[13px] font-light text-muted-foreground">{work.painter.name} · {work.year}</p>
           </div>
 
