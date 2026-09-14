@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { epochs, allWorks, allPainters } from "@/lib/art-data";
 import { PainterCard } from "@/components/PainterCard";
 
+import { museums } from "@/lib/museums";
 import { journeys } from "@/lib/journeys";
 import { ART_PATH_STATION_COUNT } from "@/lib/art-path-meta";
 import { useAuth } from "@/hooks/useAuth";
