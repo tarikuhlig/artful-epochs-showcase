@@ -95,23 +95,29 @@ function HomePage() {
   }, []);
 
   const canResume = progress.length > 0 || hasResume;
-  const work = workOfTheDay();
-  const workIndex = Math.max(0, allWorks.indexOf(work));
-  const discoveries = [work, allWorks[(workIndex + 29) % allWorks.length], allWorks[(workIndex + 71) % allWorks.length]].filter(Boolean);
-  const tip = DAILY_TIPS[new Date().getDay() % DAILY_TIPS.length];
-  const dailyPainter = painterOfTheDay();
-  const painterWorks = worksOfPainter(dailyPainter.slug);
   const dayIndex = Math.floor(Date.now() / 86_400_000);
-  const featuredPainters = Array.from({ length: 6 }, (_, i) => allPainters[(dayIndex * 6 + i * 17) % allPainters.length]).filter((p): p is (typeof allPainters)[number] => Boolean(p));
-  const preferredTours = ["ein-wein-mit-leonardo", "starke-frauen-der-epochen", "nacht-und-kerzenlicht"];
-  const featuredTours = journeys
-    .filter((journey) => preferredTours.includes(journey.slug))
-    .concat(journeys.filter((journey) => !preferredTours.includes(journey.slug)))
-    .slice(0, 3)
-    .map((journey) => ({
-      ...journey,
-      image: journey.stops.map((stop) => allWorks.find((item) => item.id === stop.workId)?.image).find(Boolean),
-    }));
+
+  const daily = useMemo(() => {
+    const work = workOfTheDay();
+    const workIndex = Math.max(0, allWorks.indexOf(work));
+    const dailyPainter = painterOfTheDay();
+    return {
+      work,
+      workIndex,
+      discoveries: [work, allWorks[(workIndex + 29) % allWorks.length], allWorks[(workIndex + 71) % allWorks.length]].filter(Boolean),
+      dailyPainter,
+      painterWorks: worksOfPainter(dailyPainter.slug),
+      featuredPainters: Array.from({ length: 6 }, (_, i) => allPainters[(dayIndex * 6 + i * 17) % allPainters.length]).filter(
+        (p): p is (typeof allPainters)[number] => Boolean(p),
+      ),
+    };
+  }, [dayIndex]);
+
+  const { work, workIndex, discoveries, dailyPainter, painterWorks, featuredPainters } = daily;
+  const tip = DAILY_TIPS[new Date().getDay() % DAILY_TIPS.length];
+  const featuredTours = FEATURED_TOURS;
+
+
 
 
   return (
