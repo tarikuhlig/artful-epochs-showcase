@@ -79,6 +79,7 @@ function AuctionPage() {
       {message && <p role="status" className="mt-6 text-center text-sm text-muted-foreground">{message}</p>}
       <div className="mt-8 grid gap-6 sm:grid-cols-2">{displayedOffers.map((offer, index) => {
         const { work, rarity } = offer;
+        if (!work) return null;
         const isTopTier = rarity === "Platin" || rarity === "Legendär";
         const alreadyOwned = ownedSlugs.has(work.id);
         return <article key={offer.id} className={`flex flex-col gap-4 rounded-[2rem] border border-border bg-card p-4 shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-shadow hover:shadow-[0_16px_44px_rgba(0,0,0,0.07)] ${isTopTier ? "w-full sm:col-span-2 sm:mx-auto sm:max-w-3xl" : ""}`}>
@@ -92,12 +93,12 @@ function AuctionPage() {
             </span>
           </div>
 
-          <Link to="/werke/$id" params={{ id: work.id }} className={`group relative block overflow-hidden rounded-[1.5rem] bg-muted ${isPlatinum ? "aspect-[16/9]" : "aspect-[4/5]"}`}>
+          <Link to="/werke/$id" params={{ id: work.id }} className={`group relative block overflow-hidden rounded-[1.5rem] bg-muted ${isTopTier ? "aspect-[16/9]" : "aspect-[4/5]"}`}>
             <img src={work.image} alt={`${work.title} von ${work.painter.name}`} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
           </Link>
 
           <div className="flex flex-col gap-1 px-1">
-            <h3 className={`font-display leading-none font-normal tracking-tight ${isPlatinum ? "text-3xl" : "text-2xl"}`}>{work.title}</h3>
+            <h3 className={`font-display leading-none font-normal tracking-tight ${isTopTier ? "text-3xl" : "text-2xl"}`}>{work.title}</h3>
             <p className="text-[13px] font-light text-muted-foreground">{work.painter.name} · {work.year}</p>
           </div>
 
