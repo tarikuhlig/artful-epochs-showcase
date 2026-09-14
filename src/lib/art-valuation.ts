@@ -5,11 +5,11 @@
  */
 import { allWorks } from "@/lib/art-data";
 
-const MIN_PRICE = 450;
-const MAX_PRICE = 2400;
+const MIN_PRICE = 320;
+const MAX_PRICE = 1700;
 
 /** Aufpreis für den sofortigen Erwerb außerhalb der Tagesrotation. */
-export const PRIVATE_AUCTION_SURCHARGE = 0.4;
+export const PRIVATE_AUCTION_SURCHARGE = 0.25;
 
 function hashNorm(value: string) {
   let hash = 2166136261;
@@ -35,44 +35,44 @@ function round10(value: number) {
  * eines normalen Loses und sind das große Fernziel jeder Sammlung.
  */
 export const LEGENDARY_ESTIMATES: Record<string, number> = {
-  "mona-lisa": 150000,
-  sternennacht: 120000,
-  "der-schrei": 110000,
-  "erschaffung-adams": 95000,
-  "maedchen-mit-perlenohrring": 90000,
-  "das-abendmahl": 90000,
-  nachtwache: 85000,
-  "las-meninas": 85000,
-  "geburt-der-venus": 80000,
-  "der-kuss": 80000,
-  "schule-von-athen": 70000,
-  sonnenblumen: 70000,
-  primavera: 65000,
-  "der-garten-der-lueste": 60000,
-  "wanderer-nebelmeer": 60000,
-  "arnolfini-hochzeit": 55000,
-  "dame-mit-dem-hermelin": 55000,
-  "freiheit-fuehrt-das-volk": 55000,
-  "impression-sonnenaufgang": 50000,
-  "das-floss-der-medusa": 45000,
-  "turmbau-zu-babel": 45000,
-  seerosen: 45000,
-  "vincents-schlafzimmer-in-arles": 42000,
-  "die-jaeger-im-schnee": 40000,
-  "fruehstueck-im-gruenen": 40000,
-  "vitruvianischer-mensch": 40000,
-  "der-dritte-mai": 40000,
-  olympia: 38000,
-  "berufung-des-matthaeus": 35000,
-  "isenheimer-altar": 35000,
-  "judith-enthauptet-holofernes": 35000,
-  saturn: 35000,
-  ophelia: 32000,
-  "die-anatomie-des-dr-tulp": 30000,
-  "venus-vor-dem-spiegel": 30000,
-  "die-kaempfende-temeraire": 30000,
-  "woher-kommen-wir": 30000,
-  "moench-am-meer": 28000,
+  "mona-lisa": 60000,
+  sternennacht: 48000,
+  "der-schrei": 44000,
+  "erschaffung-adams": 38000,
+  "maedchen-mit-perlenohrring": 36000,
+  "das-abendmahl": 36000,
+  nachtwache: 34000,
+  "las-meninas": 34000,
+  "geburt-der-venus": 32000,
+  "der-kuss": 32000,
+  "schule-von-athen": 28000,
+  sonnenblumen: 28000,
+  primavera: 26000,
+  "der-garten-der-lueste": 24000,
+  "wanderer-nebelmeer": 24000,
+  "arnolfini-hochzeit": 22000,
+  "dame-mit-dem-hermelin": 22000,
+  "freiheit-fuehrt-das-volk": 22000,
+  "impression-sonnenaufgang": 20000,
+  "das-floss-der-medusa": 18000,
+  "turmbau-zu-babel": 18000,
+  seerosen: 18000,
+  "vincents-schlafzimmer-in-arles": 16800,
+  "die-jaeger-im-schnee": 16000,
+  "fruehstueck-im-gruenen": 16000,
+  "vitruvianischer-mensch": 16000,
+  "der-dritte-mai": 16000,
+  olympia: 15200,
+  "berufung-des-matthaeus": 14000,
+  "isenheimer-altar": 14000,
+  "judith-enthauptet-holofernes": 14000,
+  saturn: 14000,
+  ophelia: 12800,
+  "die-anatomie-des-dr-tulp": 12000,
+  "venus-vor-dem-spiegel": 12000,
+  "die-kaempfende-temeraire": 12000,
+  "woher-kommen-wir": 12000,
+  "moench-am-meer": 11200,
 };
 
 /** Ist dieses Werk eine Legende? */
@@ -80,7 +80,7 @@ export function isLegendary(workId: string) {
   return workId in LEGENDARY_ESTIMATES;
 }
 
-/** Schätzwert eines Werks in Provenance-Coins (450 – 2400, Legenden weit darüber). */
+/** Schätzwert eines Werks in Provenance-Coins (320 – 1700, Legenden weit darüber). */
 export function workEstimate(workId: string) {
   const legendary = LEGENDARY_ESTIMATES[workId];
   if (legendary) return legendary;
