@@ -195,7 +195,7 @@ function HomePage() {
             <h2 className="font-display mt-2 text-3xl font-medium">Kunst einmal anders erzählt</h2>
             <p className="mt-2 max-w-xl text-sm text-muted-foreground">Ein Abend mit Leonardo, starke Frauen quer durch die Epochen, Malerei bei Kerzenlicht — jede Tour führt in wenigen Stationen durch eine eigene Geschichte.</p>
           </div>
-          <Link to="/reisen" className="font-display inline-flex items-center gap-2 text-base">Alle {journeys.length} Touren <ArrowRight className="h-4 w-4" /></Link>
+          <Link to="/reisen" className="font-display inline-flex items-center gap-2 text-base">Alle {TOUR_COUNT} Touren <ArrowRight className="h-4 w-4" /></Link>
         </div>
         <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {featuredTours.map((tour) => (
@@ -207,7 +207,7 @@ function HomePage() {
                 <p className="text-[10px] tracking-[0.24em] text-muted-foreground uppercase">{tour.kind} · {tour.era}</p>
                 <h3 className="font-display mt-1 text-xl font-medium">{tour.title}</h3>
                 <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{tour.subtitle}</p>
-                <span className="font-display mt-4 inline-flex items-center gap-2 text-sm">{tour.stops.length} Stationen <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
+                <span className="font-display mt-4 inline-flex items-center gap-2 text-sm">{tour.stopCount} Stationen <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
               </div>
             </Link>
           ))}
@@ -220,10 +220,10 @@ function HomePage() {
           <h2 className="font-display mt-2 text-3xl font-medium">Was möchtest du heute entdecken?</h2>
           <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             <ExploreCard to="/kuenstler-des-tages" image={painterWorks[0]?.image} icon={<Palette />} title="Künstler des Tages" text={dailyPainter.name} />
-            <ExploreCard to="/kunstpfad" image={allWorks[(workIndex + 101) % allWorks.length]?.image} icon={<Map />} title="Reise" text={`${artPathWithWorks.length} Epochen Schritt für Schritt`} />
+            <ExploreCard to="/kunstpfad" image={allWorks[(workIndex + 101) % allWorks.length]?.image} icon={<Map />} title="Reise" text={`${ART_PATH_STATION_COUNT} Epochen Schritt für Schritt`} />
             <ExploreCard to="/studieren" image={allWorks[(workIndex + 137) % allWorks.length]?.image} icon={<GraduationCap />} title="Studieren" text="Lernkarten zu Werken und Künstlern" />
             <ExploreCard to="/epochen" image={allWorks[(workIndex + 157) % allWorks.length]?.image} icon={<Layers />} title="Epochen" text={`${epochs.length} Kapitel der Kunstgeschichte`} />
-            <ExploreCard to="/museen" image={allWorks[(workIndex + 223) % allWorks.length]?.image} icon={<Landmark />} title="Museen" text={`${museums.length} Häuser weltweit`} />
+            <ExploreCard to="/museen" image={allWorks[(workIndex + 223) % allWorks.length]?.image} icon={<Landmark />} title="Museen" text={`${MUSEUM_COUNT} Häuser weltweit`} />
             <ExploreCard to="/auktionshaus" image={allWorks[(workIndex + 311) % allWorks.length]?.image} icon={<Coins />} title="Auktionshaus" text="Werke für deine Galerie finden" />
           </div>
 
