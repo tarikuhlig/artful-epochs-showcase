@@ -78,13 +78,12 @@ function AuctionPage() {
       {!hasAccess && <div className="mt-8"><PremiumLock title="Auktionshaus für Premium-Sammler" description="Alle Tageslose bleiben sichtbar. Premium öffnet den Erwerb und deine private Ausstellung; dein Coin-Guthaben findest du ausschließlich im Galerie-Dashboard." /></div>}
       {message && <p role="status" className="mt-6 text-center text-sm text-muted-foreground">{message}</p>}
       <div className="mt-8 grid gap-6 sm:grid-cols-2">{displayedOffers.map((offer, index) => {
-        const work = allWorks.find((w) => w.id === offer.work_slug); if (!work) return null;
-        const rarity = artRank(offer.price);
-        const isPlatinum = rarity === "Platin" || rarity === "Legendär";
+        const { work, rarity } = offer;
+        const isTopTier = rarity === "Platin" || rarity === "Legendär";
         const alreadyOwned = ownedSlugs.has(work.id);
-        return <article key={offer.id} className={`flex flex-col gap-4 rounded-[2rem] border border-border bg-card p-4 shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-shadow hover:shadow-[0_16px_44px_rgba(0,0,0,0.07)] ${isPlatinum ? "w-full sm:col-span-2 sm:mx-auto sm:max-w-3xl" : ""}`}>
+        return <article key={offer.id} className={`flex flex-col gap-4 rounded-[2rem] border border-border bg-card p-4 shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-shadow hover:shadow-[0_16px_44px_rgba(0,0,0,0.07)] ${isTopTier ? "w-full sm:col-span-2 sm:mx-auto sm:max-w-3xl" : ""}`}>
           <div className="flex items-center justify-between px-1 pt-1">
-            <span className="text-[10px] font-medium tracking-[0.15em] text-muted-foreground uppercase">{isPlatinum ? "Weltlos des Tages" : `Los ${String(index + 1).padStart(2, "0")}`}</span>
+            <span className="text-[10px] font-medium tracking-[0.15em] text-muted-foreground uppercase">{isTopTier ? "Weltlos des Tages" : `Los ${String(index + 1).padStart(2, "0")}`}</span>
             <span className="flex items-center gap-2">
               <FavoriteButton workSlug={work.id} className="h-8 w-8" />
               <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-medium tracking-tight ${artRankClasses(rarity)}`}>
