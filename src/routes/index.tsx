@@ -166,7 +166,7 @@ function HomePage() {
         </Link>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-14">
+      <section className="mx-auto max-w-6xl px-6 py-10 sm:py-12">
         <div className="grid gap-4 md:grid-cols-[1.35fr_0.65fr]">
           <Link to="/kuenstler-des-tages" className="group grid overflow-hidden rounded-xl bg-tip-surface sm:grid-cols-[0.78fr_1.22fr]">
             <div className="aspect-[4/3] min-h-56 overflow-hidden sm:aspect-auto">
