@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ArrowRight, Brush, Coins, GraduationCap, Landmark, Layers, Map, Palette, Sparkles } from "lucide-react";
 import { IntroTunnel } from "@/components/IntroTunnel";
 import { PremiumUpsell } from "@/components/PremiumUpsell";
@@ -10,7 +10,7 @@ import { PainterCard } from "@/components/PainterCard";
 
 import { museums } from "@/lib/museums";
 import { journeys } from "@/lib/journeys";
-import { artPathWithWorks } from "@/lib/art-path";
+import { ART_PATH_STATION_COUNT } from "@/lib/art-path-meta";
 import { useAuth } from "@/hooks/useAuth";
 import { useArtPathProgress } from "@/lib/economy";
 import { workOfTheDay } from "@/lib/farm";
@@ -38,6 +38,30 @@ const DAILY_TIPS = [
   { title: "Achte auf den Pinselstrich", text: "Ist die Oberfläche glatt oder bewegt? Die Handschrift des Pinsels verrät Tempo, Absicht und Nähe des Künstlers zum Motiv." },
   { title: "Vergleiche Größe und Wirkung", text: "Denke das echte Format mit: Ein kleines Bild lädt zur Nähe ein, ein monumentales Werk nimmt den ganzen Raum ein." },
 ];
+
+const PREFERRED_TOURS = ["ein-wein-mit-leonardo", "starke-frauen-der-epochen", "nacht-und-kerzenlicht"];
+
+/** Einmal pro Modul berechnet, damit der Server-Render der Startseite nichts wiederholt. */
+const FEATURED_TOURS = (() => {
+  const imageByWorkId: Record<string, string | undefined> = {};
+  for (const item of allWorks) imageByWorkId[item.id] ??= item.image;
+  return journeys
+    .filter((journey) => PREFERRED_TOURS.includes(journey.slug))
+    .concat(journeys.filter((journey) => !PREFERRED_TOURS.includes(journey.slug)))
+    .slice(0, 3)
+    .map((journey) => ({
+      slug: journey.slug,
+      title: journey.title,
+      subtitle: journey.subtitle,
+      kind: journey.kind,
+      era: journey.era,
+      stopCount: journey.stops.length,
+      image: journey.stops.map((stop) => (stop.workId ? imageByWorkId[stop.workId] : undefined)).find(Boolean),
+    }));
+})();
+
+const TOUR_COUNT = journeys.length;
+const MUSEUM_COUNT = museums.length;
 
 function readHasResume(): boolean {
   if (typeof window === "undefined") return false;
@@ -72,23 +96,29 @@ function HomePage() {
   }, []);
 
   const canResume = progress.length > 0 || hasResume;
-  const work = workOfTheDay();
-  const workIndex = Math.max(0, allWorks.indexOf(work));
-  const discoveries = [work, allWorks[(workIndex + 29) % allWorks.length], allWorks[(workIndex + 71) % allWorks.length]].filter(Boolean);
-  const tip = DAILY_TIPS[new Date().getDay() % DAILY_TIPS.length];
-  const dailyPainter = painterOfTheDay();
-  const painterWorks = worksOfPainter(dailyPainter.slug);
   const dayIndex = Math.floor(Date.now() / 86_400_000);
-  const featuredPainters = Array.from({ length: 6 }, (_, i) => allPainters[(dayIndex * 6 + i * 17) % allPainters.length]).filter((p): p is (typeof allPainters)[number] => Boolean(p));
-  const preferredTours = ["ein-wein-mit-leonardo", "starke-frauen-der-epochen", "nacht-und-kerzenlicht"];
-  const featuredTours = journeys
-    .filter((journey) => preferredTours.includes(journey.slug))
-    .concat(journeys.filter((journey) => !preferredTours.includes(journey.slug)))
-    .slice(0, 3)
-    .map((journey) => ({
-      ...journey,
-      image: journey.stops.map((stop) => allWorks.find((item) => item.id === stop.workId)?.image).find(Boolean),
-    }));
+
+  const daily = useMemo(() => {
+    const work = workOfTheDay();
+    const workIndex = Math.max(0, allWorks.indexOf(work));
+    const dailyPainter = painterOfTheDay();
+    return {
+      work,
+      workIndex,
+      discoveries: [work, allWorks[(workIndex + 29) % allWorks.length], allWorks[(workIndex + 71) % allWorks.length]].filter(Boolean),
+      dailyPainter,
+      painterWorks: worksOfPainter(dailyPainter.slug),
+      featuredPainters: Array.from({ length: 6 }, (_, i) => allPainters[(dayIndex * 6 + i * 17) % allPainters.length]).filter(
+        (p): p is (typeof allPainters)[number] => Boolean(p),
+      ),
+    };
+  }, [dayIndex]);
+
+  const { work, workIndex, discoveries, dailyPainter, painterWorks, featuredPainters } = daily;
+  const tip = DAILY_TIPS[new Date().getDay() % DAILY_TIPS.length];
+  const featuredTours = FEATURED_TOURS;
+
+
 
 
   return (
@@ -166,7 +196,7 @@ function HomePage() {
             <h2 className="font-display mt-2 text-3xl font-medium">Kunst einmal anders erzählt</h2>
             <p className="mt-2 max-w-xl text-sm text-muted-foreground">Ein Abend mit Leonardo, starke Frauen quer durch die Epochen, Malerei bei Kerzenlicht — jede Tour führt in wenigen Stationen durch eine eigene Geschichte.</p>
           </div>
-          <Link to="/reisen" className="font-display inline-flex items-center gap-2 text-base">Alle {journeys.length} Touren <ArrowRight className="h-4 w-4" /></Link>
+          <Link to="/reisen" className="font-display inline-flex items-center gap-2 text-base">Alle {TOUR_COUNT} Touren <ArrowRight className="h-4 w-4" /></Link>
         </div>
         <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {featuredTours.map((tour) => (
@@ -178,7 +208,7 @@ function HomePage() {
                 <p className="text-[10px] tracking-[0.24em] text-muted-foreground uppercase">{tour.kind} · {tour.era}</p>
                 <h3 className="font-display mt-1 text-xl font-medium">{tour.title}</h3>
                 <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{tour.subtitle}</p>
-                <span className="font-display mt-4 inline-flex items-center gap-2 text-sm">{tour.stops.length} Stationen <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
+                <span className="font-display mt-4 inline-flex items-center gap-2 text-sm">{tour.stopCount} Stationen <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
               </div>
             </Link>
           ))}
@@ -191,10 +221,10 @@ function HomePage() {
           <h2 className="font-display mt-2 text-3xl font-medium">Was möchtest du heute entdecken?</h2>
           <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             <ExploreCard to="/kuenstler-des-tages" image={painterWorks[0]?.image} icon={<Palette />} title="Künstler des Tages" text={dailyPainter.name} />
-            <ExploreCard to="/kunstpfad" image={allWorks[(workIndex + 101) % allWorks.length]?.image} icon={<Map />} title="Reise" text={`${artPathWithWorks.length} Epochen Schritt für Schritt`} />
+            <ExploreCard to="/kunstpfad" image={allWorks[(workIndex + 101) % allWorks.length]?.image} icon={<Map />} title="Reise" text={`${ART_PATH_STATION_COUNT} Epochen Schritt für Schritt`} />
             <ExploreCard to="/studieren" image={allWorks[(workIndex + 137) % allWorks.length]?.image} icon={<GraduationCap />} title="Studieren" text="Lernkarten zu Werken und Künstlern" />
             <ExploreCard to="/epochen" image={allWorks[(workIndex + 157) % allWorks.length]?.image} icon={<Layers />} title="Epochen" text={`${epochs.length} Kapitel der Kunstgeschichte`} />
-            <ExploreCard to="/museen" image={allWorks[(workIndex + 223) % allWorks.length]?.image} icon={<Landmark />} title="Museen" text={`${museums.length} Häuser weltweit`} />
+            <ExploreCard to="/museen" image={allWorks[(workIndex + 223) % allWorks.length]?.image} icon={<Landmark />} title="Museen" text={`${MUSEUM_COUNT} Häuser weltweit`} />
             <ExploreCard to="/auktionshaus" image={allWorks[(workIndex + 311) % allWorks.length]?.image} icon={<Coins />} title="Auktionshaus" text="Werke für deine Galerie finden" />
           </div>
 
