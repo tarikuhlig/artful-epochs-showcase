@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ArrowRight, Brush, Coins, GraduationCap, Landmark, Layers, Map, Palette, Sparkles } from "lucide-react";
 import { IntroTunnel } from "@/components/IntroTunnel";
 import { PremiumUpsell } from "@/components/PremiumUpsell";
@@ -8,9 +8,8 @@ import { Button } from "@/components/ui/button";
 import { epochs, allWorks, allPainters } from "@/lib/art-data";
 import { PainterCard } from "@/components/PainterCard";
 
-import { museums } from "@/lib/museums";
 import { journeys } from "@/lib/journeys";
-import { artPathWithWorks } from "@/lib/art-path";
+import { ART_PATH_STATION_COUNT } from "@/lib/art-path-meta";
 import { useAuth } from "@/hooks/useAuth";
 import { useArtPathProgress } from "@/lib/economy";
 import { workOfTheDay } from "@/lib/farm";
