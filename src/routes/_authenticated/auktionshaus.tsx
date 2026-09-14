@@ -6,7 +6,7 @@ import { Check, Gem, LockKeyhole, Sparkles } from "lucide-react";
 import { allWorks } from "@/lib/art-data";
 import { useAuctionOffers, useOwnedItems } from "@/lib/economy";
 import { Button } from "@/components/ui/button";
-import { artRank, artRankClasses } from "@/lib/art-rarity";
+import { artRank, artRankClasses, type ArtRank } from "@/lib/art-rarity";
 import coin from "@/assets/provenance-coin.png";
 import { PremiumLock } from "@/components/PremiumLock";
 import { usePremiumAccess } from "@/hooks/usePremiumAccess";
@@ -73,7 +73,7 @@ function AuctionPage() {
     </header>
 
     <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 md:py-14">
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-5"><div><p className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase">{displayedOffers.length} Lose · {topTierCount} {topTierLabel} · {goldCount} Gold · {bronzeCount} Bronze</p><h2 className="font-display mt-1 text-2xl font-medium">Tageslose</h2></div><p className="flex items-center gap-2 text-sm text-muted-foreground"><Sparkles className="h-4 w-4" /> Wechsel in 24 Stunden</p></div>
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-5"><div><p className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase">{displayedOffers.length} Lose · {rankSummary}</p><h2 className="font-display mt-1 text-2xl font-medium">Tageslose</h2></div><p className="flex items-center gap-2 text-sm text-muted-foreground"><Sparkles className="h-4 w-4" /> Wechsel in 24 Stunden</p></div>
       {!hasAccess && <div className="mt-8"><PremiumLock title="Auktionshaus für Premium-Sammler" description="Alle Tageslose bleiben sichtbar. Premium öffnet den Erwerb und deine private Ausstellung; dein Coin-Guthaben findest du ausschließlich im Galerie-Dashboard." /></div>}
       {message && <p role="status" className="mt-6 text-center text-sm text-muted-foreground">{message}</p>}
       <div className="mt-8 grid gap-6 sm:grid-cols-2">{displayedOffers.map((offer, index) => {
