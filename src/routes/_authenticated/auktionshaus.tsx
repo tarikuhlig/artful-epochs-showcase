@@ -45,6 +45,8 @@ function AuctionPage() {
     .filter((offer) => offer.work)
     .sort((a, b) => b.price - a.price);
 
+  // Im Salon wird pro Tag nur ein legendäres Los präsentiert.
+  // Alle weiteren Legendäre des Slots werden ausgeblendet und durch Gold/Bronze aufgefüllt.
   let legendaryShown = false;
   const displayedOffers = [];
   for (const offer of rankedOffers) {
