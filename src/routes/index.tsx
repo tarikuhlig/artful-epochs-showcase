@@ -168,17 +168,27 @@ function HomePage() {
 
       <section className="mx-auto max-w-6xl px-6 py-14">
         <div className="grid gap-4 md:grid-cols-[1.35fr_0.65fr]">
-          <div className="grid overflow-hidden rounded-xl bg-pastel-tip sm:grid-cols-[0.78fr_1.22fr]">
+          <Link to="/kuenstler-des-tages" className="group grid overflow-hidden rounded-xl bg-tip-surface sm:grid-cols-[0.78fr_1.22fr]">
             <div className="aspect-[4/3] min-h-56 overflow-hidden sm:aspect-auto">
-              <img src={discoveries[1]?.image} alt={discoveries[1]?.title ?? "Detail eines Kunstwerks"} loading="lazy" className="h-full w-full object-cover" />
+              <img src={discoveries[1]?.image} alt={discoveries[1]?.title ?? "Detail eines Kunstwerks"} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]" />
             </div>
-            <div className="p-7 sm:p-9">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pastel-tip/60"><Brush className="h-5 w-5 text-background" /></div>
-              <p className="mt-8 text-[10px] tracking-[0.28em] text-muted-foreground uppercase">Blickschule des Tages</p>
-              <h2 className="font-display mt-2 text-3xl font-medium">{tip?.title}</h2>
-              <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">{tip?.text}</p>
+            <div className="relative p-7 sm:p-9">
+              <div className="relative z-10 flex flex-col gap-5">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-background/30 bg-background/10 shadow-inner backdrop-blur-md">
+                  <Brush className="h-5 w-5 text-background" />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <p className="text-[10px] font-semibold tracking-[0.25em] text-background/70 uppercase">Blickschule des Tages</p>
+                  <h2 className="font-display text-2xl font-medium leading-tight text-background sm:text-3xl">{tip?.title}</h2>
+                </div>
+                <p className="max-w-2xl leading-relaxed text-background/80">{tip?.text}</p>
+                <div className="flex items-center gap-2 text-sm font-medium text-background">
+                  <span className="border-b border-background/30 pb-1 transition-colors group-hover:border-background/70">Lektion starten</span>
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </div>
+              </div>
             </div>
-          </div>
+          </Link>
           <Link to={user ? "/profil" : "/auth"} className="group relative min-h-80 overflow-hidden rounded-xl bg-muted">
             <img src={discoveries[2]?.image} alt="Kunstwerk aus deiner Sammlung" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
             <div className="absolute inset-x-0 bottom-0 m-3 rounded-lg bg-background/92 p-5 backdrop-blur-sm">
