@@ -20,3 +20,4 @@
 - [x] Auktionspreise senken (casual-freundlicher Grind) + unlesbares Rang-Abzeichen „Legendär“ beheben
 - [ ] Entdecken: kuratierte Touren („Ein Wein mit da Vinci“, „Starke Frauen der Epochen“ …)
 - [ ] Auktionshaus: immer nur ein legendäres Bild einblenden
+- [ ] Design: Abstände reduzieren, Proportionen ausgewogener gestalten
