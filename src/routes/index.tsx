@@ -56,7 +56,7 @@ const FEATURED_TOURS = (() => {
       kind: journey.kind,
       era: journey.era,
       stopCount: journey.stops.length,
-      image: journey.stops.map((stop) => imageByWorkId[stop.workId]).find(Boolean),
+      image: journey.stops.map((stop) => (stop.workId ? imageByWorkId[stop.workId] : undefined)).find(Boolean),
     }));
 })();
 
